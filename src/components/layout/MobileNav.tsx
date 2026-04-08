@@ -41,7 +41,7 @@ export default function MobileNav({ pathname }: { pathname: string }) {
 		<div className="flex items-center md:hidden">
 			<button
 				type="button"
-				className="hover:opacity-80 active:scale-[0.98] transition-all duration-300 ease-out text-white"
+				className="text-secondary transition-all duration-300 ease-out hover:text-on-surface active:scale-[0.98]"
 				aria-expanded={open}
 				aria-controls={panelId}
 				onClick={() => setOpen(true)}
@@ -52,7 +52,10 @@ export default function MobileNav({ pathname }: { pathname: string }) {
 
 			{open ? (
 				<div
-					className="fixed inset-0 z-60 bg-background/95 backdrop-blur-3xl"
+					className="fixed inset-0 z-60 backdrop-blur-3xl"
+					style={{
+						background: "color-mix(in oklab, var(--color-surface) 92%, transparent)",
+					}}
 					id={panelId}
 					role="dialog"
 					aria-modal="true"
@@ -62,14 +65,14 @@ export default function MobileNav({ pathname }: { pathname: string }) {
 						<button
 							ref={closeRef}
 							type="button"
-							className="absolute right-8 top-8 text-white/40 transition-all hover:text-white"
+							className="absolute right-8 top-8 text-on-surface-variant transition-all hover:text-on-surface"
 							onClick={() => setOpen(false)}
 						>
 							<span className="sr-only">Close menu</span>
 							<X className="size-10" strokeWidth={1.25} aria-hidden />
 						</button>
 
-						<div className="mb-12 font-headline text-4xl font-black tracking-tighter text-white">
+						<div className="mb-12 font-headline text-4xl font-bold tracking-editorial text-on-surface">
 							digiDEVS
 						</div>
 
@@ -80,10 +83,10 @@ export default function MobileNav({ pathname }: { pathname: string }) {
 									<a
 										key={href}
 										href={href}
-										className={`font-headline text-6xl transition-all hover:italic ${
+										className={`font-headline text-5xl tracking-editorial transition-all md:text-6xl ${
 											active
-												? "font-bold text-white"
-												: "font-light text-white/40 hover:text-white"
+												? "font-bold text-tertiary"
+												: "font-medium text-on-surface-variant hover:text-on-surface"
 										}`}
 										onClick={() => setOpen(false)}
 									>
@@ -96,7 +99,7 @@ export default function MobileNav({ pathname }: { pathname: string }) {
 						<div className="mt-auto flex flex-col gap-4 py-12">
 							<button
 								type="button"
-								className="bg-primary px-8 py-4 font-label text-on-primary transition-transform active:scale-95 font-bold uppercase tracking-widest"
+								className="rounded-xl bg-linear-to-br from-primary-soft to-primary-container px-8 py-4 font-label font-semibold uppercase tracking-widest text-on-primary-container transition-transform hover:brightness-105 active:scale-95"
 							>
 								Get in Touch
 							</button>

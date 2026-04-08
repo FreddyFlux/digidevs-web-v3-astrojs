@@ -6,11 +6,13 @@ import Layout from "../../layouts/Layout.astro";
 	title="About — digiDEVS"
 	description="Who we are: Norwegian-led precision, EU delivery standards, and a distributed team across Oslo and Croatia."
 >
-	<main class="px-8 pb-24 pt-32">
-		<header class="mx-auto mb-20 max-w-4xl text-center">
-			<span class="font-label mb-6 block text-xs uppercase tracking-[0.35em] text-on-surface-variant/60">About</span>
-			<h1 class="font-headline mb-8 text-5xl font-extrabold tracking-tighter text-white md:text-7xl">digiDEVS</h1>
-			<p class="font-body mx-auto max-w-2xl text-xl leading-relaxed text-on-surface-variant">
+	<main class="px-6 pb-28 pt-36 md:px-10">
+		<header class="mx-auto mb-24 max-w-7xl md:flex md:items-end md:justify-between md:gap-16">
+			<div class="max-w-2xl">
+				<span class="font-label mb-6 block text-xs uppercase tracking-[0.35em] text-on-surface-variant">About</span>
+				<h1 class="font-headline text-5xl font-bold tracking-editorial text-on-surface md:text-7xl">digiDEVS</h1>
+			</div>
+			<p class="font-body mt-10 max-w-md text-xl leading-relaxed text-on-surface-variant md:mt-0 md:max-w-[42%]">
 				We combine Norwegian technical leadership with a senior engineering team in Croatia — so you get clarity, velocity,
 				and EU-grade delivery without the capital-city price tag.
 			</p>
@@ -19,27 +21,35 @@ import Layout from "../../layouts/Layout.astro";
 		<div class="mx-auto grid max-w-5xl gap-6 md:grid-cols-2">
 			<a
 				href="/about/competence"
-				class="group rounded-xl border border-outline-variant/15 bg-surface-container-low p-10 transition-colors hover:bg-surface-container md:min-h-[280px]"
+				class="group rounded-2xl bg-surface-container-low p-10 transition-colors hover:bg-surface-container md:min-h-[280px]"
 			>
-				<span class="font-label mb-4 block text-xs uppercase tracking-widest text-primary/80">What we build</span>
-				<h2 class="font-headline mb-4 text-3xl font-bold text-white group-hover:text-primary">Competence</h2>
-				<p class="text-on-surface-variant">
+				<span class="font-label mb-4 block text-xs uppercase tracking-widest text-secondary">What we build</span>
+				<h2 class="font-headline mb-4 text-3xl font-bold tracking-editorial text-on-surface transition-colors group-hover:text-primary">
+					Competence
+				</h2>
+				<p class="font-body text-on-surface-variant">
 					Web apps, mobile, AI integration, and team augmentation — stack, ways of working, and how we ship.
 				</p>
-				<span class="font-label mt-8 inline-block text-sm uppercase tracking-widest text-white/40 transition-colors group-hover:text-white">
+				<span
+					class="font-label mt-10 inline-block text-sm uppercase tracking-widest text-on-surface-variant transition-colors group-hover:text-primary"
+				>
 					Explore →
 				</span>
 			</a>
 			<a
 				href="/about/quality"
-				class="group rounded-xl border border-outline-variant/15 bg-surface-container-high p-10 transition-colors hover:bg-surface-container-highest md:min-h-[280px]"
+				class="group rounded-2xl bg-surface-container p-10 transition-colors hover:bg-surface-container-high md:min-h-[280px]"
 			>
-				<span class="font-label mb-4 block text-xs uppercase tracking-widest text-primary/80">Why it is safe</span>
-				<h2 class="font-headline mb-4 text-3xl font-bold text-white group-hover:text-primary">Quality</h2>
-				<p class="text-on-surface-variant">
+				<span class="font-label mb-4 block text-xs uppercase tracking-widest text-secondary">Why it is safe</span>
+				<h2 class="font-headline mb-4 text-3xl font-bold tracking-editorial text-on-surface transition-colors group-hover:text-primary">
+					Quality
+				</h2>
+				<p class="font-body text-on-surface-variant">
 					Senior-level craft, EU expectations, GDPR-aware development, and transparent Norwegian-led communication.
 				</p>
-				<span class="font-label mt-8 inline-block text-sm uppercase tracking-widest text-white/40 transition-colors group-hover:text-white">
+				<span
+					class="font-label mt-10 inline-block text-sm uppercase tracking-widest text-on-surface-variant transition-colors group-hover:text-primary"
+				>
 					Explore →
 				</span>
 			</a>

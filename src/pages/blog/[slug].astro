@@ -21,23 +21,23 @@ const cover =
 ---
 
 <Layout title={`${post.title} — digiDEVS`} description={post.description}>
-	<article class="mx-auto max-w-3xl px-8 pb-24 pt-32">
+	<article class="mx-auto max-w-3xl px-6 pb-28 pt-36 md:px-10">
 		<header class="mb-12">
 			<p class="font-label mb-4 text-xs uppercase tracking-widest text-primary">
 				{post.category} • {post.readTime}
 			</p>
-			<h1 class="font-headline mb-6 text-4xl font-extrabold leading-tight tracking-tighter text-white md:text-5xl">
+			<h1 class="font-headline mb-6 text-4xl font-bold leading-tight tracking-editorial text-on-surface md:text-5xl">
 				{post.title}
 			</h1>
 			<p class="font-body text-lg text-on-surface-variant">{post.description}</p>
-			<p class="font-label mt-6 text-sm text-on-surface-variant/60">
+			<p class="font-label mt-6 text-sm text-on-surface-variant/80">
 				{new Date(post.date).toLocaleDateString("en-GB", { year: "numeric", month: "long", day: "numeric" })} · {
 					post.author
 				}
 			</p>
 		</header>
 
-		<div class="mb-12 overflow-hidden rounded-xl border border-outline-variant/10">
+		<div class="mb-12 overflow-hidden rounded-2xl bg-surface-container-low">
 			<img
 				src={cover}
 				alt=""
@@ -51,7 +51,7 @@ const cover =
 		</div>
 
 		<div
-			class="font-body space-y-6 text-lg leading-relaxed text-on-surface-variant [&_h2]:mt-12 [&_h2]:font-headline [&_h2]:text-2xl [&_h2]:font-bold [&_h2]:text-white [&_p]:mb-4"
+			class="font-body space-y-6 text-lg leading-relaxed text-on-surface-variant [&_h2]:mt-12 [&_h2]:font-headline [&_h2]:text-2xl [&_h2]:font-bold [&_h2]:tracking-editorial [&_h2]:text-on-surface [&_p]:mb-4"
 			set:html={post.bodyHtml}
 		/>
 	</article>

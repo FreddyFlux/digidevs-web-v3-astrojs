@@ -36,7 +36,7 @@ const pathname = Astro.url.pathname;
 		/>
 		<slot name="head" />
 	</head>
-	<body class="selection:bg-primary selection:text-on-primary">
+	<body class="selection:bg-primary-container/90 selection:text-on-primary-container">
 		<SiteHeader pathname={pathname} />
 		<slot />
 		<SiteFooter />

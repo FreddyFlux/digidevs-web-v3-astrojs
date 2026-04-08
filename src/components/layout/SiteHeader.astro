@@ -20,17 +20,18 @@ function active(href: string) {
 ---
 
 <header
-	class="fixed top-0 left-0 z-50 flex w-full items-center justify-between bg-transparent px-8 py-6 backdrop-blur-xl"
+	class="fixed top-0 left-0 z-50 flex w-full items-center justify-between px-8 py-6 backdrop-blur-2xl"
+	style="background: color-mix(in oklab, var(--color-surface) 55%, transparent)"
 >
 	<a
 		href="/"
-		class="font-headline text-xl font-bold tracking-tighter text-white"
+		class="font-headline text-xl font-bold tracking-editorial text-on-surface"
 		aria-current={pathname === "/" ? "page" : undefined}
 	>
 		digiDEVS
 	</a>
 
-	<nav class="hidden items-center gap-8 md:flex" aria-label="Primary">
+	<nav class="hidden items-center gap-10 md:flex" aria-label="Primary">
 		{
 			nav.map(({ href, label }) => {
 				const isCurrent = active(href);
@@ -40,8 +41,8 @@ function active(href: string) {
 						class:list={[
 							"font-label text-sm uppercase tracking-widest transition-colors",
 							isCurrent
-								? "border-b border-white/40 pb-1 font-bold text-white"
-								: "text-white/60 hover:text-white",
+								? "font-semibold text-tertiary"
+								: "text-secondary hover:text-on-surface",
 						]}
 						aria-current={isCurrent ? "page" : undefined}
 					>

@@ -1,140 +1,212 @@
 ---
+import { Image } from "astro:assets";
 import Layout from "../layouts/Layout.astro";
-import MarketingIcon from "../components/icons/MarketingIcon";
-import { images } from "../data/remoteImages";
+import heroNorsk from "../assets/digidevs-norsk-hero.png";
+import bentoCloud from "../assets/digidevs-cloud.png";
+import bentoKeyboard from "../assets/digidevs-keyboard.png";
 ---
 
 <Layout
 	title="digiDEVS — Senior-level development, EU quality"
 	description="Norwegian-led development studio in Croatia. Web apps, mobile apps, AI-powered products, and team augmentation without Oslo premiums."
 >
-	<main class="relative flex min-h-screen flex-col items-center justify-center overflow-hidden">
-		<div class="absolute inset-0 z-0">
-			<div class="absolute inset-0 z-10 bg-gradient-to-b from-background via-transparent to-background"></div>
-			<img
-				src={images.heroArchitecture}
-				alt="Futuristic minimalist architecture at night, misty Nordic atmosphere"
-				width={1920}
-				height={1080}
-				sizes="100vw"
-				class="h-full w-full object-cover opacity-40 grayscale"
-				loading="eager"
-				fetchpriority="high"
-				decoding="async"
-			/>
-			<div class="misty-layer absolute inset-0 opacity-60"></div>
-			<div class="absolute bottom-0 left-0 h-1/2 w-full bg-gradient-to-t from-background to-transparent"></div>
-		</div>
+	<link
+		slot="head"
+		href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap"
+		rel="stylesheet"
+	/>
 
-		<section class="relative z-20 container mx-auto max-w-7xl px-6 pb-24 pt-32 text-center">
-			<div
-				class="mb-8 inline-flex items-center gap-2 rounded-full border border-outline-variant/15 bg-surface-container-high/50 px-3 py-1 backdrop-blur-sm"
-			>
-				<span class="h-1.5 w-1.5 animate-pulse rounded-full bg-primary"></span>
-				<span class="font-label text-[10px] uppercase tracking-[0.2em] text-white/60">Oslo • Zagreb • Remote</span>
+	<main class="bg-background">
+		<!-- Hero: isolate + non-negative z-index so the bg is not painted behind main.bg-background (negative z-index would hide it) -->
+		<section class="relative isolate flex min-h-svh w-full flex-col justify-center overflow-hidden">
+			<div class="absolute inset-0 z-0 min-h-svh w-full">
+				<Image
+					src={heroNorsk}
+					alt="Scandinavian coastal city at night, cold blue light on dark water under a starry sky"
+					width={heroNorsk.width}
+					height={heroNorsk.height}
+					layout="full-width"
+					fit="cover"
+					position="center"
+					sizes="100vw"
+					quality="high"
+					format="avif"
+					priority
+					decoding="async"
+					class="absolute inset-0 z-0 size-full object-cover object-center"
+				/>
+				<div
+					class="pointer-events-none absolute inset-0 z-10 bg-linear-to-b from-background/20 via-background/60 to-background"
+					aria-hidden="true"
+				>
+				</div>
 			</div>
-			<h1
-				class="font-headline mx-auto mb-12 max-w-5xl text-[clamp(2.5rem,8vw,5.5rem)] font-extrabold leading-[0.95] tracking-tighter text-white text-glow"
+			<div
+				class="pointer-events-none absolute right-0 top-1/4 z-15 h-96 w-96 rounded-full bg-secondary aurora-blur"
+				aria-hidden="true"
 			>
-				Senior-level development. EU quality. <br />
-				<span class="font-light italic text-white/20">Without the Oslo price tag.</span>
-			</h1>
-			<p
-				class="font-body mx-auto mb-16 max-w-2xl text-lg leading-relaxed text-on-surface-variant opacity-80 md:text-xl"
+			</div>
+			<div
+				class="pointer-events-none absolute bottom-1/4 left-1/4 z-15 h-[500px] w-[500px] rounded-full bg-primary aurora-blur"
+				aria-hidden="true"
 			>
-				digiDEVS is a Norwegian-led development studio based in Croatia. We build web apps, mobile apps, and AI-powered
-				products — and we lead outsourced development teams for companies who need more firepower without the overhead.
-			</p>
-			<div class="flex flex-col items-center justify-center gap-6 md:flex-row">
-				<button
-					type="button"
-					class="group relative overflow-hidden bg-primary px-10 py-5 font-label font-bold uppercase tracking-widest text-on-primary transition-all duration-500 hover:bg-surface-bright active:scale-95"
+			</div>
+
+			<div class="relative z-20 mx-auto w-full max-w-[1200px] px-6 pb-16 pt-28 md:px-10 md:pb-24 md:pt-32 lg:px-12">
+				<h1
+					class="font-headline text-[clamp(3rem,8vw,7.5rem)] font-black leading-[0.9] tracking-tighter text-on-surface"
 				>
-					<span class="relative z-10">Start a Project</span>
-					<div
-						class="absolute inset-0 translate-y-full bg-white/10 transition-transform duration-500 group-hover:translate-y-0"
-					>
+					Senior-level development.
+					<br />
+					<span class="text-primary-container">EU quality.</span>
+					<br />
+					Without the Oslo price tag.
+				</h1>
+
+				<div class="mt-10 max-w-lg md:max-w-none">
+					<div class="grid grid-cols-12 gap-6">
+						<div class="col-span-12 md:col-span-5 md:col-start-7">
+							<p class="mb-10 font-body text-xl font-light leading-relaxed text-on-surface-variant md:text-2xl">
+								We fuse Nordic precision with global-scale engineering. High-velocity delivery for firms that demand
+								ethereal performance and industrial-grade reliability.
+							</p>
+							<div class="mb-12 flex flex-wrap items-center gap-8">
+								<button
+									type="button"
+									class="rounded-full bg-primary-container px-10 py-5 font-headline text-lg font-bold uppercase tracking-tighter text-on-primary-container transition-transform hover:scale-95"
+								>
+									Start a Project
+								</button>
+								<a
+									class="font-label border-b-2 border-primary-container/30 pb-1 text-sm uppercase tracking-tighter text-primary-container transition-all hover:border-primary-container"
+									href="#capabilities"
+								>
+									View Portfolio
+								</a>
+							</div>
+							<div class="max-w-xs">
+								<div class="aurora-bar"></div>
+							</div>
+						</div>
 					</div>
-				</button>
-				<button
-					type="button"
-					class="border border-outline-variant/20 px-10 py-5 font-label font-bold uppercase tracking-widest text-white transition-all hover:border-white active:scale-95"
-				>
-					View Portfolio
-				</button>
+				</div>
 			</div>
 		</section>
 
-		<div
-			class="absolute bottom-0 left-1/2 z-10 h-32 w-px -translate-x-1/2 bg-gradient-to-t from-primary to-transparent opacity-30"
-		>
-		</div>
+		<!-- Capabilities -->
+		<section id="capabilities" class="bg-surface px-6 py-24 md:px-10 md:py-32 lg:px-12">
+			<div class="mx-auto max-w-[1920px]">
+				<div class="mb-16 md:mb-20">
+					<h2 class="font-headline text-4xl font-bold uppercase tracking-tighter md:text-5xl">Capabilities</h2>
+					<div class="mt-2 h-1 w-20 bg-secondary"></div>
+				</div>
+
+				<div class="grid auto-rows-[minmax(280px,auto)] grid-cols-1 gap-6 md:grid-cols-12 md:auto-rows-[300px]">
+					<div
+						class="group relative flex flex-col justify-end overflow-hidden bg-surface-container-low p-8 md:col-span-8 md:row-span-2 md:p-10"
+					>
+						<Image
+							src={bentoCloud}
+							alt=""
+							width={1200}
+							height={800}
+							class="absolute inset-0 h-full w-full object-cover opacity-40 transition-transform duration-700 group-hover:scale-105"
+							loading="lazy"
+							decoding="async"
+						/>
+						<div class="relative z-10">
+							<span class="mb-4 block font-headline text-sm uppercase tracking-widest text-secondary">Core Infrastructure</span>
+							<h3 class="mb-4 font-headline text-3xl font-bold tracking-tighter md:text-4xl">Scalable Cloud Architectures</h3>
+							<p class="max-w-md text-on-surface-variant">
+								Engineered for millions of requests, optimized for zero-latency user experiences across the European corridor.
+							</p>
+						</div>
+					</div>
+
+					<div
+						class="flex flex-col justify-between border-l-2 border-secondary/40 bg-surface-container p-8 md:col-span-4"
+					>
+						<span class="material-symbols-outlined text-4xl text-secondary" aria-hidden="true">science</span>
+						<div>
+							<h3 class="mb-2 font-headline text-2xl font-bold tracking-tighter">R&amp;D Lab</h3>
+							<p class="text-sm text-on-surface-variant">Exploring the frontiers of Web3 and AI-integrated workflows.</p>
+						</div>
+					</div>
+
+					<div class="flex flex-col justify-between bg-surface-container-high p-8 md:col-span-4">
+						<div class="mb-4 h-1 w-12 bg-tertiary"></div>
+						<div>
+							<h3 class="mb-2 font-headline text-2xl font-bold tracking-tighter">Boutique UI/UX</h3>
+							<p class="text-sm text-on-surface-variant">Editorial design systems that prioritize brand narrative and motion.</p>
+						</div>
+					</div>
+
+					<div
+						class="flex flex-col items-center justify-center bg-primary-container p-8 text-center md:col-span-4 md:p-10"
+					>
+						<h3 class="mb-6 font-headline text-2xl font-black tracking-tighter text-on-primary-container md:text-3xl">
+							READY TO ASCEND?
+						</h3>
+						<button
+							type="button"
+							class="rounded-full bg-surface px-8 py-3 font-headline text-sm font-bold uppercase tracking-tighter text-primary-container transition-colors hover:bg-surface-bright"
+						>
+							Book a Workshop
+						</button>
+					</div>
+
+					<div class="group relative overflow-hidden bg-surface-container-highest p-8 md:col-span-8 md:p-10">
+						<div
+							class="absolute inset-0 z-10 bg-linear-to-r from-background to-transparent"
+							aria-hidden="true"
+						>
+						</div>
+						<Image
+							src={bentoKeyboard}
+							alt=""
+							width={1200}
+							height={600}
+							class="absolute inset-0 h-full w-full object-cover opacity-30"
+							loading="lazy"
+							decoding="async"
+						/>
+						<div class="relative z-20 flex h-full flex-col justify-center">
+							<h3 class="mb-4 font-headline text-2xl font-bold tracking-tighter md:text-3xl">Performance Audits</h3>
+							<p class="max-w-sm text-on-surface-variant">
+								We find the bottlenecks in your legacy code and eliminate them with surgical precision.
+							</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<!-- Stats -->
+		<section class="border-border border-t bg-surface-dim px-6 py-24 md:px-10 md:py-32 lg:px-12">
+			<div class="mx-auto grid max-w-[1920px] grid-cols-12 gap-6">
+				<div class="col-span-12 md:col-span-4">
+					<h2 class="mb-4 font-headline text-5xl font-black tracking-tighter text-primary-container md:text-6xl">99.9%</h2>
+					<p class="font-headline text-xs uppercase tracking-widest text-on-surface-variant">Infrastructure Uptime</p>
+				</div>
+				<div class="col-span-12 md:col-span-4 md:mt-24">
+					<h2 class="mb-4 font-headline text-5xl font-black tracking-tighter text-secondary md:text-6xl">24H</h2>
+					<p class="font-headline text-xs uppercase tracking-widest text-on-surface-variant">Fastest Prototype Delivery</p>
+				</div>
+				<div class="col-span-12 md:col-span-4 md:mt-12">
+					<h2 class="mb-4 font-headline text-5xl font-black tracking-tighter text-tertiary md:text-6xl">€12M+</h2>
+					<p class="font-headline text-xs uppercase tracking-widest text-on-surface-variant">Capital Managed by Our Code</p>
+				</div>
+			</div>
+		</section>
 	</main>
-
-	<section class="bg-background px-8 py-32">
-		<div class="mx-auto grid max-w-7xl grid-cols-1 gap-4 md:grid-cols-12">
-			<div
-				class="group relative flex min-h-[450px] flex-col justify-end overflow-hidden rounded-xl bg-surface-container-low p-12 md:col-span-8"
-			>
-				<div class="absolute right-0 top-0 p-8 opacity-10 transition-opacity group-hover:opacity-20">
-					<MarketingIcon name="terminal" className="text-white" size={120} strokeWidth={1.25} />
-				</div>
-				<div class="relative z-10">
-					<h3 class="font-headline mb-4 text-3xl font-bold text-white">Norwegian Technical Leadership</h3>
-					<p class="max-w-md text-on-surface-variant">
-						Our architects bring the rigor of Nordic engineering standards to every line of code, ensuring scalability and
-						security are never an afterthought.
-					</p>
-				</div>
-			</div>
-
-			<div
-				class="group flex flex-col justify-between rounded-xl bg-surface-container-high p-8 transition-all duration-500 hover:bg-surface-container-highest md:col-span-4"
-			>
-				<MarketingIcon name="speed" className="mb-12 text-primary" size={32} />
-				<div>
-					<h4 class="font-headline mb-2 text-xl font-bold text-white">High-Velocity Teams</h4>
-					<p class="text-sm text-on-surface-variant">
-						Rapid deployment of specialized squads integrated directly into your workflow.
-					</p>
-				</div>
-			</div>
-
-			<div
-				class="flex flex-col justify-between rounded-xl border border-outline-variant/10 bg-surface-container p-8 md:col-span-4"
-			>
-				<MarketingIcon name="cloud" className="mb-12 text-white/40" size={32} />
-				<div>
-					<h4 class="font-headline mb-2 text-xl font-bold text-white">Cloud-Native Focus</h4>
-					<p class="text-sm text-on-surface-variant">
-						Modern architectures built for the future, leveraging AI and serverless technologies.
-					</p>
-				</div>
-			</div>
-
-			<div
-				class="flex flex-col items-center gap-12 rounded-xl border border-white/5 bg-surface-container-lowest p-12 md:col-span-8 md:flex-row"
-			>
-				<div class="flex-1">
-					<span class="font-label mb-4 block text-xs uppercase tracking-widest text-primary/60">Our Reach</span>
-					<h3 class="font-headline mb-6 text-4xl font-bold text-white">Bridging Regions.</h3>
-					<p class="text-on-surface-variant">
-						We combine the project management excellence of Oslo with the deep talent pool of Croatia's booming tech scene.
-					</p>
-				</div>
-				<div class="h-48 w-full overflow-hidden rounded-lg bg-surface-container-high grayscale contrast-125 md:w-64">
-					<img
-						src={images.fjordTexture}
-						alt="Abstract dark fjord water texture"
-						width={512}
-						height={384}
-						sizes="(min-width: 768px) 256px, 100vw"
-						class="h-full w-full object-cover"
-						loading="lazy"
-						decoding="async"
-					/>
-				</div>
-			</div>
-		</div>
-	</section>
 </Layout>
+
+<style>
+	.material-symbols-outlined {
+		font-variation-settings:
+			"FILL" 0,
+			"wght" 400,
+			"GRAD" 0,
+			"opsz" 24;
+	}
+</style>

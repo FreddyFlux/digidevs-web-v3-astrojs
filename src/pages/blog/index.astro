@@ -12,48 +12,43 @@ const posts = getListingPosts().filter((p) => !p.featured);
 	title="Blog — digiDEVS"
 	description="Insights and engineering notes from the digiDEVS team — architecture, AI, delivery, and quality."
 >
-	<main class="pb-24 pt-32">
-		<header class="mx-auto mb-24 max-w-7xl px-8">
-			<div class="relative mb-4 inline-block">
-				<span class="font-label text-sm uppercase tracking-[0.3em] text-on-surface-variant/60">Journal & Archives</span>
-				<div class="absolute -bottom-2 left-0 h-px w-12 bg-primary/30"></div>
+	<main class="pb-28 pt-36">
+		<header class="mx-auto mb-24 max-w-7xl px-6 md:px-10">
+			<div class="mb-6">
+				<span class="font-label text-sm uppercase tracking-[0.3em] text-on-surface-variant">Journal & Archives</span>
 			</div>
-			<h1 class="font-headline max-w-4xl text-6xl font-extrabold leading-[0.9] tracking-tighter text-white md:text-8xl">
-				Insights & <br /><span class="italic text-on-surface-variant/40">Engineering</span>
+			<h1 class="font-headline max-w-4xl text-6xl font-bold leading-[0.95] tracking-editorial text-on-surface md:text-8xl">
+				Insights & <br /><span class="font-body italic text-on-surface-variant">Engineering</span>
 			</h1>
 		</header>
 
-		<section class="mx-auto mb-32 max-w-7xl px-8">
-			<div class="grid grid-cols-1 items-center gap-12 md:grid-cols-12">
-				<div
-					class="group cursor-pointer overflow-hidden rounded-xl border border-outline-variant/10 bg-surface-container-low md:col-span-7"
-				>
+		<section class="mx-auto mb-32 max-w-7xl px-6 md:px-10">
+			<div class="grid grid-cols-1 items-center gap-12 lg:grid-cols-12">
+				<div class="group cursor-pointer overflow-hidden rounded-2xl bg-surface-container-low lg:col-span-7">
 					<a href={`/blog/${featured.slug}`} class="block">
 						<img
 							src={images.blogFeatured}
 							alt="Featured article"
 							width={1200}
 							height={900}
-							sizes="(min-width: 768px) 60vw, 100vw"
-							class="h-[500px] w-full object-cover opacity-80 transition-transform duration-700 group-hover:scale-105"
+							sizes="(min-width: 1024px) 60vw, 100vw"
+							class="h-[500px] w-full object-cover opacity-85 transition-transform duration-700 group-hover:scale-[1.03]"
 							loading="eager"
 							decoding="async"
 						/>
 					</a>
 				</div>
-				<div class="z-10 md:-ml-20 md:col-span-5">
-					<div
-						class="moonlight-shadow rounded-xl border border-outline-variant/15 bg-surface-container-high/80 p-10 backdrop-blur-3xl"
-					>
+				<div class="z-10 lg:-ml-12 lg:col-span-5">
+					<div class="group glass-panel ambient-glow rounded-2xl p-10">
 						<span class="font-label mb-6 block text-xs uppercase tracking-widest text-primary"
 							>{featured.category} • {featured.readTime}</span
 						>
-						<h2 class="font-headline mb-6 text-4xl font-bold leading-tight text-white">
+						<h2 class="font-headline mb-6 text-4xl font-bold leading-tight tracking-editorial text-on-surface">
 							{featured.title}
 						</h2>
 						<p class="font-body mb-8 leading-relaxed text-on-surface-variant">{featured.description}</p>
 						<a
-							class="group inline-flex items-center gap-3 font-label text-sm uppercase tracking-widest text-primary"
+							class="link-tertiary inline-flex items-center gap-3 font-label text-sm font-medium uppercase tracking-widest"
 							href={`/blog/${featured.slug}`}
 						>
 							Read full article
@@ -68,12 +63,15 @@ const posts = getListingPosts().filter((p) => !p.featured);
 			</div>
 		</section>
 
-		<section class="mx-auto max-w-7xl px-8">
-			<div class="grid grid-cols-1 gap-x-12 gap-y-24 md:grid-cols-3">
+		<section class="mx-auto max-w-7xl px-6 md:px-10">
+			<div class="grid grid-cols-1 gap-x-12 gap-y-20 md:grid-cols-3">
 				{
 					posts.map((post) => (
 						<article class="flex flex-col">
-							<a href={`/blog/${post.slug}`} class="mb-8 aspect-square overflow-hidden rounded-xl border border-outline-variant/5 bg-surface-container-low">
+							<a
+								href={`/blog/${post.slug}`}
+								class="mb-8 aspect-square overflow-hidden rounded-2xl bg-surface-container-low"
+							>
 								<img
 									src={
 										post.slug === "nordic-minimalism-ui-systems"
@@ -86,16 +84,16 @@ const posts = getListingPosts().filter((p) => !p.featured);
 									width={600}
 									height={600}
 									sizes="(min-width: 768px) 33vw, 100vw"
-									class="h-full w-full object-cover opacity-70 grayscale transition-all duration-500 hover:opacity-100 hover:grayscale-0"
+									class="h-full w-full object-cover opacity-80 grayscale transition-all duration-500 hover:opacity-100 hover:grayscale-0"
 									loading="lazy"
 									decoding="async"
 								/>
 							</a>
 							<div class="mb-4 flex items-center gap-3">
-								<span class="font-label rounded-full bg-secondary-container px-3 py-1 text-[10px] uppercase tracking-widest text-on-secondary-container">
+								<span class="font-label rounded-full bg-secondary/20 px-3 py-1 text-[10px] uppercase tracking-widest text-secondary">
 									{post.category}
 								</span>
-								<span class="font-label text-[10px] text-on-surface-variant/40">
+								<span class="font-label text-[10px] text-on-surface-variant/70">
 									{new Date(post.date).toLocaleDateString("en-GB", {
 										year: "numeric",
 										month: "long",
@@ -103,13 +101,13 @@ const posts = getListingPosts().filter((p) => !p.featured);
 									})}
 								</span>
 							</div>
-							<h3 class="font-headline mb-4 cursor-pointer text-2xl font-bold text-white transition-colors hover:text-primary">
+							<h3 class="font-headline mb-4 cursor-pointer text-2xl font-bold tracking-editorial text-on-surface transition-colors hover:text-primary">
 								<a href={`/blog/${post.slug}`}>{post.title}</a>
 							</h3>
-							<p class="mb-6 text-sm leading-relaxed text-on-surface-variant">{post.description}</p>
-							<div class="mt-auto flex items-center gap-2 border-t border-outline-variant/10 pt-4">
-								<div class="flex h-6 w-6 items-center justify-center rounded-full bg-surface-container-highest">
-									<MarketingIcon name="person" className="text-[14px] text-white/50" size={14} />
+							<p class="font-body mb-6 text-sm leading-relaxed text-on-surface-variant">{post.description}</p>
+							<div class="mt-auto flex items-center gap-3 pt-6">
+								<div class="flex h-7 w-7 items-center justify-center rounded-full bg-surface-container-highest">
+									<MarketingIcon name="person" className="text-[14px] text-on-surface-variant" size={14} />
 								</div>
 								<span class="font-label text-xs text-on-surface-variant">{post.author}</span>
 							</div>
@@ -118,29 +116,27 @@ const posts = getListingPosts().filter((p) => !p.featured);
 				}
 			</div>
 
-			<div class="mt-32 flex flex-col items-center">
-				<div class="mb-8 h-24 w-px bg-gradient-to-b from-primary/40 to-transparent"></div>
+			<div class="mt-28 flex flex-col items-center">
+				<div class="mb-8 h-24 w-px bg-gradient-to-b from-primary/50 to-transparent"></div>
 				<button
 					type="button"
-					class="font-label text-xs uppercase tracking-[0.4em] text-white/40 transition-colors hover:text-white"
+					class="font-label text-xs uppercase tracking-[0.4em] text-on-surface-variant transition-colors hover:text-secondary"
 				>
 					Load more archives
 				</button>
 			</div>
 		</section>
 
-		<section
-			class="relative mx-auto mt-48 max-w-4xl overflow-hidden rounded-xl border border-outline-variant/10 bg-surface-container-low px-8 py-24"
-		>
-			<div class="absolute right-0 top-0 h-64 w-64 rounded-full bg-primary/5 blur-[120px]"></div>
+		<section class="relative mx-auto mt-40 max-w-4xl overflow-hidden rounded-2xl bg-surface-container-low px-6 py-20 md:px-10">
+			<div class="pointer-events-none absolute right-0 top-0 h-64 w-64 rounded-full bg-primary/10 blur-[120px]"></div>
 			<div class="relative z-10 text-center">
-				<h2 class="font-headline mb-4 text-4xl font-bold text-white">The Senior Developer's Digest</h2>
-				<p class="mx-auto mb-10 max-w-lg text-on-surface-variant/70">
+				<h2 class="font-headline mb-4 text-4xl font-bold tracking-editorial text-on-surface">The Senior Developer's Digest</h2>
+				<p class="mx-auto mb-10 max-w-lg font-body text-on-surface-variant">
 					No fluff. No spam. Just technical excellence and occasional philosophical rants delivered monthly.
 				</p>
-				<form class="mx-auto flex max-w-md flex-col gap-4 md:flex-row" action="#" method="post">
+				<form class="mx-auto flex max-w-md flex-col gap-4 md:flex-row md:items-stretch" action="#" method="post">
 					<input
-						class="font-body flex-1 border-b-2 border-outline-variant bg-surface-container px-4 py-3 text-white outline-none transition-all focus:border-primary"
+						class="input-editorial font-body flex-1"
 						placeholder="email@address.com"
 						type="email"
 						name="email"
@@ -148,7 +144,7 @@ const posts = getListingPosts().filter((p) => !p.featured);
 					/>
 					<button
 						type="button"
-						class="bg-primary px-8 py-3 font-label text-sm uppercase tracking-widest text-on-primary transition-all hover:bg-surface-bright active:scale-95"
+						class="btn-primary-gradient shrink-0 rounded-xl px-8 py-3 font-label text-sm font-semibold uppercase tracking-widest transition-all hover:brightness-105 active:scale-[0.98]"
 					>
 						Subscribe
 					</button>
