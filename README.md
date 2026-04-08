@@ -1,43 +1,42 @@
-# Astro Starter Kit: Minimal
+# digiweb v3 — Astro site
 
-```sh
-pnpm create astro@latest -- --template minimal
-```
+This folder is the **digiDEVS** marketing site implementation: Astro + React islands + Tailwind. Product goals, site map, and SEO strategy are documented in [`../docs/`](../docs/).
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+## Commands
 
-## 🚀 Project Structure
+Run from this directory:
 
-Inside of your Astro project, you'll see the following folders and files:
+| Command | Action |
+|---------|--------|
+| `pnpm install` | Install dependencies |
+| `pnpm dev` | Dev server at `http://localhost:4321` |
+| `pnpm build` | Production build to `dist/` |
+| `pnpm preview` | Preview the production build locally |
+| `pnpm astro ...` | Astro CLI (`astro add`, `astro check`, etc.) |
+
+**Node.js ≥ 22.12** is required (`engines` in `package.json`).
+
+## Project structure
 
 ```text
-/
-├── public/
+astro-project/
+├── public/                 # Static assets
 ├── src/
+│   ├── components/         # Astro + React (layout, UI, icons)
+│   ├── data/               # e.g. blog post data, remote images
+│   ├── layouts/            # Page shells (e.g. Layout.astro)
+│   ├── lib/                # Shared utilities
 │   └── pages/
-│       └── index.astro
-└── package.json
+│       ├── index.astro     # /
+│       ├── blog/           # /blog, /blog/[slug]
+│       └── about/          # /about, /about/competence, /about/quality
+├── package.json
+└── tsconfig.json
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+Astro exposes routes from `src/pages/`; interactive pieces use React where needed.
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+## More documentation
 
-Any static assets, like images, can be placed in the `public/` directory.
-
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                | Action                                           |
-| :--------------------- | :----------------------------------------------- |
-| `pnpm install`         | Installs dependencies                            |
-| `pnpm dev`             | Starts local dev server at `localhost:4321`      |
-| `pnpm build`           | Build your production site to `./dist/`          |
-| `pnpm preview`         | Preview your build locally, before deploying     |
-| `pnpm astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `pnpm astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+- [Repository README](../README.md) — repo overview and stack
+- [docs/README.md](../docs/README.md) — documentation index (IA, SEO, positioning)
