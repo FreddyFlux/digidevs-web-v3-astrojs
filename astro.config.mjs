@@ -8,6 +8,16 @@ import tailwindcss from '@tailwindcss/vite';
 export default defineConfig({
   integrations: [react()],
 
+  image: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'lh3.googleusercontent.com',
+        pathname: '/**'
+      }
+    ]
+  },
+
   vite: {
     plugins: [tailwindcss()]
   }

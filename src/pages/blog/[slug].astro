@@ -1,0 +1,58 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { blogPosts, getPostBySlug } from "../../data/blogPosts";
+import { images } from "../../data/remoteImages";
+
+export function getStaticPaths() {
+	return blogPosts.map((post) => ({ params: { slug: post.slug } }));
+}
+
+const { slug } = Astro.params;
+const post = getPostBySlug(slug!)!;
+
+const cover =
+	post.slug === "ghost-in-the-machine"
+		? images.blogFeatured
+		: post.slug === "nordic-minimalism-ui-systems"
+			? images.blogCard1
+			: post.slug === "mediterranean-dev-mindset"
+				? images.blogCard2
+				: images.blogCard3;
+---
+
+<Layout title={`${post.title} — digiDEVS`} description={post.description}>
+	<article class="mx-auto max-w-3xl px-8 pb-24 pt-32">
+		<header class="mb-12">
+			<p class="font-label mb-4 text-xs uppercase tracking-widest text-primary">
+				{post.category} • {post.readTime}
+			</p>
+			<h1 class="font-headline mb-6 text-4xl font-extrabold leading-tight tracking-tighter text-white md:text-5xl">
+				{post.title}
+			</h1>
+			<p class="font-body text-lg text-on-surface-variant">{post.description}</p>
+			<p class="font-label mt-6 text-sm text-on-surface-variant/60">
+				{new Date(post.date).toLocaleDateString("en-GB", { year: "numeric", month: "long", day: "numeric" })} · {
+					post.author
+				}
+			</p>
+		</header>
+
+		<div class="mb-12 overflow-hidden rounded-xl border border-outline-variant/10">
+			<img
+				src={cover}
+				alt=""
+				width={1200}
+				height={675}
+				sizes="(min-width: 768px) 768px, 100vw"
+				class="aspect-video w-full object-cover"
+				loading="eager"
+				decoding="async"
+			/>
+		</div>
+
+		<div
+			class="font-body space-y-6 text-lg leading-relaxed text-on-surface-variant [&_h2]:mt-12 [&_h2]:font-headline [&_h2]:text-2xl [&_h2]:font-bold [&_h2]:text-white [&_p]:mb-4"
+			set:html={post.bodyHtml}
+		/>
+	</article>
+</Layout>
