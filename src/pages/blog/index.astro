@@ -1,11 +1,11 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import MarketingIcon from "../../components/icons/MarketingIcon";
-import { images } from "../../data/remoteImages";
-import { getFeaturedPost, getListingPosts } from "../../data/blogPosts";
+import { fetchAllPosts, getFeaturedPost, getGridPosts } from "../../lib/blog";
 
-const featured = getFeaturedPost();
-const posts = getListingPosts().filter((p) => !p.featured);
+const allPosts = await fetchAllPosts();
+const featured = getFeaturedPost(allPosts);
+const posts = getGridPosts(allPosts, featured);
 ---
 
 <Layout
@@ -22,46 +22,61 @@ const posts = getListingPosts().filter((p) => !p.featured);
 			</h1>
 		</header>
 
-		<section class="mx-auto mb-32 max-w-7xl px-6 md:px-10">
-			<div class="grid grid-cols-1 items-center gap-12 lg:grid-cols-12">
-				<div class="group cursor-pointer overflow-hidden rounded-2xl bg-surface-container-low lg:col-span-7">
-					<a href={`/blog/${featured.slug}`} class="block">
-						<img
-							src={images.blogFeatured}
-							alt="Featured article"
-							width={1200}
-							height={900}
-							sizes="(min-width: 1024px) 60vw, 100vw"
-							class="h-[500px] w-full object-cover opacity-85 transition-transform duration-700 group-hover:scale-[1.03]"
-							loading="eager"
-							decoding="async"
-						/>
-					</a>
-				</div>
-				<div class="z-10 lg:-ml-12 lg:col-span-5">
-					<div class="group glass-panel ambient-glow rounded-2xl p-10">
-						<span class="font-label mb-6 block text-xs uppercase tracking-widest text-primary"
-							>{featured.category} • {featured.readTime}</span
-						>
-						<h2 class="font-headline mb-6 text-4xl font-bold leading-tight tracking-editorial text-on-surface">
-							{featured.title}
-						</h2>
-						<p class="font-body mb-8 leading-relaxed text-on-surface-variant">{featured.description}</p>
-						<a
-							class="link-tertiary inline-flex items-center gap-3 font-label text-sm font-medium uppercase tracking-widest"
-							href={`/blog/${featured.slug}`}
-						>
-							Read full article
-							<MarketingIcon
-								name="east"
-								className="transition-transform group-hover:translate-x-2"
-								size={20}
-							/>
-						</a>
+		{
+			featured && (
+				<section class="mx-auto mb-32 max-w-7xl px-6 md:px-10">
+					<div class="grid grid-cols-1 items-center gap-12 lg:grid-cols-12">
+						<div class="group cursor-pointer overflow-hidden rounded-2xl bg-surface-container-low lg:col-span-7">
+							<a href={`/blog/${featured.slug}`} class="block">
+								<img
+									src={featured.coverImageUrl}
+									alt={featured.coverImageAlt}
+									width={1200}
+									height={900}
+									sizes="(min-width: 1024px) 60vw, 100vw"
+									class="h-[500px] w-full object-cover opacity-85 transition-transform duration-700 group-hover:scale-[1.03]"
+									loading="eager"
+									decoding="async"
+								/>
+							</a>
+						</div>
+						<div class="z-10 lg:-ml-12 lg:col-span-5">
+							<div class="group glass-panel ambient-glow rounded-2xl p-10">
+								<span class="font-label mb-6 block text-xs uppercase tracking-widest text-primary">
+									{featured.category} • {featured.readTime}
+								</span>
+								<h2 class="font-headline mb-6 text-4xl font-bold leading-tight tracking-editorial text-on-surface">
+									{featured.title}
+								</h2>
+								<p class="font-body mb-8 leading-relaxed text-on-surface-variant">{featured.description}</p>
+								<a
+									class="link-tertiary inline-flex items-center gap-3 font-label text-sm font-medium uppercase tracking-widest"
+									href={`/blog/${featured.slug}`}
+								>
+									Read full article
+									<MarketingIcon
+										name="east"
+										className="transition-transform group-hover:translate-x-2"
+										size={20}
+									/>
+								</a>
+							</div>
+						</div>
 					</div>
-				</div>
-			</div>
-		</section>
+				</section>
+			)
+		}
+
+		{
+			!featured && (
+				<section class="mx-auto mb-32 max-w-7xl px-6 md:px-10">
+					<p class="font-body max-w-xl text-on-surface-variant">
+						No posts yet. Add <code class="rounded bg-surface-container-high px-1.5 py-0.5 text-sm">post</code>{" "}
+						documents in Sanity Studio, then run a production deploy (or connect a webhook to your host).
+					</p>
+				</section>
+			)
+		}
 
 		<section class="mx-auto max-w-7xl px-6 md:px-10">
 			<div class="grid grid-cols-1 gap-x-12 gap-y-20 md:grid-cols-3">
@@ -73,14 +88,8 @@ const posts = getListingPosts().filter((p) => !p.featured);
 								class="mb-8 aspect-square overflow-hidden rounded-2xl bg-surface-container-low"
 							>
 								<img
-									src={
-										post.slug === "nordic-minimalism-ui-systems"
-											? images.blogCard1
-											: post.slug === "mediterranean-dev-mindset"
-												? images.blogCard2
-												: images.blogCard3
-									}
-									alt=""
+									src={post.coverImageUrl}
+									alt={post.coverImageAlt}
 									width={600}
 									height={600}
 									sizes="(min-width: 768px) 33vw, 100vw"

@@ -13,13 +13,17 @@ Run from this directory:
 | `pnpm build` | Production build to `dist/` |
 | `pnpm preview` | Preview the production build locally |
 | `pnpm astro ...` | Astro CLI (`astro add`, `astro check`, etc.) |
+| `pnpm studio` | Sanity Studio (blog CMS) at `http://localhost:3333` |
+| `pnpm studio:build` | Production build of the Studio |
+| `pnpm studio:deploy` | Deploy Studio to `*.sanity.studio` |
 
-**Node.js ≥ 22.12** is required (`engines` in `package.json`).
+**Node.js ≥ 22.12** is required (`engines` in `package.json`). The Studio under `sanity-studio/` uses its own `npm install` (see that folder’s `README.md`).
 
 ## Project structure
 
 ```text
 astro-project/
+├── sanity-studio/          # Sanity CMS (blog schemas + local Studio)
 ├── public/                 # Static assets
 ├── src/
 │   ├── components/         # Astro + React (layout, UI, icons)

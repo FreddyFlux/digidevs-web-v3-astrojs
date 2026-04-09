@@ -1,26 +1,59 @@
 ---
 import Layout from "../../layouts/Layout.astro";
-import { blogPosts, getPostBySlug } from "../../data/blogPosts";
-import { images } from "../../data/remoteImages";
+import { fetchAllPosts, type BlogPost } from "../../lib/blog";
 
-export function getStaticPaths() {
-	return blogPosts.map((post) => ({ params: { slug: post.slug } }));
+export async function getStaticPaths() {
+	const posts = await fetchAllPosts();
+	return posts.map((post) => ({
+		params: { slug: post.slug },
+		props: { post },
+	}));
 }
 
-const { slug } = Astro.params;
-const post = getPostBySlug(slug!)!;
+interface Props {
+	post: BlogPost;
+}
 
-const cover =
-	post.slug === "ghost-in-the-machine"
-		? images.blogFeatured
-		: post.slug === "nordic-minimalism-ui-systems"
-			? images.blogCard1
-			: post.slug === "mediterranean-dev-mindset"
-				? images.blogCard2
-				: images.blogCard3;
+const { post } = Astro.props;
+
+const siteBase = (import.meta.env.PUBLIC_SITE_URL ?? "https://digidevs.no").replace(/\/$/, "");
+const pageTitle = post.seoTitle ? `${post.seoTitle} — digiDEVS` : `${post.title} — digiDEVS`;
+const pageDesc = post.seoDescription ?? post.description;
+const canonical = post.canonicalUrl ?? `${siteBase}/blog/${post.slug}`;
+
+const jsonLd = {
+	"@context": "https://schema.org",
+	"@type": "BlogPosting",
+	headline: post.title,
+	description: pageDesc,
+	image: [post.coverImageUrl],
+	datePublished: post.date,
+	dateModified: post.updatedAt ?? post.date,
+	author: {
+		"@type": "Person",
+		name: post.author,
+	},
+	publisher: {
+		"@type": "Organization",
+		name: "digiDEVS",
+		url: siteBase,
+	},
+	mainEntityOfPage: {
+		"@type": "WebPage",
+		"@id": canonical,
+	},
+};
 ---
 
-<Layout title={`${post.title} — digiDEVS`} description={post.description}>
+<Layout
+	title={pageTitle}
+	description={pageDesc}
+	canonicalUrl={canonical}
+	ogImage={post.coverImageUrl}
+	ogType="article"
+	noIndex={post.noIndex ?? false}
+>
+	<script type="application/ld+json" slot="head" set:html={JSON.stringify(jsonLd)} />
 	<article class="mx-auto max-w-3xl px-6 pb-28 pt-36 md:px-10">
 		<header class="mb-12">
 			<p class="font-label mb-4 text-xs uppercase tracking-widest text-primary">
@@ -39,8 +72,8 @@ const cover =
 
 		<div class="mb-12 overflow-hidden rounded-2xl bg-surface-container-low">
 			<img
-				src={cover}
-				alt=""
+				src={post.coverImageUrl}
+				alt={post.coverImageAlt}
 				width={1200}
 				height={675}
 				sizes="(min-width: 768px) 768px, 100vw"
@@ -51,7 +84,7 @@ const cover =
 		</div>
 
 		<div
-			class="font-body space-y-6 text-lg leading-relaxed text-on-surface-variant [&_h2]:mt-12 [&_h2]:font-headline [&_h2]:text-2xl [&_h2]:font-bold [&_h2]:tracking-editorial [&_h2]:text-on-surface [&_p]:mb-4"
+			class="font-body space-y-6 text-lg leading-relaxed text-on-surface-variant [&_blockquote]:border-l-4 [&_blockquote]:border-primary/40 [&_blockquote]:pl-4 [&_blockquote]:italic [&_h2]:mt-12 [&_h2]:font-headline [&_h2]:text-2xl [&_h2]:font-bold [&_h2]:tracking-editorial [&_h2]:text-on-surface [&_h3]:mt-8 [&_h3]:font-headline [&_h3]:text-xl [&_h3]:font-bold [&_h3]:text-on-surface [&_p]:mb-4 [&_ul]:list-disc [&_ul]:pl-6 [&_ol]:list-decimal [&_ol]:pl-6"
 			set:html={post.bodyHtml}
 		/>
 	</article>

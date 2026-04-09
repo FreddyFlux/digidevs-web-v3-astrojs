@@ -7,15 +7,34 @@ interface Props {
 	title?: string;
 	description?: string;
 	lang?: string;
+	/** Full URL; defaults to current path on PUBLIC_SITE_URL */
+	canonicalUrl?: string;
+	ogImage?: string;
+	ogType?: "website" | "article";
+	twitterCard?: "summary" | "summary_large_image";
+	noIndex?: boolean;
 }
 
 const {
 	title = "digiDEVS",
 	description = "Norwegian-led development studio. Web apps, mobile apps, and AI-powered products — EU quality without the Oslo price tag.",
 	lang = "en",
+	canonicalUrl,
+	ogImage,
+	ogType = "website",
+	twitterCard = "summary_large_image",
+	noIndex = false,
 } = Astro.props;
 
 const pathname = Astro.url.pathname;
+const siteBase = (import.meta.env.PUBLIC_SITE_URL ?? "https://digidevs.no").replace(/\/$/, "");
+const canonical = canonicalUrl ?? `${siteBase}${pathname}`;
+const ogImageAbsolute =
+	ogImage && (ogImage.startsWith("http://") || ogImage.startsWith("https://"))
+		? ogImage
+		: ogImage
+			? `${siteBase}${ogImage.startsWith("/") ? "" : "/"}${ogImage}`
+			: undefined;
 ---
 
 <!doctype html>
@@ -27,6 +46,19 @@ const pathname = Astro.url.pathname;
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta name="generator" content={Astro.generator} />
 		<meta name="description" content={description} />
+		{noIndex && <meta name="robots" content="noindex, nofollow" />}
+		<link rel="canonical" href={canonical} />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:url" content={canonical} />
+		<meta property="og:type" content={ogType} />
+		<meta property="og:site_name" content="digiDEVS" />
+		<meta property="og:locale" content="en_GB" />
+		{ogImageAbsolute && <meta property="og:image" content={ogImageAbsolute} />}
+		<meta name="twitter:card" content={twitterCard} />
+		<meta name="twitter:title" content={title} />
+		<meta name="twitter:description" content={description} />
+		{ogImageAbsolute && <meta name="twitter:image" content={ogImageAbsolute} />}
 		<title>{title}</title>
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
