@@ -1,6 +1,6 @@
 ---
 import "../styles/global.css";
-import SiteHeader from "../components/layout/SiteHeader.astro";
+import SiteNavbar from "../components/layout/SiteNavbar.astro";
 import SiteFooter from "../components/layout/SiteFooter.astro";
 
 interface Props {
@@ -31,13 +31,13 @@ const pathname = Astro.url.pathname;
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 		<link
-			href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&family=Space+Grotesk:wght@300..700&display=swap"
+			href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700&family=Manrope:wght@200..800&family=Space+Grotesk:wght@300..700&display=swap"
 			rel="stylesheet"
 		/>
 		<slot name="head" />
 	</head>
 	<body class="selection:bg-primary-container/90 selection:text-on-primary-container">
-		<SiteHeader pathname={pathname} />
+		<SiteNavbar pathname={pathname} />
 		<slot />
 		<SiteFooter />
 	</body>

@@ -1,0 +1,36 @@
+---
+import GlassNavBar from "./GlassNavBar";
+import MobileNav from "./MobileNav";
+
+interface Props {
+	pathname: string;
+}
+
+const { pathname } = Astro.props;
+---
+
+<header class="pointer-events-none fixed inset-x-0 top-0 z-50">
+	<div class="pointer-events-auto mx-auto flex w-full max-w-2xl items-start justify-center px-4 pt-5 md:px-6 md:pt-6">
+		<div class="hidden w-full justify-center md:flex">
+			<GlassNavBar client:load pathname={pathname} />
+		</div>
+		<div
+			class="flex w-full items-center justify-between rounded-[20px] px-5 py-4 backdrop-blur-[10px] md:hidden"
+			style="background-color: rgba(242, 242, 242, 0.45);"
+		>
+			<a href="/" class="shrink-0 transition-opacity hover:opacity-80">
+				<img
+					src="/digidevs-logo-dark.svg"
+					alt="digiDEVS"
+					width="573"
+					height="95"
+					class="block h-7 w-auto"
+					decoding="async"
+				/>
+			</a>
+			<div class="text-[#242424] [&_button]:text-[#242424] [&_svg]:text-current">
+				<MobileNav client:idle pathname={pathname} />
+			</div>
+		</div>
+	</div>
+</header>

@@ -1,0 +1,11 @@
+---
+interface Props {
+	class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<span class:list={["digi-wordmark", className]}>
+	<span class="digi-wordmark__digi">digi</span><span class="digi-wordmark__devs">DEVS</span>
+</span>

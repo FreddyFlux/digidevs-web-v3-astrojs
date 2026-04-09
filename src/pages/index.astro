@@ -1,8 +1,9 @@
 ---
 import { Image } from "astro:assets";
 import Layout from "../layouts/Layout.astro";
+import StaticGlassBox from "../components/ui/StaticGlassBox.astro";
 import heroNorsk from "../assets/digidevs-norsk-hero.png";
-import bentoCloud from "../assets/digidevs-cloud.png";
+import bentoOpera from "../assets/digidevs-opera.jpg";
 import bentoKeyboard from "../assets/digidevs-keyboard.png";
 ---
 
@@ -54,34 +55,38 @@ import bentoKeyboard from "../assets/digidevs-keyboard.png";
 
 			<div class="relative z-20 mx-auto w-full max-w-[1200px] px-6 pb-16 pt-28 md:px-10 md:pb-24 md:pt-32 lg:px-12">
 				<h1
-					class="font-headline text-[clamp(3rem,8vw,7.5rem)] font-black leading-[0.9] tracking-tighter text-on-surface"
+					class="font-headline text-[clamp(3rem,8vw,7.5rem)] font-black leading-[1.01] tracking-tighter text-on-surface"
 				>
 					Senior-level development.
 					<br />
 					<span class="text-primary-container">EU quality.</span>
 					<br />
-					Without the Oslo price tag.
+					<span class="text-[70%] font-light italic text-on-surface">
+						Without the Oslo price tag.
+					</span>
 				</h1>
 
 				<div class="mt-10 max-w-lg md:max-w-none">
 					<div class="grid grid-cols-12 gap-6">
 						<div class="col-span-12 md:col-span-5 md:col-start-7">
-							<p class="mb-10 font-body text-xl font-light leading-relaxed text-on-surface-variant md:text-2xl">
-								We fuse Nordic precision with global-scale engineering. High-velocity delivery for firms that demand
-								ethereal performance and industrial-grade reliability.
-							</p>
+							<StaticGlassBox class="mb-10">
+								<p class="font-body text-lg font-light leading-relaxed text-[#111111] md:text-xl">
+									Norwegian-led, EU-based studio: web, mobile, and AI — senior-level delivery without the Oslo
+									price tag. Clear milestones, weekly updates, code you own.
+								</p>
+							</StaticGlassBox>
 							<div class="mb-12 flex flex-wrap items-center gap-8">
 								<button
 									type="button"
 									class="rounded-full bg-primary-container px-10 py-5 font-headline text-lg font-bold uppercase tracking-tighter text-on-primary-container transition-transform hover:scale-95"
 								>
-									Start a Project
+									Book a free call
 								</button>
 								<a
 									class="font-label border-b-2 border-primary-container/30 pb-1 text-sm uppercase tracking-tighter text-primary-container transition-all hover:border-primary-container"
 									href="#capabilities"
 								>
-									View Portfolio
+									See what we’ve built
 								</a>
 							</div>
 							<div class="max-w-xs">
@@ -97,7 +102,7 @@ import bentoKeyboard from "../assets/digidevs-keyboard.png";
 		<section id="capabilities" class="bg-surface px-6 py-24 md:px-10 md:py-32 lg:px-12">
 			<div class="mx-auto max-w-[1920px]">
 				<div class="mb-16 md:mb-20">
-					<h2 class="font-headline text-4xl font-bold uppercase tracking-tighter md:text-5xl">Capabilities</h2>
+					<h2 class="font-headline text-4xl font-bold uppercase tracking-tighter md:text-5xl">What we build</h2>
 					<div class="mt-2 h-1 w-20 bg-secondary"></div>
 				</div>
 
@@ -106,19 +111,27 @@ import bentoKeyboard from "../assets/digidevs-keyboard.png";
 						class="group relative flex flex-col justify-end overflow-hidden bg-surface-container-low p-8 md:col-span-8 md:row-span-2 md:p-10"
 					>
 						<Image
-							src={bentoCloud}
-							alt=""
-							width={1200}
-							height={800}
-							class="absolute inset-0 h-full w-full object-cover opacity-40 transition-transform duration-700 group-hover:scale-105"
+							src={bentoOpera}
+							alt="Oslo Opera House and waterfront at night, lights reflecting on the fjord"
+							width={bentoOpera.width}
+							height={bentoOpera.height}
+							class="absolute inset-0 h-full w-full object-cover opacity-55 transition-transform duration-700 group-hover:scale-105"
 							loading="lazy"
 							decoding="async"
 						/>
+						<div
+							class="pointer-events-none absolute inset-0 z-1 bg-[linear-gradient(to_top,var(--color-background)_0%,var(--color-background)_8%,color-mix(in_oklab,var(--color-background)_15%,transparent)_22%,transparent_76%)]"
+							aria-hidden="true"
+						>
+						</div>
 						<div class="relative z-10">
-							<span class="mb-4 block font-headline text-sm uppercase tracking-widest text-secondary">Core Infrastructure</span>
-							<h3 class="mb-4 font-headline text-3xl font-bold tracking-tighter md:text-4xl">Scalable Cloud Architectures</h3>
+							<span class="mb-4 block font-headline text-sm uppercase tracking-widest text-secondary">Your guide</span>
+							<h3 class="mb-4 font-headline text-3xl font-bold tracking-tighter text-on-surface md:text-4xl">
+								Norwegian-led. EU delivery.
+							</h3>
 							<p class="max-w-md text-on-surface-variant">
-								Engineered for millions of requests, optimized for zero-latency user experiences across the European corridor.
+								Not a faceless shop — we speak your context and ship from Croatia: senior work at about 40–60%
+								below typical Norwegian agency rates, GDPR-aligned, same timezone.
 							</p>
 						</div>
 					</div>
@@ -128,16 +141,16 @@ import bentoKeyboard from "../assets/digidevs-keyboard.png";
 					>
 						<span class="material-symbols-outlined text-4xl text-secondary" aria-hidden="true">science</span>
 						<div>
-							<h3 class="mb-2 font-headline text-2xl font-bold tracking-tighter">R&amp;D Lab</h3>
-							<p class="text-sm text-on-surface-variant">Exploring the frontiers of Web3 and AI-integrated workflows.</p>
+							<h3 class="mb-2 font-headline text-2xl font-bold tracking-tighter">AI &amp; automation</h3>
+							<p class="text-sm text-on-surface-variant">Agents, n8n, and backends that save time — not slide decks.</p>
 						</div>
 					</div>
 
 					<div class="flex flex-col justify-between bg-surface-container-high p-8 md:col-span-4">
 						<div class="mb-4 h-1 w-12 bg-tertiary"></div>
 						<div>
-							<h3 class="mb-2 font-headline text-2xl font-bold tracking-tighter">Boutique UI/UX</h3>
-							<p class="text-sm text-on-surface-variant">Editorial design systems that prioritize brand narrative and motion.</p>
+							<h3 class="mb-2 font-headline text-2xl font-bold tracking-tighter">Web &amp; apps</h3>
+							<p class="text-sm text-on-surface-variant">React, Next.js, Astro, React Native — landing pages to full products.</p>
 						</div>
 					</div>
 
@@ -145,13 +158,13 @@ import bentoKeyboard from "../assets/digidevs-keyboard.png";
 						class="flex flex-col items-center justify-center bg-primary-container p-8 text-center md:col-span-4 md:p-10"
 					>
 						<h3 class="mb-6 font-headline text-2xl font-black tracking-tighter text-on-primary-container md:text-3xl">
-							READY TO ASCEND?
+							Talk it through?
 						</h3>
 						<button
 							type="button"
 							class="rounded-full bg-surface px-8 py-3 font-headline text-sm font-bold uppercase tracking-tighter text-primary-container transition-colors hover:bg-surface-bright"
 						>
-							Book a Workshop
+							Book a free call
 						</button>
 					</div>
 
@@ -171,9 +184,10 @@ import bentoKeyboard from "../assets/digidevs-keyboard.png";
 							decoding="async"
 						/>
 						<div class="relative z-20 flex h-full flex-col justify-center">
-							<h3 class="mb-4 font-headline text-2xl font-bold tracking-tighter md:text-3xl">Performance Audits</h3>
+							<h3 class="mb-4 font-headline text-2xl font-bold tracking-tighter md:text-3xl">Outsourced team</h3>
 							<p class="max-w-sm text-on-surface-variant">
-								We find the bottlenecks in your legacy code and eliminate them with surgical precision.
+								Need more than one hire? We lead the project, coordinate EU developers, and keep communication
+								plain — fixed milestones, no surprises.
 							</p>
 						</div>
 					</div>
@@ -185,16 +199,16 @@ import bentoKeyboard from "../assets/digidevs-keyboard.png";
 		<section class="border-border border-t bg-surface-dim px-6 py-24 md:px-10 md:py-32 lg:px-12">
 			<div class="mx-auto grid max-w-[1920px] grid-cols-12 gap-6">
 				<div class="col-span-12 md:col-span-4">
-					<h2 class="mb-4 font-headline text-5xl font-black tracking-tighter text-primary-container md:text-6xl">99.9%</h2>
-					<p class="font-headline text-xs uppercase tracking-widest text-on-surface-variant">Infrastructure Uptime</p>
+					<h2 class="mb-4 font-headline text-5xl font-black tracking-tighter text-primary-container md:text-6xl">8</h2>
+					<p class="font-headline text-xs uppercase tracking-widest text-on-surface-variant">Pages managed fully</p>
 				</div>
 				<div class="col-span-12 md:col-span-4 md:mt-24">
-					<h2 class="mb-4 font-headline text-5xl font-black tracking-tighter text-secondary md:text-6xl">24H</h2>
-					<p class="font-headline text-xs uppercase tracking-widest text-on-surface-variant">Fastest Prototype Delivery</p>
+					<h2 class="mb-4 font-headline text-5xl font-black tracking-tighter text-secondary md:text-6xl">100%</h2>
+					<p class="font-headline text-xs uppercase tracking-widest text-on-surface-variant">Cutting edge</p>
 				</div>
 				<div class="col-span-12 md:col-span-4 md:mt-12">
-					<h2 class="mb-4 font-headline text-5xl font-black tracking-tighter text-tertiary md:text-6xl">€12M+</h2>
-					<p class="font-headline text-xs uppercase tracking-widest text-on-surface-variant">Capital Managed by Our Code</p>
+					<h2 class="mb-4 font-headline text-5xl font-black tracking-tighter text-tertiary md:text-6xl">0%</h2>
+					<p class="font-headline text-xs uppercase tracking-widest text-on-surface-variant">Bullshit</p>
 				</div>
 			</div>
 		</section>

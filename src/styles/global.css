@@ -9,6 +9,7 @@
     --font-headline: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
     --font-body: "Manrope", ui-sans-serif, system-ui, sans-serif;
     --font-label: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+    --font-digidevs: "Jost", ui-sans-serif, system-ui, sans-serif;
     --font-sans: var(--font-body);
     --font-heading: var(--font-headline);
 
@@ -301,6 +302,25 @@
     .input-editorial::placeholder {
         color: color-mix(in oklab, var(--color-on-surface-variant) 80%, transparent);
     }
+}
+
+/* digiDEVS wordmark: Jost; 5% tracking on digi; 15% on DEVS and on the i–D join */
+.digi-wordmark {
+    font-family: var(--font-digidevs);
+    font-weight: 700;
+    font-style: normal;
+    text-transform: none;
+}
+
+.digi-wordmark__digi {
+    letter-spacing: 0.05em;
+    /* letter-spacing adds space after the last “i”; pull back so i–D isn’t 5% */
+    margin-right: -0.05em;
+}
+
+.digi-wordmark__devs {
+    margin-left: 0.15em;
+    letter-spacing: 0.15em;
 }
 
 @layer base {

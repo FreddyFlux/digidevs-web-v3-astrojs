@@ -1,0 +1,23 @@
+---
+import { cn } from "@/lib/utils";
+import {
+	staticGlassPanelClass,
+	staticGlassPanelPaddingClass,
+	staticGlassPanelStyle,
+} from "@/lib/staticGlass";
+
+interface Props {
+	class?: string;
+	/** When true (default), applies comfortable padding for body copy. */
+	padded?: boolean;
+}
+
+const { class: className, padded = true } = Astro.props;
+---
+
+<div
+	class={cn(staticGlassPanelClass, padded && staticGlassPanelPaddingClass, className)}
+	style={staticGlassPanelStyle}
+>
+	<slot />
+</div>

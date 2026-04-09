@@ -72,8 +72,15 @@ export default function MobileNav({ pathname }: { pathname: string }) {
 							<X className="size-10" strokeWidth={1.25} aria-hidden />
 						</button>
 
-						<div className="mb-12 font-headline text-4xl font-bold tracking-editorial text-on-surface">
-							digiDEVS
+						<div className="mb-12">
+							<img
+								src="/digidevs-logo-dark.svg"
+								alt="digiDEVS"
+								width={573}
+								height={95}
+								className="block h-10 w-auto max-w-[min(85vw,420px)]"
+								decoding="async"
+							/>
 						</div>
 
 						<nav className="mb-16 flex flex-col gap-8" aria-label="Primary">
