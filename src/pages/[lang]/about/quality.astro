@@ -1,0 +1,170 @@
+---
+import type { Locale } from "../../../i18n/locales";
+import { DEFAULT_LOCALE, LOCALES } from "../../../i18n/locales";
+import Layout from "../../../layouts/Layout.astro";
+import MarketingIcon from "../../../components/icons/MarketingIcon";
+import { images } from "../../../data/remoteImages";
+import { useTranslations } from "../../../i18n/utils";
+
+export function getStaticPaths() {
+	return LOCALES.filter((l) => l !== DEFAULT_LOCALE).map((lang) => ({ params: { lang } }));
+}
+
+const { lang: langParam } = Astro.params;
+const lang = langParam as Locale;
+const t = useTranslations(lang);
+const prefix = `/${lang}`;
+---
+
+<Layout title={t("quality.meta_title")} description={t("quality.meta_description")} lang={lang}>
+	<main class="mx-auto max-w-7xl px-6 pb-28 pt-36 md:px-10">
+		<header class="misty-transition-enter mb-24">
+			<div class="mb-16 flex flex-col justify-between gap-10 md:flex-row md:items-end">
+				<div>
+					<span class="font-label mb-4 block text-xs uppercase tracking-[0.3em] text-secondary">{t("quality.label")}</span>
+					<h1 class="font-headline text-6xl font-bold tracking-editorial text-on-surface md:text-8xl">{t("quality.heading")}</h1>
+				</div>
+				<div class="max-w-md md:max-w-[42%]">
+					<p class="font-body text-lg leading-relaxed text-on-surface-variant">
+						{t("quality.intro")}
+					</p>
+				</div>
+			</div>
+			<div class="group relative h-[min(70vh,614px)] w-full overflow-hidden rounded-2xl bg-surface-container-low">
+				<img
+					src={images.qualityHero}
+					alt={t("quality.hero_img_alt")}
+					width={1400}
+					height={900}
+					sizes="100vw"
+					class="h-full w-full object-cover grayscale transition-transform duration-700 group-hover:scale-[1.02]"
+					loading="eager"
+					decoding="async"
+					fetchpriority="high"
+				/>
+				<div class="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-70"></div>
+				<div class="absolute bottom-8 left-8">
+					<p class="font-label text-xs tracking-widest text-on-surface-variant">{t("quality.hero_caption")}</p>
+				</div>
+			</div>
+		</header>
+
+		<section class="mb-28 grid grid-cols-1 gap-6 md:grid-cols-12">
+			<div
+				class="group relative flex flex-col justify-between overflow-hidden rounded-2xl bg-surface-container-low p-10 transition-colors duration-500 hover:bg-surface-container md:col-span-7 md:p-12"
+			>
+				<div class="absolute right-0 top-0 p-8 text-primary/15">
+					<MarketingIcon name="architecture" className="text-9xl" size={120} strokeWidth={1} />
+				</div>
+				<div class="relative z-10">
+					<span class="font-label mb-6 block text-sm uppercase tracking-widest text-secondary">{t("quality.nordic_kicker")}</span>
+					<h2 class="font-headline mb-6 text-4xl font-bold tracking-editorial text-on-surface">{t("quality.nordic_title")}</h2>
+					<p class="font-body max-w-md text-lg leading-relaxed text-on-surface-variant">
+						{t("quality.nordic_body")}
+					</p>
+				</div>
+				<div class="mt-12 flex flex-wrap gap-3">
+					<span class="font-label rounded-full bg-surface-container-high px-3 py-1.5 text-[10px] uppercase text-on-surface-variant"
+						>{t("quality.tag_strict")}</span
+					>
+					<span class="font-label rounded-full bg-surface-container-high px-3 py-1.5 text-[10px] uppercase text-on-surface-variant"
+						>{t("quality.tag_logic")}</span
+					>
+				</div>
+			</div>
+
+			<div
+				class="relative flex flex-col items-center justify-center overflow-hidden rounded-2xl bg-surface-container-highest p-12 text-center md:col-span-5"
+			>
+				<div class="mb-8 flex h-24 w-24 items-center justify-center rounded-full bg-surface-container">
+					<MarketingIcon name="verified_user" className="text-4xl text-secondary" size={40} />
+				</div>
+				<h3 class="font-headline mb-4 text-2xl font-bold tracking-editorial text-on-surface">{t("quality.eu_title")}</h3>
+				<p class="font-body text-sm text-on-surface-variant">
+					{t("quality.eu_body")}
+				</p>
+			</div>
+
+			<div class="group flex flex-col justify-between rounded-2xl bg-surface-container p-12 md:col-span-5">
+				<div class="mb-8">
+					<span class="font-label mb-6 block text-sm uppercase tracking-widest text-secondary">{t("quality.craft_kicker")}</span>
+					<h2 class="font-headline mb-6 text-4xl font-bold tracking-editorial text-on-surface">{t("quality.craft_title")}</h2>
+					<p class="font-body leading-relaxed text-on-surface-variant">
+						{t("quality.craft_body")}
+					</p>
+				</div>
+				<div class="h-48 w-full overflow-hidden rounded-xl grayscale brightness-75 transition-all duration-700 group-hover:brightness-100">
+					<img
+						src={images.qualityCraft}
+						alt=""
+						width={800}
+						height={400}
+						class="h-full w-full object-cover"
+						loading="lazy"
+						decoding="async"
+					/>
+				</div>
+			</div>
+
+			<div class="flex flex-col justify-center rounded-2xl bg-surface-container-low p-12 md:col-span-7">
+				<div class="max-w-xl">
+					<h2 class="font-headline mb-8 text-5xl font-bold tracking-editorial text-on-surface">
+						{t("quality.premium_title")}<br /><span class="text-on-surface-variant">{t("quality.premium_subtitle")}</span>
+					</h2>
+					<p class="font-body mb-12 text-lg leading-relaxed text-on-surface-variant">
+						{t("quality.premium_body")}
+					</p>
+					<div class="grid grid-cols-2 gap-10 pt-8">
+						<div>
+							<span class="font-label block text-xl font-bold text-on-surface">100%</span>
+							<span class="font-label text-xs uppercase tracking-widest text-on-surface-variant">{t("quality.stat_transparency")}</span>
+						</div>
+						<div>
+							<span class="font-label block text-xl font-bold text-on-surface">0%</span>
+							<span class="font-label text-xs uppercase tracking-widest text-on-surface-variant">{t("quality.stat_fees")}</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<section class="py-20">
+			<div class="flex flex-col gap-16 md:flex-row md:gap-20">
+				<div class="md:max-w-sm md:shrink-0">
+					<h3 class="font-headline text-3xl font-bold tracking-editorial text-on-surface">{t("quality.protocol_title")}</h3>
+					<p class="font-body mt-4 text-on-surface-variant">{t("quality.protocol_intro")}</p>
+				</div>
+				<div class="grid flex-1 grid-cols-1 gap-x-12 gap-y-14 sm:grid-cols-2">
+					{
+						[
+							{ n: "01", tk: "quality.q1_title", dk: "quality.q1_body" },
+							{ n: "02", tk: "quality.q2_title", dk: "quality.q2_body" },
+							{ n: "03", tk: "quality.q3_title", dk: "quality.q3_body" },
+							{ n: "04", tk: "quality.q4_title", dk: "quality.q4_body" },
+						].map((item) => (
+							<div class="space-y-4">
+								<span class="font-label text-xs text-on-surface-variant">{item.n}</span>
+								<h4 class="font-headline text-xl font-bold tracking-editorial text-on-surface">{t(item.tk)}</h4>
+								<p class="font-body text-sm leading-relaxed text-on-surface-variant">{t(item.dk)}</p>
+							</div>
+						))
+					}
+				</div>
+			</div>
+		</section>
+
+		<section class="relative mt-16 flex flex-col items-center overflow-hidden rounded-2xl bg-surface-container p-12 text-center md:p-16">
+			<div class="absolute left-0 top-0 h-1 w-full bg-gradient-to-r from-transparent via-primary/30 to-transparent"></div>
+			<h2 class="font-headline mb-6 text-4xl font-bold tracking-editorial text-on-surface">{t("quality.balance_title")}</h2>
+			<p class="font-body mb-12 max-w-lg text-on-surface-variant">
+				{t("quality.balance_body")}
+			</p>
+			<a
+				href={`${prefix}/contact`}
+				class="btn-primary-gradient rounded-xl px-10 py-5 font-label text-xs font-semibold uppercase tracking-[0.2em] transition-all hover:brightness-105 active:scale-[0.98]"
+			>
+				{t("quality.balance_cta")}
+			</a>
+		</section>
+	</main>
+</Layout>

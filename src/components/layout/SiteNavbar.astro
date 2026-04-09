@@ -1,24 +1,34 @@
 ---
+import type { Locale } from "../../i18n/locales";
 import GlassNavBar from "./GlassNavBar";
+import LangSwitcher from "./LangSwitcher";
 import MobileNav from "./MobileNav";
 
 interface Props {
 	pathname: string;
+	lang: Locale;
 }
 
-const { pathname } = Astro.props;
+const { pathname, lang } = Astro.props;
+const langPrefix = lang === "no" ? "" : `/${lang}`;
+const homeHref = langPrefix || "/";
 ---
 
 <header class="pointer-events-none fixed inset-x-0 top-0 z-50">
-	<div class="pointer-events-auto mx-auto flex w-full max-w-2xl items-start justify-center px-4 pt-5 md:px-6 md:pt-6">
-		<div class="hidden w-full justify-center md:flex">
-			<GlassNavBar client:load pathname={pathname} />
+	<div class="pointer-events-auto mx-auto flex w-full max-w-2xl items-start justify-center gap-3 px-4 pt-5 md:px-6 md:pt-6">
+		<div class="hidden w-full min-w-0 flex-1 items-center justify-center md:flex md:max-w-none">
+			<div class="flex min-w-0 max-w-full items-center justify-center gap-0">
+				<GlassNavBar client:load pathname={pathname} lang={lang} attachRight />
+				<div class="relative z-10 shrink-0 -ml-px">
+					<LangSwitcher client:load pathname={pathname} lang={lang} attachLeft />
+				</div>
+			</div>
 		</div>
 		<div
 			class="flex w-full items-center justify-between rounded-[20px] px-5 py-4 backdrop-blur-[10px] md:hidden"
 			style="background-color: rgba(242, 242, 242, 0.45);"
 		>
-			<a href="/" class="shrink-0 transition-opacity hover:opacity-80">
+			<a href={homeHref} class="shrink-0 transition-opacity hover:opacity-80">
 				<img
 					src="/digidevs-logo-dark.svg"
 					alt="digiDEVS"
@@ -28,8 +38,9 @@ const { pathname } = Astro.props;
 					decoding="async"
 				/>
 			</a>
-			<div class="text-[#242424] [&_button]:text-[#242424] [&_svg]:text-current">
-				<MobileNav client:idle pathname={pathname} />
+			<div class="flex items-center gap-3 text-[#242424] [&_button]:text-[#242424] [&_svg]:text-current">
+				<LangSwitcher client:idle pathname={pathname} lang={lang} />
+				<MobileNav client:idle pathname={pathname} lang={lang} />
 			</div>
 		</div>
 	</div>

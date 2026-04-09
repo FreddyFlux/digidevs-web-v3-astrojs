@@ -1,12 +1,15 @@
 ---
 import "../styles/global.css";
+import type { Locale } from "../i18n/locales";
+import { LOCALE_HTML_LANG } from "../i18n/locales";
+import { stripLocalePrefixFromPathname } from "../i18n/utils";
 import SiteNavbar from "../components/layout/SiteNavbar.astro";
 import SiteFooter from "../components/layout/SiteFooter.astro";
 
 interface Props {
 	title?: string;
 	description?: string;
-	lang?: string;
+	lang?: Locale;
 	/** Full URL; defaults to current path on PUBLIC_SITE_URL */
 	canonicalUrl?: string;
 	ogImage?: string;
@@ -18,7 +21,7 @@ interface Props {
 const {
 	title = "digiDEVS",
 	description = "Norwegian-led development studio. Web apps, mobile apps, and AI-powered products — EU quality without the Oslo price tag.",
-	lang = "en",
+	lang = "no",
 	canonicalUrl,
 	ogImage,
 	ogType = "website",
@@ -35,10 +38,15 @@ const ogImageAbsolute =
 		: ogImage
 			? `${siteBase}${ogImage.startsWith("/") ? "" : "/"}${ogImage}`
 			: undefined;
+
+const strippedPath = stripLocalePrefixFromPathname(pathname);
+const pathSuffix = strippedPath === "/" ? "" : strippedPath;
+const ogLocale = ({ no: "nb_NO", en: "en_GB", hr: "hr_HR" } as const)[lang] ?? "nb_NO";
+const htmlLang = LOCALE_HTML_LANG[lang] ?? lang;
 ---
 
 <!doctype html>
-<html class="dark" lang={lang}>
+<html class="dark" lang={htmlLang}>
 	<head>
 		<meta charset="utf-8" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -53,13 +61,17 @@ const ogImageAbsolute =
 		<meta property="og:url" content={canonical} />
 		<meta property="og:type" content={ogType} />
 		<meta property="og:site_name" content="digiDEVS" />
-		<meta property="og:locale" content="en_GB" />
+		<meta property="og:locale" content={ogLocale} />
 		{ogImageAbsolute && <meta property="og:image" content={ogImageAbsolute} />}
 		<meta name="twitter:card" content={twitterCard} />
 		<meta name="twitter:title" content={title} />
 		<meta name="twitter:description" content={description} />
 		{ogImageAbsolute && <meta name="twitter:image" content={ogImageAbsolute} />}
 		<title>{title}</title>
+		<link rel="alternate" hreflang="nb" href={`${siteBase}${pathSuffix || "/"}`} />
+		<link rel="alternate" hreflang="en" href={`${siteBase}/en${pathSuffix}`} />
+		<link rel="alternate" hreflang="hr" href={`${siteBase}/hr${pathSuffix}`} />
+		<link rel="alternate" hreflang="x-default" href={`${siteBase}${pathSuffix || "/"}`} />
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 		<link
@@ -69,8 +81,8 @@ const ogImageAbsolute =
 		<slot name="head" />
 	</head>
 	<body class="selection:bg-primary-container/90 selection:text-on-primary-container">
-		<SiteNavbar pathname={pathname} />
+		<SiteNavbar pathname={pathname} lang={lang} />
 		<slot />
-		<SiteFooter />
+		<SiteFooter lang={lang} />
 	</body>
 </html>

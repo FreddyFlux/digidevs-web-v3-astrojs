@@ -1,6 +1,14 @@
 ---
+import type { Locale } from "../../i18n/locales";
+import { useTranslations } from "../../i18n/utils";
 import DigiDevsWordmark from "../brand/DigiDevsWordmark.astro";
 
+interface Props {
+	lang: Locale;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
 const year = new Date().getFullYear();
 ---
 
@@ -11,7 +19,8 @@ const year = new Date().getFullYear();
 				<DigiDevsWordmark />
 			</div>
 			<p class="font-label text-xs uppercase tracking-widest text-on-surface-variant">
-				© {year} <DigiDevsWordmark class="inline align-baseline" />. All rights reserved.
+				© {year}{" "}
+				<DigiDevsWordmark class="inline align-baseline" />. {t("footer.rights")}
 			</p>
 		</div>
 		<div class="flex flex-wrap justify-center gap-10">
@@ -41,7 +50,7 @@ const year = new Date().getFullYear();
 			</a>
 		</div>
 		<div class="text-center md:text-right">
-			<p class="font-label text-[10px] uppercase tracking-[0.3em] text-on-surface-variant/60">Oslo • Zagreb</p>
+			<p class="font-label text-[10px] uppercase tracking-[0.3em] text-on-surface-variant/60">{t("footer.cities")}</p>
 		</div>
 	</div>
 </footer>

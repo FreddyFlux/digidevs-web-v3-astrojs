@@ -1,20 +1,37 @@
 import { useEffect, useId, useRef, useState } from "react";
 import { Menu, X } from "lucide-react";
+import type { Locale } from "../../i18n/locales";
+import { DEFAULT_LOCALE } from "../../i18n/locales";
+import { useTranslations } from "../../i18n/utils";
 
-const links = [
-	{ href: "/", label: "Home" },
-	{ href: "/blog", label: "Blog" },
-	{ href: "/about", label: "About" },
-	{ href: "/about/competence", label: "Competence" },
-	{ href: "/about/quality", label: "Quality" },
-] as const;
-
-function isActive(pathname: string, href: string) {
-	if (href === "/") return pathname === "/";
-	return pathname === href || pathname.startsWith(`${href}/`);
+function stripLangPrefix(pathname: string, lang: Locale): string {
+	if (lang === DEFAULT_LOCALE) return pathname;
+	const p = `/${lang}`;
+	if (pathname === p) return "/";
+	if (pathname.startsWith(`${p}/`)) return pathname.slice(p.length) || "/";
+	return pathname;
 }
 
-export default function MobileNav({ pathname }: { pathname: string }) {
+function isActive(normalizedPathname: string, href: string) {
+	if (href === "/") return normalizedPathname === "/";
+	return normalizedPathname === href || normalizedPathname.startsWith(`${href}/`);
+}
+
+export default function MobileNav({ pathname, lang }: { pathname: string; lang: Locale }) {
+	const t = useTranslations(lang);
+	const langPrefix = lang === DEFAULT_LOCALE ? "" : `/${lang}`;
+	const normalized = stripLangPrefix(pathname, lang);
+
+	const links = [
+		{ path: "/" as const, label: t("nav.home") },
+		{ path: "/blog" as const, label: t("nav.blog") },
+		{ path: "/about" as const, label: t("nav.about") },
+		{ path: "/about/competence" as const, label: t("nav_about_links.competence") },
+		{ path: "/about/quality" as const, label: t("nav_about_links.quality") },
+	] as const;
+
+	const contactHref = `${langPrefix}/contact`;
+
 	const [open, setOpen] = useState(false);
 	const panelId = useId();
 	const closeRef = useRef<HTMLButtonElement>(null);
@@ -46,7 +63,7 @@ export default function MobileNav({ pathname }: { pathname: string }) {
 				aria-controls={panelId}
 				onClick={() => setOpen(true)}
 			>
-				<span className="sr-only">Open menu</span>
+				<span className="sr-only">{t("mobile.open_menu")}</span>
 				<Menu className="size-6" strokeWidth={1.5} aria-hidden />
 			</button>
 
@@ -59,7 +76,7 @@ export default function MobileNav({ pathname }: { pathname: string }) {
 					id={panelId}
 					role="dialog"
 					aria-modal="true"
-					aria-label="Site navigation"
+					aria-label={t("mobile.site_navigation")}
 				>
 					<div className="relative flex h-full flex-col justify-center px-12 md:px-24">
 						<button
@@ -68,7 +85,7 @@ export default function MobileNav({ pathname }: { pathname: string }) {
 							className="absolute right-8 top-8 text-on-surface-variant transition-all hover:text-on-surface"
 							onClick={() => setOpen(false)}
 						>
-							<span className="sr-only">Close menu</span>
+							<span className="sr-only">{t("mobile.close_menu")}</span>
 							<X className="size-10" strokeWidth={1.25} aria-hidden />
 						</button>
 
@@ -84,11 +101,12 @@ export default function MobileNav({ pathname }: { pathname: string }) {
 						</div>
 
 						<nav className="mb-16 flex flex-col gap-8" aria-label="Primary">
-							{links.map(({ href, label }) => {
-								const active = isActive(pathname, href);
+							{links.map(({ path, label }) => {
+								const href = `${langPrefix}${path}`;
+								const active = isActive(normalized, path);
 								return (
 									<a
-										key={href}
+										key={path}
 										href={href}
 										className={`font-headline text-5xl tracking-editorial transition-all md:text-6xl ${
 											active
@@ -104,12 +122,12 @@ export default function MobileNav({ pathname }: { pathname: string }) {
 						</nav>
 
 						<div className="mt-auto flex flex-col gap-4 py-12">
-							<button
-								type="button"
-								className="rounded-xl bg-linear-to-br from-primary-soft to-primary-container px-8 py-4 font-label font-semibold uppercase tracking-widest text-on-primary-container transition-transform hover:brightness-105 active:scale-95"
+							<a
+								href={contactHref}
+								className="rounded-xl bg-linear-to-br from-primary-soft to-primary-container px-8 py-4 text-center font-label font-semibold uppercase tracking-widest text-on-primary-container transition-transform hover:brightness-105 active:scale-95"
 							>
-								Get in Touch
-							</button>
+								{t("mobile.get_in_touch")}
+							</a>
 						</div>
 					</div>
 				</div>

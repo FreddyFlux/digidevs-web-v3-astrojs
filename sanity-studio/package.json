@@ -10,6 +10,7 @@
     "deploy": "sanity deploy"
   },
   "dependencies": {
+    "@sanity/document-internationalization": "^4.1.1",
     "@sanity/vision": "^4.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",

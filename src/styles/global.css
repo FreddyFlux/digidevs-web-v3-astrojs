@@ -105,6 +105,19 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
+/* /blog listing — grayscale on cover images (blog/index.astro only) */
+.blog-listing-image {
+  filter: grayscale(80%);
+}
+a:hover .blog-listing-image,
+article.blog-listing-card:has(a:hover) .blog-listing-image,
+article.blog-listing-card:has(a:focus-visible) .blog-listing-image,
+.blog-listing-featured-row:has(a:hover) .blog-listing-image,
+.blog-listing-featured-row:has(a:focus-visible) .blog-listing-image {
+  filter: grayscale(0);
+  opacity: 1;
+}
+
 :root {
   --radius: 0.75rem;
   --chart-1: #26a69a;

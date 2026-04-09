@@ -1,0 +1,69 @@
+---
+import type { Locale } from "../../../i18n/locales";
+import { DEFAULT_LOCALE, LOCALES } from "../../../i18n/locales";
+import Layout from "../../../layouts/Layout.astro";
+import DigiDevsWordmark from "../../../components/brand/DigiDevsWordmark.astro";
+import { useTranslations } from "../../../i18n/utils";
+
+export function getStaticPaths() {
+	return LOCALES.filter((l) => l !== DEFAULT_LOCALE).map((lang) => ({ params: { lang } }));
+}
+
+const { lang: langParam } = Astro.params;
+const lang = langParam as Locale;
+const t = useTranslations(lang);
+const prefix = `/${lang}`;
+---
+
+<Layout title={t("about.meta_title")} description={t("about.meta_description")} lang={lang}>
+	<main class="px-6 pb-28 pt-36 md:px-10">
+		<header class="mx-auto mb-24 max-w-7xl md:flex md:items-end md:justify-between md:gap-16">
+			<div class="max-w-2xl">
+				<span class="font-label mb-6 block text-xs uppercase tracking-[0.35em] text-on-surface-variant">{t("about.label")}</span>
+				<h1 class="text-5xl text-on-surface md:text-7xl">
+					<DigiDevsWordmark class="block" />
+				</h1>
+			</div>
+			<p class="font-body mt-10 max-w-md text-xl leading-relaxed text-on-surface-variant md:mt-0 md:max-w-[42%]">
+				{t("about.intro")}
+			</p>
+		</header>
+
+		<div class="mx-auto grid max-w-5xl gap-6 md:grid-cols-2">
+			<a
+				href={`${prefix}/about/competence`}
+				class="group rounded-2xl bg-surface-container-low p-10 transition-colors hover:bg-surface-container md:min-h-[280px]"
+			>
+				<span class="font-label mb-4 block text-xs uppercase tracking-widest text-secondary">{t("about.card1_kicker")}</span>
+				<h2 class="font-headline mb-4 text-3xl font-bold tracking-editorial text-on-surface transition-colors group-hover:text-primary">
+					{t("about.card1_title")}
+				</h2>
+				<p class="font-body text-on-surface-variant">
+					{t("about.card1_body")}
+				</p>
+				<span
+					class="font-label mt-10 inline-block text-sm uppercase tracking-widest text-on-surface-variant transition-colors group-hover:text-primary"
+				>
+					{t("about.explore")}
+				</span>
+			</a>
+			<a
+				href={`${prefix}/about/quality`}
+				class="group rounded-2xl bg-surface-container p-10 transition-colors hover:bg-surface-container-high md:min-h-[280px]"
+			>
+				<span class="font-label mb-4 block text-xs uppercase tracking-widest text-secondary">{t("about.card2_kicker")}</span>
+				<h2 class="font-headline mb-4 text-3xl font-bold tracking-editorial text-on-surface transition-colors group-hover:text-primary">
+					{t("about.card2_title")}
+				</h2>
+				<p class="font-body text-on-surface-variant">
+					{t("about.card2_body")}
+				</p>
+				<span
+					class="font-label mt-10 inline-block text-sm uppercase tracking-widest text-on-surface-variant transition-colors group-hover:text-primary"
+				>
+					{t("about.explore")}
+				</span>
+			</a>
+		</div>
+	</main>
+</Layout>

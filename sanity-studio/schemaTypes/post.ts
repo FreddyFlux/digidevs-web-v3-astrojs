@@ -10,6 +10,12 @@ export const post = defineType({
 	],
 	fields: [
 		defineField({
+			name: "language",
+			type: "string",
+			readOnly: true,
+			hidden: true,
+		}),
+		defineField({
 			name: "title",
 			title: "Title",
 			type: "string",
@@ -54,10 +60,28 @@ export const post = defineType({
 			group: "content",
 		}),
 		defineField({
-			name: "category",
-			title: "Category",
-			type: "string",
-			validation: (Rule) => Rule.required(),
+			name: "categories",
+			title: "Categories",
+			type: "array",
+			of: [
+				defineArrayMember({
+					type: "string",
+					options: {
+						list: [
+							{ title: "News", value: "News" },
+							{ title: "Work", value: "Work" },
+							{ title: "Tech", value: "Tech" },
+							{ title: "Business", value: "Business" },
+							{ title: "Frontend", value: "Frontend" },
+							{ title: "Backend", value: "Backend" },
+							{ title: "AI", value: "AI" },
+						],
+						layout: "dropdown",
+					},
+				}),
+			],
+			options: { sortable: true },
+			validation: (Rule) => Rule.required().unique().min(1),
 			group: "content",
 		}),
 		defineField({
@@ -149,11 +173,14 @@ export const post = defineType({
 			title: "title",
 			subtitle: "publishedAt",
 			media: "coverImage",
+			language: "language",
 		},
-		prepare({ title, subtitle, media }) {
+		prepare({ title, subtitle, media, language }) {
+			const dateStr = subtitle ? new Date(subtitle).toLocaleDateString() : "";
+			const langStr = language ? String(language).toUpperCase() : "";
 			return {
 				title,
-				subtitle: subtitle ? new Date(subtitle).toLocaleDateString() : "",
+				subtitle: [dateStr, langStr].filter(Boolean).join(" · "),
 				media,
 			};
 		},

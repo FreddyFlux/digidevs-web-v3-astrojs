@@ -1,0 +1,180 @@
+---
+import type { Locale } from "../../../i18n/locales";
+import { DEFAULT_LOCALE, LOCALES } from "../../../i18n/locales";
+import Layout from "../../../layouts/Layout.astro";
+import MarketingIcon from "../../../components/icons/MarketingIcon";
+import { fetchAllPosts, formatCategories, getFeaturedPost, getGridPosts } from "../../../lib/blog";
+import { useTranslations } from "../../../i18n/utils";
+
+export function getStaticPaths() {
+	return LOCALES.filter((l) => l !== DEFAULT_LOCALE).map((lang) => ({ params: { lang } }));
+}
+
+const { lang: langParam } = Astro.params;
+const lang = langParam as Locale;
+const t = useTranslations(lang);
+const allPosts = await fetchAllPosts(lang);
+const featured = getFeaturedPost(allPosts);
+const posts = getGridPosts(allPosts, featured);
+
+const dateLocales: Record<Locale, string> = { no: "nb-NO", en: "en-GB", hr: "hr-HR" };
+const dateLocale = dateLocales[lang];
+const prefix = `/${lang}`;
+---
+
+<Layout title={t("blog.meta_title")} description={t("blog.meta_description")} lang={lang}>
+	<main class="pb-28 pt-36">
+		<header class="mx-auto mb-24 max-w-7xl px-6 md:px-10">
+			<div class="mb-6">
+				<span class="font-label text-sm uppercase tracking-[0.3em] text-on-surface-variant">{t("blog.journal_label")}</span>
+			</div>
+			<h1 class="font-headline max-w-4xl text-6xl font-bold leading-[0.95] tracking-editorial text-on-surface md:text-8xl">
+				{t("blog.heading_line1")} <br /><span class="font-body italic text-on-surface-variant">{t("blog.heading_line2")}</span>
+			</h1>
+		</header>
+
+		{
+			featured && (
+				<section class="mx-auto mb-32 max-w-7xl px-6 md:px-10">
+					<div class="grid grid-cols-1 items-center gap-12 lg:grid-cols-12">
+						<div class="group cursor-pointer overflow-hidden rounded-2xl bg-surface-container-low lg:col-span-7">
+							<a href={`${prefix}/blog/${featured.slug}`} class="block">
+								<img
+									src={featured.coverImageUrl}
+									alt={featured.coverImageAlt}
+									width={1200}
+									height={900}
+									sizes="(min-width: 1024px) 60vw, 100vw"
+									class="h-[500px] w-full object-cover opacity-85 transition-transform duration-700 group-hover:scale-[1.03]"
+									loading="eager"
+									decoding="async"
+								/>
+							</a>
+						</div>
+						<div class="z-10 lg:-ml-12 lg:col-span-5">
+							<div class="group glass-panel ambient-glow rounded-2xl p-10">
+								<span class="font-label mb-6 block text-xs uppercase tracking-widest text-primary">
+									{formatCategories(featured.categories)} • {featured.readTime}
+								</span>
+								<h2 class="font-headline mb-6 text-4xl font-bold leading-tight tracking-editorial text-on-surface">
+									{featured.title}
+								</h2>
+								<p class="font-body mb-8 leading-relaxed text-on-surface-variant">{featured.description}</p>
+								<a
+									class="link-tertiary inline-flex items-center gap-3 font-label text-sm font-medium uppercase tracking-widest"
+									href={`${prefix}/blog/${featured.slug}`}
+								>
+									{t("blog.read_full")}
+									<MarketingIcon
+										name="east"
+										className="transition-transform group-hover:translate-x-2"
+										size={20}
+									/>
+								</a>
+							</div>
+						</div>
+					</div>
+				</section>
+			)
+		}
+
+		{
+			!featured && (
+				<section class="mx-auto mb-32 max-w-7xl px-6 md:px-10">
+					<p class="font-body max-w-xl text-on-surface-variant">
+						{t("blog.empty_pre")}
+						<code class="rounded bg-surface-container-high px-1.5 py-0.5 text-sm">{t("blog.empty_code")}</code>
+						{t("blog.empty_post")}
+					</p>
+				</section>
+			)
+		}
+
+		<section class="mx-auto max-w-7xl px-6 md:px-10">
+			<div class="grid grid-cols-1 gap-x-12 gap-y-20 md:grid-cols-3">
+				{
+					posts.map((post) => (
+						<article class="flex flex-col">
+							<a
+								href={`${prefix}/blog/${post.slug}`}
+								class="mb-8 aspect-square overflow-hidden rounded-2xl bg-surface-container-low"
+							>
+								<img
+									src={post.coverImageUrl}
+									alt={post.coverImageAlt}
+									width={600}
+									height={600}
+									sizes="(min-width: 768px) 33vw, 100vw"
+									class="h-full w-full object-cover opacity-80 grayscale transition-all duration-500 hover:opacity-100 hover:grayscale-0"
+									loading="lazy"
+									decoding="async"
+								/>
+							</a>
+							<div class="mb-4 flex flex-wrap items-center gap-3">
+								<div class="flex flex-wrap gap-2">
+									{(post.categories ?? []).map((c) => (
+										<span class="font-label rounded-full bg-secondary/20 px-3 py-1 text-[10px] uppercase tracking-widest text-secondary">
+											{c}
+										</span>
+									))}
+								</div>
+								<span class="font-label text-[10px] text-on-surface-variant/70">
+									{new Date(post.date).toLocaleDateString(dateLocale, {
+										year: "numeric",
+										month: "long",
+										day: "numeric",
+									})}
+								</span>
+							</div>
+							<h3 class="font-headline mb-4 cursor-pointer text-2xl font-bold tracking-editorial text-on-surface transition-colors hover:text-primary">
+								<a href={`${prefix}/blog/${post.slug}`}>{post.title}</a>
+							</h3>
+							<p class="font-body mb-6 text-sm leading-relaxed text-on-surface-variant">{post.description}</p>
+							<div class="mt-auto flex items-center gap-3 pt-6">
+								<div class="flex h-7 w-7 items-center justify-center rounded-full bg-surface-container-highest">
+									<MarketingIcon name="person" className="text-[14px] text-on-surface-variant" size={14} />
+								</div>
+								<span class="font-label text-xs text-on-surface-variant">{post.author}</span>
+							</div>
+						</article>
+					))
+				}
+			</div>
+
+			<div class="mt-28 flex flex-col items-center">
+				<div class="mb-8 h-24 w-px bg-gradient-to-b from-primary/50 to-transparent"></div>
+				<button
+					type="button"
+					class="font-label text-xs uppercase tracking-[0.4em] text-on-surface-variant transition-colors hover:text-secondary"
+				>
+					{t("blog.load_more")}
+				</button>
+			</div>
+		</section>
+
+		<section class="relative mx-auto mt-40 max-w-4xl overflow-hidden rounded-2xl bg-surface-container-low px-6 py-20 md:px-10">
+			<div class="pointer-events-none absolute right-0 top-0 h-64 w-64 rounded-full bg-primary/10 blur-[120px]"></div>
+			<div class="relative z-10 text-center">
+				<h2 class="font-headline mb-4 text-4xl font-bold tracking-editorial text-on-surface">{t("blog.digest_title")}</h2>
+				<p class="mx-auto mb-10 max-w-lg font-body text-on-surface-variant">
+					{t("blog.digest_body")}
+				</p>
+				<form class="mx-auto flex max-w-md flex-col gap-4 md:flex-row md:items-stretch" action="#" method="post">
+					<input
+						class="input-editorial font-body flex-1"
+						placeholder={t("blog.email_placeholder")}
+						type="email"
+						name="email"
+						autocomplete="email"
+					/>
+					<button
+						type="button"
+						class="btn-primary-gradient shrink-0 rounded-xl px-8 py-3 font-label text-sm font-semibold uppercase tracking-widest transition-all hover:brightness-105 active:scale-[0.98]"
+					>
+						{t("blog.subscribe")}
+					</button>
+				</form>
+			</div>
+		</section>
+	</main>
+</Layout>

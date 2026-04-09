@@ -1,4 +1,5 @@
 import { defineConfig } from "sanity";
+import { documentInternationalization } from "@sanity/document-internationalization";
 import { structureTool } from "sanity/structure";
 import { visionTool } from "@sanity/vision";
 import { schemaTypes } from "./schemaTypes";
@@ -18,7 +19,18 @@ export default defineConfig({
 	title: "digiDEVS",
 	projectId,
 	dataset,
-	plugins: [structureTool(), visionTool()],
+	plugins: [
+		structureTool(),
+		visionTool(),
+		documentInternationalization({
+			supportedLanguages: [
+				{ id: "no", title: "Norsk" },
+				{ id: "en", title: "English" },
+				{ id: "hr", title: "Hrvatski" },
+			],
+			schemaTypes: ["post"],
+		}),
+	],
 	schema: {
 		types: schemaTypes,
 	},

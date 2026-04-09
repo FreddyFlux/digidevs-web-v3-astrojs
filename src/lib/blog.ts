@@ -1,14 +1,15 @@
 import type { PortableTextBlock } from "@portabletext/types";
 import { defaultComponents, mergeComponents, toHTML } from "@portabletext/to-html";
+import type { Locale } from "../i18n/locales";
 import { getSanityClient, urlForImage } from "./sanity";
-import { ALL_POSTS_QUERY } from "./queries";
+import { POSTS_BY_LANG_QUERY, SINGLE_POST_BY_SLUG_QUERY } from "./queries";
 
 export type BlogPost = {
 	slug: string;
 	title: string;
 	description: string;
 	date: string;
-	category: string;
+	categories: string[];
 	readTime: string;
 	author: string;
 	featured?: boolean;
@@ -30,9 +31,12 @@ export type SanityPostDoc = {
 	publishedAt: string;
 	updatedAt?: string;
 	author: string;
-	category: string;
+	categories?: string[];
+	/** @deprecated Legacy single field from older documents */
+	category?: string;
 	readTime: string;
 	featured?: boolean;
+	language?: string;
 	coverImage?: {
 		asset?: { _ref?: string };
 		alt?: string;
@@ -63,6 +67,23 @@ function portableTextToHtml(blocks: PortableTextBlock[] | undefined): string {
 	});
 }
 
+function normalizeCategories(doc: SanityPostDoc): string[] {
+	const raw = doc.categories;
+	if (Array.isArray(raw)) {
+		const list = raw.filter((c): c is string => typeof c === "string" && Boolean(c));
+		if (list.length) return list;
+	}
+	if (typeof doc.category === "string" && doc.category.trim()) {
+		return [doc.category.trim()];
+	}
+	return [];
+}
+
+/** Join categories for inline labels (e.g. hero line, article header). */
+export function formatCategories(categories: string[] | undefined | null): string {
+	return (categories ?? []).filter(Boolean).join(" · ");
+}
+
 function mapDocToPost(doc: SanityPostDoc): BlogPost {
 	const coverUrl = urlForImage(doc.coverImage);
 	if (!coverUrl) {
@@ -76,7 +97,7 @@ function mapDocToPost(doc: SanityPostDoc): BlogPost {
 		title: doc.title,
 		description: doc.excerpt,
 		date: doc.publishedAt,
-		category: doc.category,
+		categories: normalizeCategories(doc),
 		readTime: doc.readTime,
 		author: doc.author,
 		featured: doc.featured,
@@ -91,10 +112,17 @@ function mapDocToPost(doc: SanityPostDoc): BlogPost {
 	};
 }
 
-export async function fetchAllPosts(): Promise<BlogPost[]> {
+export async function fetchAllPosts(lang: Locale): Promise<BlogPost[]> {
 	const client = getSanityClient();
-	const docs = await client.fetch<SanityPostDoc[]>(ALL_POSTS_QUERY);
+	const docs = await client.fetch<SanityPostDoc[]>(POSTS_BY_LANG_QUERY, { lang });
 	return docs.map(mapDocToPost);
+}
+
+export async function fetchPostBySlug(lang: Locale, slug: string): Promise<BlogPost | undefined> {
+	const client = getSanityClient();
+	const doc = await client.fetch<SanityPostDoc | null>(SINGLE_POST_BY_SLUG_QUERY, { lang, slug });
+	if (!doc) return undefined;
+	return mapDocToPost(doc);
 }
 
 export function getFeaturedPost(posts: BlogPost[]): BlogPost | undefined {

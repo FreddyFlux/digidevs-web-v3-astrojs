@@ -1,11 +1,74 @@
 // @ts-check
+import { createClient } from '@sanity/client';
+import { existsSync, readFileSync } from 'node:fs';
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'astro/config';
 
+import vercel from '@astrojs/vercel';
 import react from '@astrojs/react';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 
 const site = process.env.PUBLIC_SITE_URL || 'https://digidevs.no';
+
+/** Astro evaluates this file before `process.env` is filled from `.env`; mirror CLI loading for build-time Sanity fetch. */
+function applyLocalEnvFile() {
+	const envPath = resolve(dirname(fileURLToPath(import.meta.url)), '.env');
+	if (!existsSync(envPath)) return;
+	const raw = readFileSync(envPath, 'utf8');
+	for (const line of raw.split('\n')) {
+		const trimmed = line.trim();
+		if (!trimmed || trimmed.startsWith('#')) continue;
+		const eq = trimmed.indexOf('=');
+		if (eq === -1) continue;
+		const key = trimmed.slice(0, eq).trim();
+		let val = trimmed.slice(eq + 1).trim();
+		if (
+			(val.startsWith('"') && val.endsWith('"')) ||
+			(val.startsWith("'") && val.endsWith("'"))
+		) {
+			val = val.slice(1, -1);
+		}
+		if (process.env[key] === undefined) process.env[key] = val;
+	}
+}
+applyLocalEnvFile();
+
+/** Keep in sync with `src/lib/queries.ts` POST_SLUGS_BY_LANG_QUERY */
+const POST_SLUGS_BY_LANG_QUERY = `*[
+  _type == "post" &&
+  !(_id in path("drafts.**")) &&
+  defined(slug.current) &&
+  defined(publishedAt) &&
+  (language == $lang || (!defined(language) && $lang == "no"))
+].slug.current`;
+
+async function blogUrlsForSitemap() {
+	const projectId = process.env.SANITY_PROJECT_ID;
+	if (!projectId) return [];
+	const client = createClient({
+		projectId,
+		dataset: process.env.SANITY_DATASET ?? 'production',
+		apiVersion: process.env.SANITY_API_VERSION ?? '2024-01-01',
+		useCdn: false,
+		token: process.env.SANITY_API_READ_TOKEN || undefined,
+	});
+	const base = site.replace(/\/$/, '');
+	const out = [];
+	for (const lang of ['no', 'en', 'hr']) {
+		const slugs = await client.fetch(POST_SLUGS_BY_LANG_QUERY, { lang });
+		if (!Array.isArray(slugs)) continue;
+		for (const slug of slugs) {
+			if (typeof slug !== 'string') continue;
+			const path = lang === 'no' ? `/blog/${slug}/` : `/${lang}/blog/${slug}/`;
+			out.push(`${base}${path}`);
+		}
+	}
+	return out;
+}
+
+const sitemapBlogPages = await blogUrlsForSitemap();
 
 /** Sanity dev server (sanity.cli.ts `server.port`). Studio is served at this path on both servers. */
 const SANITY_DEV_PORT = 3333;
@@ -27,7 +90,24 @@ function rewriteSanityProxyPath(path) {
 export default defineConfig({
   site,
 
-  integrations: [react(), sitemap()],
+  /** Adapter required for `prerender = false` blog routes (on-demand Sanity by slug). With Astro 6, `output` defaults to static and supports mixed prerendering. */
+  adapter: vercel(),
+
+  i18n: {
+    defaultLocale: 'no',
+    locales: ['no', 'en', 'hr'],
+    routing: {
+      prefixDefaultLocale: false,
+    },
+  },
+
+  integrations: [
+    react(),
+    sitemap({
+      /** Blog posts are server-rendered (`prerender = false`); list URLs explicitly. */
+      customPages: sitemapBlogPages,
+    }),
+  ],
 
   image: {
     remotePatterns: [

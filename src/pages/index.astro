@@ -2,15 +2,15 @@
 import { Image } from "astro:assets";
 import Layout from "../layouts/Layout.astro";
 import StaticGlassBox from "../components/ui/StaticGlassBox.astro";
+import { useTranslations } from "../i18n/utils";
 import heroNorsk from "../assets/digidevs-norsk-hero.png";
 import bentoOpera from "../assets/digidevs-opera.jpg";
 import bentoKeyboard from "../assets/digidevs-keyboard.png";
+
+const t = useTranslations("no");
 ---
 
-<Layout
-	title="digiDEVS — Senior-level development, EU quality"
-	description="Norwegian-led development studio in Croatia. Web apps, mobile apps, AI-powered products, and team augmentation without Oslo premiums."
->
+<Layout title={t("home.meta_title")} description={t("home.meta_description")} lang="no">
 	<link
 		slot="head"
 		href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap"
@@ -18,12 +18,11 @@ import bentoKeyboard from "../assets/digidevs-keyboard.png";
 	/>
 
 	<main class="bg-background">
-		<!-- Hero: isolate + non-negative z-index so the bg is not painted behind main.bg-background (negative z-index would hide it) -->
 		<section class="relative isolate flex min-h-svh w-full flex-col justify-center overflow-hidden">
 			<div class="absolute inset-0 z-0 min-h-svh w-full">
 				<Image
 					src={heroNorsk}
-					alt="Scandinavian coastal city at night, cold blue light on dark water under a starry sky"
+					alt={t("home.hero_img_alt")}
 					width={heroNorsk.width}
 					height={heroNorsk.height}
 					layout="full-width"
@@ -57,12 +56,12 @@ import bentoKeyboard from "../assets/digidevs-keyboard.png";
 				<h1
 					class="font-headline text-[clamp(3rem,8vw,7.5rem)] font-black leading-[1.01] tracking-tighter text-on-surface"
 				>
-					Senior-level development.
+					{t("home.hero_headline_1")}
 					<br />
-					<span class="text-primary-container">EU quality.</span>
+					<span class="text-primary-container">{t("home.hero_headline_2")}</span>
 					<br />
 					<span class="text-[70%] font-light italic text-on-surface">
-						Without the Oslo price tag.
+						{t("home.hero_headline_3")}
 					</span>
 				</h1>
 
@@ -71,8 +70,7 @@ import bentoKeyboard from "../assets/digidevs-keyboard.png";
 						<div class="col-span-12 md:col-span-5 md:col-start-7">
 							<StaticGlassBox class="mb-10">
 								<p class="font-body text-lg font-light leading-relaxed text-[#111111] md:text-xl">
-									Norwegian-led, EU-based studio: web, mobile, and AI — senior-level delivery without the Oslo
-									price tag. Clear milestones, weekly updates, code you own.
+									{t("home.hero_body")}
 								</p>
 							</StaticGlassBox>
 							<div class="mb-12 flex flex-wrap items-center gap-8">
@@ -80,13 +78,13 @@ import bentoKeyboard from "../assets/digidevs-keyboard.png";
 									type="button"
 									class="rounded-full bg-primary-container px-10 py-5 font-headline text-lg font-bold uppercase tracking-tighter text-on-primary-container transition-transform hover:scale-95"
 								>
-									Book a free call
+									{t("home.cta_call")}
 								</button>
 								<a
 									class="font-label border-b-2 border-primary-container/30 pb-1 text-sm uppercase tracking-tighter text-primary-container transition-all hover:border-primary-container"
 									href="#capabilities"
 								>
-									See what we’ve built
+									{t("home.cta_work")}
 								</a>
 							</div>
 							<div class="max-w-xs">
@@ -98,11 +96,12 @@ import bentoKeyboard from "../assets/digidevs-keyboard.png";
 			</div>
 		</section>
 
-		<!-- Capabilities -->
 		<section id="capabilities" class="bg-surface px-6 py-24 md:px-10 md:py-32 lg:px-12">
 			<div class="mx-auto max-w-[1920px]">
 				<div class="mb-16 md:mb-20">
-					<h2 class="font-headline text-4xl font-bold uppercase tracking-tighter md:text-5xl">What we build</h2>
+					<h2 class="font-headline text-4xl font-bold uppercase tracking-tighter md:text-5xl">
+						{t("home.capabilities_heading")}
+					</h2>
 					<div class="mt-2 h-1 w-20 bg-secondary"></div>
 				</div>
 
@@ -112,7 +111,7 @@ import bentoKeyboard from "../assets/digidevs-keyboard.png";
 					>
 						<Image
 							src={bentoOpera}
-							alt="Oslo Opera House and waterfront at night, lights reflecting on the fjord"
+							alt={t("home.bento_opera_alt")}
 							width={bentoOpera.width}
 							height={bentoOpera.height}
 							class="absolute inset-0 h-full w-full object-cover opacity-55 transition-transform duration-700 group-hover:scale-105"
@@ -125,13 +124,14 @@ import bentoKeyboard from "../assets/digidevs-keyboard.png";
 						>
 						</div>
 						<div class="relative z-10">
-							<span class="mb-4 block font-headline text-sm uppercase tracking-widest text-secondary">Your guide</span>
+							<span class="mb-4 block font-headline text-sm uppercase tracking-widest text-secondary"
+								>{t("home.bento_guide_label")}</span
+							>
 							<h3 class="mb-4 font-headline text-3xl font-bold tracking-tighter text-on-surface md:text-4xl">
-								Norwegian-led. EU delivery.
+								{t("home.bento_guide_title")}
 							</h3>
 							<p class="max-w-md text-on-surface-variant">
-								Not a faceless shop — we speak your context and ship from Croatia: senior work at about 40–60%
-								below typical Norwegian agency rates, GDPR-aligned, same timezone.
+								{t("home.bento_guide_body")}
 							</p>
 						</div>
 					</div>
@@ -141,16 +141,16 @@ import bentoKeyboard from "../assets/digidevs-keyboard.png";
 					>
 						<span class="material-symbols-outlined text-4xl text-secondary" aria-hidden="true">science</span>
 						<div>
-							<h3 class="mb-2 font-headline text-2xl font-bold tracking-tighter">AI &amp; automation</h3>
-							<p class="text-sm text-on-surface-variant">Agents, n8n, and backends that save time — not slide decks.</p>
+							<h3 class="mb-2 font-headline text-2xl font-bold tracking-tighter">{t("home.bento_ai_title")}</h3>
+							<p class="text-sm text-on-surface-variant">{t("home.bento_ai_body")}</p>
 						</div>
 					</div>
 
 					<div class="flex flex-col justify-between bg-surface-container-high p-8 md:col-span-4">
 						<div class="mb-4 h-1 w-12 bg-tertiary"></div>
 						<div>
-							<h3 class="mb-2 font-headline text-2xl font-bold tracking-tighter">Web &amp; apps</h3>
-							<p class="text-sm text-on-surface-variant">React, Next.js, Astro, React Native — landing pages to full products.</p>
+							<h3 class="mb-2 font-headline text-2xl font-bold tracking-tighter">{t("home.bento_web_title")}</h3>
+							<p class="text-sm text-on-surface-variant">{t("home.bento_web_body")}</p>
 						</div>
 					</div>
 
@@ -158,13 +158,13 @@ import bentoKeyboard from "../assets/digidevs-keyboard.png";
 						class="flex flex-col items-center justify-center bg-primary-container p-8 text-center md:col-span-4 md:p-10"
 					>
 						<h3 class="mb-6 font-headline text-2xl font-black tracking-tighter text-on-primary-container md:text-3xl">
-							Talk it through?
+							{t("home.bento_cta_title")}
 						</h3>
 						<button
 							type="button"
 							class="rounded-full bg-surface px-8 py-3 font-headline text-sm font-bold uppercase tracking-tighter text-primary-container transition-colors hover:bg-surface-bright"
 						>
-							Book a free call
+							{t("home.cta_call")}
 						</button>
 					</div>
 
@@ -184,10 +184,11 @@ import bentoKeyboard from "../assets/digidevs-keyboard.png";
 							decoding="async"
 						/>
 						<div class="relative z-20 flex h-full flex-col justify-center">
-							<h3 class="mb-4 font-headline text-2xl font-bold tracking-tighter md:text-3xl">Outsourced team</h3>
+							<h3 class="mb-4 font-headline text-2xl font-bold tracking-tighter md:text-3xl">
+								{t("home.bento_outsourced_title")}
+							</h3>
 							<p class="max-w-sm text-on-surface-variant">
-								Need more than one hire? We lead the project, coordinate EU developers, and keep communication
-								plain — fixed milestones, no surprises.
+								{t("home.bento_outsourced_body")}
 							</p>
 						</div>
 					</div>
@@ -195,20 +196,19 @@ import bentoKeyboard from "../assets/digidevs-keyboard.png";
 			</div>
 		</section>
 
-		<!-- Stats -->
 		<section class="border-border border-t bg-surface-dim px-6 py-24 md:px-10 md:py-32 lg:px-12">
 			<div class="mx-auto grid max-w-[1920px] grid-cols-12 gap-6">
 				<div class="col-span-12 md:col-span-4">
 					<h2 class="mb-4 font-headline text-5xl font-black tracking-tighter text-primary-container md:text-6xl">8</h2>
-					<p class="font-headline text-xs uppercase tracking-widest text-on-surface-variant">Pages managed fully</p>
+					<p class="font-headline text-xs uppercase tracking-widest text-on-surface-variant">{t("home.stats_pages")}</p>
 				</div>
 				<div class="col-span-12 md:col-span-4 md:mt-24">
 					<h2 class="mb-4 font-headline text-5xl font-black tracking-tighter text-secondary md:text-6xl">100%</h2>
-					<p class="font-headline text-xs uppercase tracking-widest text-on-surface-variant">Cutting edge</p>
+					<p class="font-headline text-xs uppercase tracking-widest text-on-surface-variant">{t("home.stats_cutting")}</p>
 				</div>
 				<div class="col-span-12 md:col-span-4 md:mt-12">
 					<h2 class="mb-4 font-headline text-5xl font-black tracking-tighter text-tertiary md:text-6xl">0%</h2>
-					<p class="font-headline text-xs uppercase tracking-widest text-on-surface-variant">Bullshit</p>
+					<p class="font-headline text-xs uppercase tracking-widest text-on-surface-variant">{t("home.stats_bs")}</p>
 				</div>
 			</div>
 		</section>

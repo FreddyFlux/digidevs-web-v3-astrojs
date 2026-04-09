@@ -2,7 +2,7 @@ import rss from "@astrojs/rss";
 import { fetchAllPosts } from "../lib/blog";
 
 export async function GET(context) {
-	const posts = await fetchAllPosts();
+	const posts = await fetchAllPosts("no");
 	const site = context.site ?? new URL("https://digidevs.no/");
 	return rss({
 		title: "digiDEVS — Blog",

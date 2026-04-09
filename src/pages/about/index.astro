@@ -1,23 +1,22 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import DigiDevsWordmark from "../../components/brand/DigiDevsWordmark.astro";
+import { useTranslations } from "../../i18n/utils";
+
+const t = useTranslations("no");
 ---
 
-<Layout
-	title="About — digiDEVS"
-	description="Who we are: Norwegian-led precision, EU delivery standards, and a distributed team across Oslo and Croatia."
->
+<Layout title={t("about.meta_title")} description={t("about.meta_description")} lang="no">
 	<main class="px-6 pb-28 pt-36 md:px-10">
 		<header class="mx-auto mb-24 max-w-7xl md:flex md:items-end md:justify-between md:gap-16">
 			<div class="max-w-2xl">
-				<span class="font-label mb-6 block text-xs uppercase tracking-[0.35em] text-on-surface-variant">About</span>
+				<span class="font-label mb-6 block text-xs uppercase tracking-[0.35em] text-on-surface-variant">{t("about.label")}</span>
 				<h1 class="text-5xl text-on-surface md:text-7xl">
 					<DigiDevsWordmark class="block" />
 				</h1>
 			</div>
 			<p class="font-body mt-10 max-w-md text-xl leading-relaxed text-on-surface-variant md:mt-0 md:max-w-[42%]">
-				We combine Norwegian technical leadership with a senior engineering team in Croatia — so you get clarity, velocity,
-				and EU-grade delivery without the capital-city price tag.
+				{t("about.intro")}
 			</p>
 		</header>
 
@@ -26,34 +25,34 @@ import DigiDevsWordmark from "../../components/brand/DigiDevsWordmark.astro";
 				href="/about/competence"
 				class="group rounded-2xl bg-surface-container-low p-10 transition-colors hover:bg-surface-container md:min-h-[280px]"
 			>
-				<span class="font-label mb-4 block text-xs uppercase tracking-widest text-secondary">What we build</span>
+				<span class="font-label mb-4 block text-xs uppercase tracking-widest text-secondary">{t("about.card1_kicker")}</span>
 				<h2 class="font-headline mb-4 text-3xl font-bold tracking-editorial text-on-surface transition-colors group-hover:text-primary">
-					Competence
+					{t("about.card1_title")}
 				</h2>
 				<p class="font-body text-on-surface-variant">
-					Web apps, mobile, AI integration, and team augmentation — stack, ways of working, and how we ship.
+					{t("about.card1_body")}
 				</p>
 				<span
 					class="font-label mt-10 inline-block text-sm uppercase tracking-widest text-on-surface-variant transition-colors group-hover:text-primary"
 				>
-					Explore →
+					{t("about.explore")}
 				</span>
 			</a>
 			<a
 				href="/about/quality"
 				class="group rounded-2xl bg-surface-container p-10 transition-colors hover:bg-surface-container-high md:min-h-[280px]"
 			>
-				<span class="font-label mb-4 block text-xs uppercase tracking-widest text-secondary">Why it is safe</span>
+				<span class="font-label mb-4 block text-xs uppercase tracking-widest text-secondary">{t("about.card2_kicker")}</span>
 				<h2 class="font-headline mb-4 text-3xl font-bold tracking-editorial text-on-surface transition-colors group-hover:text-primary">
-					Quality
+					{t("about.card2_title")}
 				</h2>
 				<p class="font-body text-on-surface-variant">
-					Senior-level craft, EU expectations, GDPR-aware development, and transparent Norwegian-led communication.
+					{t("about.card2_body")}
 				</p>
 				<span
 					class="font-label mt-10 inline-block text-sm uppercase tracking-widest text-on-surface-variant transition-colors group-hover:text-primary"
 				>
-					Explore →
+					{t("about.explore")}
 				</span>
 			</a>
 		</div>
