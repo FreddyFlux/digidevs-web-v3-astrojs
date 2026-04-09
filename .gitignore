@@ -1,5 +1,7 @@
 # build output
 dist/
+# Vercel adapter local build (contains generated secrets / large bundles — do not commit)
+.vercel/
 # generated types
 .astro/
 
