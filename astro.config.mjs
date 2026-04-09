@@ -90,6 +90,11 @@ function rewriteSanityProxyPath(path) {
 export default defineConfig({
   site,
 
+  prefetch: {
+    prefetchAll: true,
+    defaultStrategy: 'hover',
+  },
+
   /** Adapter required for `prerender = false` blog routes (on-demand Sanity by slug). With Astro 6, `output` defaults to static and supports mixed prerendering. */
   adapter: vercel(),
 

@@ -1,12 +1,33 @@
-import { c as createComponent } from './astro-component_B40AbR-h.mjs';
-import { m as maybeRenderHead, l as renderComponent, h as addAttribute, r as renderTemplate, n as renderSlot, o as renderHead } from './entrypoint_Q9hvsXKR.mjs';
+import { c as createComponent } from './_astro_assets_eUqDTgF8.mjs';
+import { d as createRenderInstruction, e as addAttribute, b as renderTemplate, m as maybeRenderHead, r as renderComponent, f as renderSlot, g as renderHead } from './entrypoint_BgW3lNdp.mjs';
+import 'clsx';
 import { jsx, jsxs } from 'react/jsx-runtime';
 import { useState, useRef, useId, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
-import 'clsx';
 import { toHTML, mergeComponents, defaultComponents } from '@portabletext/to-html';
 import { createClient } from '@sanity/client';
 import { createImageUrlBuilder } from '@sanity/image-url';
+
+async function renderScript(result, id) {
+  const inlined = result.inlinedScripts.get(id);
+  let content = "";
+  if (inlined != null) {
+    if (inlined) {
+      content = `<script type="module">${inlined}</script>`;
+    }
+  } else {
+    const resolved = await result.resolve(id);
+    content = `<script type="module" src="${result.userAssetsBase ? (result.base === "/" ? "" : result.base) + result.userAssetsBase : ""}${resolved}"></script>`;
+  }
+  return createRenderInstruction({ type: "script", id, content });
+}
+
+const $$ClientRouter = createComponent(($$result, $$props, $$slots) => {
+  const Astro2 = $$result.createAstro($$props, $$slots);
+  Astro2.self = $$ClientRouter;
+  const { fallback = "animate" } = Astro2.props;
+  return renderTemplate`<meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback"${addAttribute(fallback, "content")}>${renderScript($$result, "/Users/fredrikaarvold/Documents/digiDEVS/digiweb-v3/astro-project/node_modules/.pnpm/astro@6.1.4_@types+node@24.12.2_@vercel+functions@3.4.3_jiti@2.6.1_lightningcss@1.32.0_rollup@4.60.1/node_modules/astro/components/ClientRouter.astro?astro&type=script&index=0&lang.ts")}`;
+}, "/Users/fredrikaarvold/Documents/digiDEVS/digiweb-v3/astro-project/node_modules/.pnpm/astro@6.1.4_@types+node@24.12.2_@vercel+functions@3.4.3_jiti@2.6.1_lightningcss@1.32.0_rollup@4.60.1/node_modules/astro/components/ClientRouter.astro", void 0);
 
 const LOCALES = ["no", "en", "hr"];
 const DEFAULT_LOCALE = "no";
@@ -219,7 +240,7 @@ function GlassNavBar({
                   alt: "digiDEVS",
                   width: 573,
                   height: 95,
-                  className: "block h-7 w-auto sm:h-8",
+                  className: "vt-site-logo block h-7 w-auto sm:h-8",
                   decoding: "async"
                 }
               )
@@ -445,7 +466,7 @@ const $$SiteNavbar = createComponent(($$result, $$props, $$slots) => {
   const { pathname, lang } = Astro2.props;
   const langPrefix = lang === "no" ? "" : `/${lang}`;
   const homeHref = langPrefix || "/";
-  return renderTemplate`${maybeRenderHead()}<header class="pointer-events-none fixed inset-x-0 top-0 z-50"> <div class="pointer-events-auto mx-auto flex w-full max-w-2xl items-start justify-center gap-3 px-4 pt-5 md:px-6 md:pt-6"> <div class="hidden w-full min-w-0 flex-1 items-center justify-center md:flex md:max-w-none"> <div class="flex min-w-0 max-w-full items-center justify-center gap-0"> ${renderComponent($$result, "GlassNavBar", GlassNavBar, { "client:load": true, "pathname": pathname, "lang": lang, "attachRight": true, "client:component-hydration": "load", "client:component-path": "/Users/fredrikaarvold/Documents/digiDEVS/digiweb-v3/astro-project/src/components/layout/GlassNavBar", "client:component-export": "default" })} <div class="relative z-10 shrink-0 -ml-px"> ${renderComponent($$result, "LangSwitcher", LangSwitcher, { "client:load": true, "pathname": pathname, "lang": lang, "attachLeft": true, "client:component-hydration": "load", "client:component-path": "/Users/fredrikaarvold/Documents/digiDEVS/digiweb-v3/astro-project/src/components/layout/LangSwitcher", "client:component-export": "default" })} </div> </div> </div> <div class="flex w-full items-center justify-between rounded-[20px] px-5 py-4 backdrop-blur-[10px] md:hidden" style="background-color: rgba(242, 242, 242, 0.45);"> <a${addAttribute(homeHref, "href")} class="shrink-0 transition-opacity hover:opacity-80"> <img src="/digidevs-logo-dark.svg" alt="digiDEVS" width="573" height="95" class="block h-7 w-auto" decoding="async"> </a> <div class="flex items-center gap-3 text-[#242424] [&_button]:text-[#242424] [&_svg]:text-current"> ${renderComponent($$result, "LangSwitcher", LangSwitcher, { "client:idle": true, "pathname": pathname, "lang": lang, "client:component-hydration": "idle", "client:component-path": "/Users/fredrikaarvold/Documents/digiDEVS/digiweb-v3/astro-project/src/components/layout/LangSwitcher", "client:component-export": "default" })} ${renderComponent($$result, "MobileNav", MobileNav, { "client:idle": true, "pathname": pathname, "lang": lang, "client:component-hydration": "idle", "client:component-path": "/Users/fredrikaarvold/Documents/digiDEVS/digiweb-v3/astro-project/src/components/layout/MobileNav", "client:component-export": "default" })} </div> </div> </div> </header>`;
+  return renderTemplate`${maybeRenderHead()}<header class="pointer-events-none fixed inset-x-0 top-0 z-50"> <div class="pointer-events-auto mx-auto flex w-full max-w-2xl items-start justify-center gap-3 px-4 pt-5 md:px-6 md:pt-6"> <div class="hidden w-full min-w-0 flex-1 items-center justify-center md:flex md:max-w-none"> <div class="flex min-w-0 max-w-full items-center justify-center gap-0"> ${renderComponent($$result, "GlassNavBar", GlassNavBar, { "client:load": true, "pathname": pathname, "lang": lang, "attachRight": true, "client:component-hydration": "load", "client:component-path": "/Users/fredrikaarvold/Documents/digiDEVS/digiweb-v3/astro-project/src/components/layout/GlassNavBar", "client:component-export": "default" })} <div class="relative z-10 shrink-0 -ml-px"> ${renderComponent($$result, "LangSwitcher", LangSwitcher, { "client:load": true, "pathname": pathname, "lang": lang, "attachLeft": true, "client:component-hydration": "load", "client:component-path": "/Users/fredrikaarvold/Documents/digiDEVS/digiweb-v3/astro-project/src/components/layout/LangSwitcher", "client:component-export": "default" })} </div> </div> </div> <div class="flex w-full items-center justify-between rounded-[20px] px-5 py-4 backdrop-blur-[10px] md:hidden" style="background-color: rgba(242, 242, 242, 0.45);"> <a${addAttribute(homeHref, "href")} class="shrink-0 transition-opacity hover:opacity-80"> <img src="/digidevs-logo-dark.svg" alt="digiDEVS" width="573" height="95" class="vt-site-logo block h-7 w-auto" decoding="async"> </a> <div class="flex items-center gap-3 text-[#242424] [&_button]:text-[#242424] [&_svg]:text-current"> ${renderComponent($$result, "LangSwitcher", LangSwitcher, { "client:idle": true, "pathname": pathname, "lang": lang, "client:component-hydration": "idle", "client:component-path": "/Users/fredrikaarvold/Documents/digiDEVS/digiweb-v3/astro-project/src/components/layout/LangSwitcher", "client:component-export": "default" })} ${renderComponent($$result, "MobileNav", MobileNav, { "client:idle": true, "pathname": pathname, "lang": lang, "client:component-hydration": "idle", "client:component-path": "/Users/fredrikaarvold/Documents/digiDEVS/digiweb-v3/astro-project/src/components/layout/MobileNav", "client:component-export": "default" })} </div> </div> </div> </header>`;
 }, "/Users/fredrikaarvold/Documents/digiDEVS/digiweb-v3/astro-project/src/components/layout/SiteNavbar.astro", void 0);
 
 const $$DigiDevsWordmark = createComponent(($$result, $$props, $$slots) => {
@@ -471,12 +492,17 @@ Twitter
 </a> </div> <div class="text-center md:text-right"> <p class="font-label text-[10px] uppercase tracking-[0.3em] text-on-surface-variant/60">${t("footer.cities")}</p> </div> </div> </footer>`;
 }, "/Users/fredrikaarvold/Documents/digiDEVS/digiweb-v3/astro-project/src/components/layout/SiteFooter.astro", void 0);
 
+var __freeze = Object.freeze;
+var __defProp = Object.defineProperty;
+var __template = (cooked, raw) => __freeze(__defProp(cooked, "raw", { value: __freeze(cooked.slice()) }));
+var _a;
 const $$Layout = createComponent(($$result, $$props, $$slots) => {
   const Astro2 = $$result.createAstro($$props, $$slots);
   Astro2.self = $$Layout;
   const {
     title = "digiDEVS",
     description = "Norwegian-led development studio. Web apps, mobile apps, and AI-powered products — EU quality without the Oslo price tag.",
+    keywords,
     lang = "no",
     canonicalUrl,
     ogImage,
@@ -492,7 +518,7 @@ const $$Layout = createComponent(($$result, $$props, $$slots) => {
   const pathSuffix = strippedPath === "/" ? "" : strippedPath;
   const ogLocale = { no: "nb_NO", en: "en_GB", hr: "hr_HR" }[lang] ?? "nb_NO";
   const htmlLang = LOCALE_HTML_LANG[lang] ?? lang;
-  return renderTemplate`<html class="dark"${addAttribute(htmlLang, "lang")}> <head><meta charset="utf-8"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="icon" href="/favicon.ico"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="generator"${addAttribute(Astro2.generator, "content")}><meta name="description"${addAttribute(description, "content")}>${noIndex && renderTemplate`<meta name="robots" content="noindex, nofollow">`}<link rel="canonical"${addAttribute(canonical, "href")}><meta property="og:title"${addAttribute(title, "content")}><meta property="og:description"${addAttribute(description, "content")}><meta property="og:url"${addAttribute(canonical, "content")}><meta property="og:type"${addAttribute(ogType, "content")}><meta property="og:site_name" content="digiDEVS"><meta property="og:locale"${addAttribute(ogLocale, "content")}>${ogImageAbsolute && renderTemplate`<meta property="og:image"${addAttribute(ogImageAbsolute, "content")}>`}<meta name="twitter:card"${addAttribute(twitterCard, "content")}><meta name="twitter:title"${addAttribute(title, "content")}><meta name="twitter:description"${addAttribute(description, "content")}>${ogImageAbsolute && renderTemplate`<meta name="twitter:image"${addAttribute(ogImageAbsolute, "content")}>`}<title>${title}</title><link rel="alternate" hreflang="nb"${addAttribute(`${siteBase}${pathSuffix || "/"}`, "href")}><link rel="alternate" hreflang="en"${addAttribute(`${siteBase}/en${pathSuffix}`, "href")}><link rel="alternate" hreflang="hr"${addAttribute(`${siteBase}/hr${pathSuffix}`, "href")}><link rel="alternate" hreflang="x-default"${addAttribute(`${siteBase}${pathSuffix || "/"}`, "href")}><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700&family=Manrope:wght@200..800&family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">${renderSlot($$result, $$slots["head"])}${renderHead()}</head> <body class="selection:bg-primary-container/90 selection:text-on-primary-container"> ${renderComponent($$result, "SiteNavbar", $$SiteNavbar, { "pathname": pathname, "lang": lang })} ${renderSlot($$result, $$slots["default"])} ${renderComponent($$result, "SiteFooter", $$SiteFooter, { "lang": lang })} </body></html>`;
+  return renderTemplate(_a || (_a = __template(['<html class="dark"', '> <head><meta charset="utf-8"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="icon" href="/favicon.ico"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="generator"', '><meta name="description"', ">", "", '<link rel="canonical"', '><meta property="og:title"', '><meta property="og:description"', '><meta property="og:url"', '><meta property="og:type"', '><meta property="og:site_name" content="digiDEVS"><meta property="og:locale"', ">", '<meta name="twitter:card"', '><meta name="twitter:title"', '><meta name="twitter:description"', ">", "<title>", '</title><link rel="alternate" hreflang="nb"', '><link rel="alternate" hreflang="en"', '><link rel="alternate" hreflang="hr"', '><link rel="alternate" hreflang="x-default"', '><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700&family=Manrope:wght@200..800&family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">', "", "", '</head> <body class="selection:bg-primary-container/90 selection:text-on-primary-container"> ', " ", " ", ' <script>\n			document.addEventListener("astro:after-swap", () => {\n				document.querySelectorAll(".aurora-bar").forEach((el) => {\n					el.classList.remove("aurora-bar");\n					void el.offsetWidth;\n					el.classList.add("aurora-bar");\n				});\n			});\n		</script> </body> </html>'])), addAttribute(htmlLang, "lang"), addAttribute(Astro2.generator, "content"), addAttribute(description, "content"), keywords && renderTemplate`<meta name="keywords"${addAttribute(keywords, "content")}>`, noIndex && renderTemplate`<meta name="robots" content="noindex, nofollow">`, addAttribute(canonical, "href"), addAttribute(title, "content"), addAttribute(description, "content"), addAttribute(canonical, "content"), addAttribute(ogType, "content"), addAttribute(ogLocale, "content"), ogImageAbsolute && renderTemplate`<meta property="og:image"${addAttribute(ogImageAbsolute, "content")}>`, addAttribute(twitterCard, "content"), addAttribute(title, "content"), addAttribute(description, "content"), ogImageAbsolute && renderTemplate`<meta name="twitter:image"${addAttribute(ogImageAbsolute, "content")}>`, title, addAttribute(`${siteBase}${pathSuffix || "/"}`, "href"), addAttribute(`${siteBase}/en${pathSuffix}`, "href"), addAttribute(`${siteBase}/hr${pathSuffix}`, "href"), addAttribute(`${siteBase}${pathSuffix || "/"}`, "href"), renderComponent($$result, "ClientRouter", $$ClientRouter, {}), renderSlot($$result, $$slots["head"]), renderHead(), renderComponent($$result, "SiteNavbar", $$SiteNavbar, { "pathname": pathname, "lang": lang }), renderSlot($$result, $$slots["default"]), renderComponent($$result, "SiteFooter", $$SiteFooter, { "lang": lang }));
 }, "/Users/fredrikaarvold/Documents/digiDEVS/digiweb-v3/astro-project/src/layouts/Layout.astro", void 0);
 
 const __vite_import_meta_env__ = {"ASSETS_PREFIX": undefined, "BASE_URL": "/", "DEV": false, "MODE": "production", "PROD": true, "PUBLIC_SITE_URL": "https://digidevs.no", "SITE": "https://digidevs.no", "SSR": true};
@@ -615,9 +641,15 @@ function mapDocToPost(doc) {
     updatedAt: doc.updatedAt,
     seoTitle: seo?.seoTitle,
     seoDescription: seo?.seoDescription,
+    seoKeywords: normalizeSeoKeywords(seo?.keywords),
     noIndex: seo?.noIndex,
     canonicalUrl: seo?.canonicalUrl
   };
+}
+function normalizeSeoKeywords(raw) {
+  if (!raw?.length) return void 0;
+  const list = raw.map((k) => k.trim()).filter(Boolean);
+  return list.length ? list : void 0;
 }
 async function fetchPostBySlug(lang, slug) {
   const client = getSanityClient();

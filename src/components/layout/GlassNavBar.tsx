@@ -92,7 +92,7 @@ export default function GlassNavBar({
 							alt="digiDEVS"
 							width={573}
 							height={95}
-							className="block h-7 w-auto sm:h-8"
+							className="vt-site-logo block h-7 w-auto sm:h-8"
 							decoding="async"
 						/>
 					</a>

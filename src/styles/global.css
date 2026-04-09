@@ -283,6 +283,17 @@ article.blog-listing-card:has(a:focus-visible) .blog-listing-image,
     animation: aurora-shift 3s ease infinite;
   }
 
+  /** Shared element for Astro view transitions (React nav uses class; blog uses `transition:name` in .astro). */
+  .vt-site-logo {
+    view-transition-name: site-logo;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .vt-site-logo {
+      view-transition-name: none;
+    }
+  }
+
   @keyframes aurora-shift {
     0%,
     100% {

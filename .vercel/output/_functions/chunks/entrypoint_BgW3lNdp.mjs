@@ -4123,7 +4123,7 @@ const ASTRO_PATH_PARAM = "x_astro_path";
 const ASTRO_LOCALS_HEADER = "x-astro-locals";
 const ASTRO_MIDDLEWARE_SECRET_HEADER = "x-astro-middleware-secret";
 
-const middlewareSecret = "fbccb673-02b2-4935-9e48-7937c3e544d3";
+const middlewareSecret = "38dfae95-627b-4f3a-b037-ca7579a17157";
 
 function shouldAppendForwardSlash(trailingSlash, buildFormat) {
   switch (trailingSlash) {
@@ -11893,8 +11893,305 @@ async function renderPage(result, componentFactory, props, children, streaming, 
   }
 }
 
-"0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_".split("").reduce((v, c) => (v[c.charCodeAt(0)] = c, v), []);
-"-0123456789_".split("").reduce((v, c) => (v[c.charCodeAt(0)] = c, v), []);
+const regexAnySingleEscape = /[ -,\.\/:-@\[-\^`\{-~]/;
+const regexSingleEscape = /[ -,\.\/:-@\[\]\^`\{-~]/;
+const regexExcessiveSpaces = /(^|\\+)?(\\[A-F0-9]{1,6})\x20(?![a-fA-F0-9\x20])/g;
+const DEFAULT_OPTIONS = {
+  escapeEverything: false,
+  isIdentifier: false,
+  quotes: "single",
+  wrap: false
+};
+function cssesc(string, options = {}) {
+  options = { ...DEFAULT_OPTIONS, ...options };
+  const quote = options.quotes === "double" ? '"' : "'";
+  const { isIdentifier } = options;
+  const firstChar = string.charAt(0);
+  let output = "";
+  let counter = 0;
+  const length = string.length;
+  while (counter < length) {
+    const character = string.charAt(counter++);
+    let codePoint = character.charCodeAt(0);
+    let value;
+    if (codePoint < 32 || codePoint > 126) {
+      if (codePoint >= 55296 && codePoint <= 56319 && counter < length) {
+        const extra = string.charCodeAt(counter++);
+        if ((extra & 64512) === 56320) {
+          codePoint = ((codePoint & 1023) << 10) + (extra & 1023) + 65536;
+        } else {
+          counter--;
+        }
+      }
+      value = "\\" + codePoint.toString(16).toUpperCase() + " ";
+    } else {
+      if (options.escapeEverything) {
+        if (regexAnySingleEscape.test(character)) {
+          value = "\\" + character;
+        } else {
+          value = "\\" + codePoint.toString(16).toUpperCase() + " ";
+        }
+      } else if (/[\t\n\f\r\x0B]/.test(character)) {
+        value = "\\" + codePoint.toString(16).toUpperCase() + " ";
+      } else if (character === "\\" || !isIdentifier && (character === '"' && quote === character || character === "'" && quote === character) || isIdentifier && regexSingleEscape.test(character)) {
+        value = "\\" + character;
+      } else {
+        value = character;
+      }
+    }
+    output += value;
+  }
+  if (isIdentifier) {
+    if (/^-[-\d]/.test(output)) {
+      output = "\\-" + output.slice(1);
+    } else if (/\d/.test(firstChar)) {
+      output = "\\3" + firstChar + " " + output.slice(1);
+    }
+  }
+  output = output.replace(regexExcessiveSpaces, function($0, $1, $2) {
+    if ($1 && $1.length % 2) {
+      return $0;
+    }
+    return ($1 || "") + $2;
+  });
+  if (!isIdentifier && options.wrap) {
+    return quote + output + quote;
+  }
+  return output;
+}
+
+const EASE_IN_OUT_QUART = "cubic-bezier(0.76, 0, 0.24, 1)";
+function slide({
+  duration
+} = {}) {
+  return {
+    forwards: {
+      old: [
+        {
+          name: "astroFadeOut",
+          duration: duration ?? "90ms",
+          easing: EASE_IN_OUT_QUART,
+          fillMode: "both"
+        },
+        {
+          name: "astroSlideToLeft",
+          duration: duration ?? "220ms",
+          easing: EASE_IN_OUT_QUART,
+          fillMode: "both"
+        }
+      ],
+      new: [
+        {
+          name: "astroFadeIn",
+          duration: duration ?? "210ms",
+          easing: EASE_IN_OUT_QUART,
+          delay: duration ? void 0 : "30ms",
+          fillMode: "both"
+        },
+        {
+          name: "astroSlideFromRight",
+          duration: duration ?? "220ms",
+          easing: EASE_IN_OUT_QUART,
+          fillMode: "both"
+        }
+      ]
+    },
+    backwards: {
+      old: [{ name: "astroFadeOut" }, { name: "astroSlideToRight" }],
+      new: [{ name: "astroFadeIn" }, { name: "astroSlideFromLeft" }]
+    }
+  };
+}
+function fade({
+  duration
+} = {}) {
+  const anim = {
+    old: {
+      name: "astroFadeOut",
+      duration: duration ?? 180,
+      easing: EASE_IN_OUT_QUART,
+      fillMode: "both"
+    },
+    new: {
+      name: "astroFadeIn",
+      duration: duration ?? 180,
+      easing: EASE_IN_OUT_QUART,
+      fillMode: "both"
+    }
+  };
+  return {
+    forwards: anim,
+    backwards: anim
+  };
+}
+
+const transitionNameMap = /* @__PURE__ */ new WeakMap();
+function incrementTransitionNumber(result) {
+  let num = 1;
+  if (transitionNameMap.has(result)) {
+    num = transitionNameMap.get(result) + 1;
+  }
+  transitionNameMap.set(result, num);
+  return num;
+}
+function createTransitionScope(result, hash) {
+  const num = incrementTransitionNumber(result);
+  return `astro-${hash}-${num}`;
+}
+const getAnimations = (name) => {
+  if (name === "fade") return fade();
+  if (name === "slide") return slide();
+  if (typeof name === "object") return name;
+};
+const addPairs = (animations, stylesheet) => {
+  for (const [direction, images] of Object.entries(animations)) {
+    for (const [image, rules] of Object.entries(images)) {
+      stylesheet.addAnimationPair(direction, image, rules);
+    }
+  }
+};
+const reEncodeValidChars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_".split("").reduce((v, c) => (v[c.charCodeAt(0)] = c, v), []);
+const reEncodeInValidStart = "-0123456789_".split("").reduce((v, c) => (v[c.charCodeAt(0)] = c, v), []);
+function reEncode(s) {
+  let result = "";
+  let codepoint;
+  for (let i = 0; i < s.length; i += (codepoint ?? 0) > 65535 ? 2 : 1) {
+    codepoint = s.codePointAt(i);
+    if (codepoint !== void 0) {
+      result += codepoint < 128 ? codepoint === 95 ? "__" : reEncodeValidChars[codepoint] ?? "_" + codepoint.toString(16).padStart(2, "0") : String.fromCodePoint(codepoint);
+    }
+  }
+  return reEncodeInValidStart[result.codePointAt(0) ?? 0] ? "_" + result : result;
+}
+function renderTransition(result, hash, animationName, transitionName) {
+  if (typeof (transitionName ?? "") !== "string") {
+    throw new Error(`Invalid transition name {${transitionName}}`);
+  }
+  if (!animationName) animationName = "fade";
+  const scope = createTransitionScope(result, hash);
+  const name = transitionName ? cssesc(reEncode(transitionName), { isIdentifier: true }) : scope;
+  const sheet = new ViewTransitionStyleSheet(scope, name);
+  const animations = getAnimations(animationName);
+  if (animations) {
+    addPairs(animations, sheet);
+  } else if (animationName === "none") {
+    sheet.addFallback("old", "animation: none; mix-blend-mode: normal;");
+    sheet.addModern("old", "animation: none; opacity: 0; mix-blend-mode: normal;");
+    sheet.addAnimationRaw("new", "animation: none; mix-blend-mode: normal;");
+    sheet.addModern("group", "animation: none");
+  }
+  const css = sheet.toString();
+  result._metadata.extraHead.push(markHTMLString(`<style>${css}</style>`));
+  return scope;
+}
+class ViewTransitionStyleSheet {
+  modern = [];
+  fallback = [];
+  scope;
+  name;
+  constructor(scope, name) {
+    this.scope = scope;
+    this.name = name;
+  }
+  toString() {
+    const { scope, name } = this;
+    const [modern, fallback] = [this.modern, this.fallback].map((rules) => rules.join(""));
+    return [
+      `[data-astro-transition-scope="${scope}"] { view-transition-name: ${name}; }`,
+      this.layer(modern),
+      fallback
+    ].join("");
+  }
+  layer(cssText) {
+    return cssText ? `@layer astro { ${cssText} }` : "";
+  }
+  addRule(target, cssText) {
+    this[target].push(cssText);
+  }
+  addAnimationRaw(image, animation) {
+    this.addModern(image, animation);
+    this.addFallback(image, animation);
+  }
+  addModern(image, animation) {
+    const { name } = this;
+    this.addRule("modern", `::view-transition-${image}(${name}) { ${animation} }`);
+  }
+  addFallback(image, animation) {
+    const { scope } = this;
+    this.addRule(
+      "fallback",
+      // Two selectors here, the second in case there is an animation on the root.
+      `[data-astro-transition-fallback="${image}"] [data-astro-transition-scope="${scope}"],
+			[data-astro-transition-fallback="${image}"][data-astro-transition-scope="${scope}"] { ${animation} }`
+    );
+  }
+  addAnimationPair(direction, image, rules) {
+    const { scope, name } = this;
+    const animation = stringifyAnimation(rules);
+    const prefix = direction === "backwards" ? `[data-astro-transition=back]` : direction === "forwards" ? "" : `[data-astro-transition=${direction}]`;
+    this.addRule("modern", `${prefix}::view-transition-${image}(${name}) { ${animation} }`);
+    this.addRule(
+      "fallback",
+      `${prefix}[data-astro-transition-fallback="${image}"] [data-astro-transition-scope="${scope}"],
+			${prefix}[data-astro-transition-fallback="${image}"][data-astro-transition-scope="${scope}"] { ${animation} }`
+    );
+  }
+}
+function addAnimationProperty(builder, prop, value) {
+  let arr = builder[prop];
+  if (Array.isArray(arr)) {
+    arr.push(value.toString());
+  } else {
+    builder[prop] = [value.toString()];
+  }
+}
+function animationBuilder() {
+  return {
+    toString() {
+      let out = "";
+      for (let k in this) {
+        let value = this[k];
+        if (Array.isArray(value)) {
+          out += `
+	${k}: ${value.join(", ")};`;
+        }
+      }
+      return out;
+    }
+  };
+}
+function stringifyAnimation(anim) {
+  if (Array.isArray(anim)) {
+    return stringifyAnimations(anim);
+  } else {
+    return stringifyAnimations([anim]);
+  }
+}
+function stringifyAnimations(anims) {
+  const builder = animationBuilder();
+  for (const anim of anims) {
+    if (anim.duration) {
+      addAnimationProperty(builder, "animation-duration", toTimeValue(anim.duration));
+    }
+    if (anim.easing) {
+      addAnimationProperty(builder, "animation-timing-function", anim.easing);
+    }
+    if (anim.direction) {
+      addAnimationProperty(builder, "animation-direction", anim.direction);
+    }
+    if (anim.delay) {
+      addAnimationProperty(builder, "animation-delay", anim.delay);
+    }
+    if (anim.fillMode) {
+      addAnimationProperty(builder, "animation-fill-mode", anim.fillMode);
+    }
+    addAnimationProperty(builder, "animation-name", anim.name);
+  }
+  return builder.toString();
+}
+function toTimeValue(num) {
+  return typeof num === "number" ? num + "ms" : num;
+}
 
 function spreadAttributes(values = {}, _name, { class: scopedClassName } = {}) {
   let output = "";
@@ -16788,16 +17085,16 @@ const renderers = [Object.assign({"name":"@astrojs/react","clientEntrypoint":"@a
 const serializedData = [{"file":"","links":[],"scripts":[],"styles":[],"routeData":{"type":"page","component":"_server-islands.astro","params":["name"],"segments":[[{"content":"_server-islands","dynamic":false,"spread":false}],[{"content":"name","dynamic":true,"spread":false}]],"pattern":"^\\/_server-islands\\/([^/]+?)\\/?$","prerender":false,"isIndex":false,"fallbackRoutes":[],"route":"/_server-islands/[name]","origin":"internal","distURL":[],"_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[],"styles":[],"routeData":{"route":"/_image","component":"node_modules/.pnpm/astro@6.1.4_@types+node@24.12.2_@vercel+functions@3.4.3_jiti@2.6.1_lightningcss@1.32.0_rollup@4.60.1/node_modules/astro/dist/assets/endpoint/generic.js","params":[],"pathname":"/_image","pattern":"^\\/_image\\/?$","segments":[[{"content":"_image","dynamic":false,"spread":false}]],"type":"endpoint","prerender":false,"fallbackRoutes":[],"distURL":[],"isIndex":false,"origin":"internal","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[],"styles":[],"routeData":{"route":"/blog/[slug]","isIndex":false,"type":"page","pattern":"^\\/blog\\/([^/]+?)\\/?$","segments":[[{"content":"blog","dynamic":false,"spread":false}],[{"content":"slug","dynamic":true,"spread":false}]],"params":["slug"],"component":"src/pages/blog/[slug].astro","prerender":false,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[],"styles":[],"routeData":{"route":"/[lang]/blog/[slug]","isIndex":false,"type":"page","pattern":"^\\/([^/]+?)\\/blog\\/([^/]+?)\\/?$","segments":[[{"content":"lang","dynamic":true,"spread":false}],[{"content":"blog","dynamic":false,"spread":false}],[{"content":"slug","dynamic":true,"spread":false}]],"params":["lang","slug"],"component":"src/pages/[lang]/blog/[slug].astro","prerender":false,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}}];
 				serializedData.map(deserializeRouteInfo);
 
-const _page0 = () => import('./generic_CN_nQ6Fv.mjs').then(n => n.g);
-const _page1 = () => import('./_slug__DmuBWuEJ.mjs');
-const _page2 = () => import('./_slug__CERXo4Zi.mjs');
+const _page0 = () => import('./generic_B70Pt_Z1.mjs');
+const _page1 = () => import('./_slug__DTS0_9Wk.mjs');
+const _page2 = () => import('./_slug__CFGvRW5L.mjs');
 const pageMap = new Map([
     ["node_modules/.pnpm/astro@6.1.4_@types+node@24.12.2_@vercel+functions@3.4.3_jiti@2.6.1_lightningcss@1.32.0_rollup@4.60.1/node_modules/astro/dist/assets/endpoint/generic.js", _page0],
     ["src/pages/blog/[slug].astro", _page1],
     ["src/pages/[lang]/blog/[slug].astro", _page2]
 ]);
 
-const _manifest = deserializeManifest(({"rootDir":"file:///Users/fredrikaarvold/Documents/digiDEVS/digiweb-v3/astro-project/","cacheDir":"file:///Users/fredrikaarvold/Documents/digiDEVS/digiweb-v3/astro-project/node_modules/.astro/","outDir":"file:///Users/fredrikaarvold/Documents/digiDEVS/digiweb-v3/astro-project/dist/","srcDir":"file:///Users/fredrikaarvold/Documents/digiDEVS/digiweb-v3/astro-project/src/","publicDir":"file:///Users/fredrikaarvold/Documents/digiDEVS/digiweb-v3/astro-project/public/","buildClientDir":"file:///Users/fredrikaarvold/Documents/digiDEVS/digiweb-v3/astro-project/dist/client/","buildServerDir":"file:///Users/fredrikaarvold/Documents/digiDEVS/digiweb-v3/astro-project/dist/server/","adapterName":"@astrojs/vercel","assetsDir":"_astro","routes":[{"file":"","links":[],"scripts":[],"styles":[],"routeData":{"type":"page","component":"_server-islands.astro","params":["name"],"segments":[[{"content":"_server-islands","dynamic":false,"spread":false}],[{"content":"name","dynamic":true,"spread":false}]],"pattern":"^\\/_server-islands\\/([^/]+?)\\/?$","prerender":false,"isIndex":false,"fallbackRoutes":[],"route":"/_server-islands/[name]","origin":"internal","distURL":[],"_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[],"styles":[],"routeData":{"route":"/_image","component":"node_modules/.pnpm/astro@6.1.4_@types+node@24.12.2_@vercel+functions@3.4.3_jiti@2.6.1_lightningcss@1.32.0_rollup@4.60.1/node_modules/astro/dist/assets/endpoint/generic.js","params":[],"pathname":"/_image","pattern":"^\\/_image\\/?$","segments":[[{"content":"_image","dynamic":false,"spread":false}]],"type":"endpoint","prerender":false,"fallbackRoutes":[],"distURL":[],"isIndex":false,"origin":"internal","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[],"styles":[{"type":"external","src":"_astro/Layout.C447ICES.css"},{"type":"inline","content":".devicon-mask[data-astro-cid-4ijlhum4]{-webkit-mask-image:var(--devicon-src);mask-image:var(--devicon-src);-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center}.devicon-mask--tertiary[data-astro-cid-4ijlhum4]{background-color:var(--color-tertiary)}.devicon-mask--primary[data-astro-cid-4ijlhum4]{background-color:var(--color-primary)}.devicon-mask--secondary[data-astro-cid-4ijlhum4]{background-color:var(--color-secondary)}\n"}],"routeData":{"route":"/about/competence","isIndex":false,"type":"page","pattern":"^\\/about\\/competence\\/?$","segments":[[{"content":"about","dynamic":false,"spread":false}],[{"content":"competence","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/about/competence.astro","pathname":"/about/competence","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[],"styles":[{"type":"external","src":"_astro/Layout.C447ICES.css"}],"routeData":{"route":"/about/quality","isIndex":false,"type":"page","pattern":"^\\/about\\/quality\\/?$","segments":[[{"content":"about","dynamic":false,"spread":false}],[{"content":"quality","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/about/quality.astro","pathname":"/about/quality","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[],"styles":[{"type":"external","src":"_astro/Layout.C447ICES.css"}],"routeData":{"route":"/about","isIndex":true,"type":"page","pattern":"^\\/about\\/?$","segments":[[{"content":"about","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/about/index.astro","pathname":"/about","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[],"styles":[{"type":"external","src":"_astro/blog.C447ICES.css"}],"routeData":{"route":"/blog/[slug]","isIndex":false,"type":"page","pattern":"^\\/blog\\/([^/]+?)\\/?$","segments":[[{"content":"blog","dynamic":false,"spread":false}],[{"content":"slug","dynamic":true,"spread":false}]],"params":["slug"],"component":"src/pages/blog/[slug].astro","prerender":false,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[],"styles":[{"type":"external","src":"_astro/Layout.C447ICES.css"}],"routeData":{"route":"/blog","isIndex":true,"type":"page","pattern":"^\\/blog\\/?$","segments":[[{"content":"blog","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/blog/index.astro","pathname":"/blog","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[],"styles":[{"type":"external","src":"_astro/Layout.C447ICES.css"}],"routeData":{"route":"/contact","isIndex":false,"type":"page","pattern":"^\\/contact\\/?$","segments":[[{"content":"contact","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/contact.astro","pathname":"/contact","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[],"styles":[],"routeData":{"route":"/rss.xml","isIndex":false,"type":"endpoint","pattern":"^\\/rss\\.xml$","segments":[[{"content":"rss.xml","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/rss.xml.ts","pathname":"/rss.xml","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[],"styles":[{"type":"external","src":"_astro/Layout.C447ICES.css"},{"type":"inline","content":".devicon-mask[data-astro-cid-4ijlhum4]{-webkit-mask-image:var(--devicon-src);mask-image:var(--devicon-src);-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center}.devicon-mask--tertiary[data-astro-cid-4ijlhum4]{background-color:var(--color-tertiary)}.devicon-mask--primary[data-astro-cid-4ijlhum4]{background-color:var(--color-primary)}.devicon-mask--secondary[data-astro-cid-4ijlhum4]{background-color:var(--color-secondary)}\n"}],"routeData":{"route":"/[lang]/about/competence","isIndex":false,"type":"page","pattern":"^\\/([^/]+?)\\/about\\/competence\\/?$","segments":[[{"content":"lang","dynamic":true,"spread":false}],[{"content":"about","dynamic":false,"spread":false}],[{"content":"competence","dynamic":false,"spread":false}]],"params":["lang"],"component":"src/pages/[lang]/about/competence.astro","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[],"styles":[{"type":"external","src":"_astro/Layout.C447ICES.css"}],"routeData":{"route":"/[lang]/about/quality","isIndex":false,"type":"page","pattern":"^\\/([^/]+?)\\/about\\/quality\\/?$","segments":[[{"content":"lang","dynamic":true,"spread":false}],[{"content":"about","dynamic":false,"spread":false}],[{"content":"quality","dynamic":false,"spread":false}]],"params":["lang"],"component":"src/pages/[lang]/about/quality.astro","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[],"styles":[{"type":"external","src":"_astro/Layout.C447ICES.css"}],"routeData":{"route":"/[lang]/about","isIndex":true,"type":"page","pattern":"^\\/([^/]+?)\\/about\\/?$","segments":[[{"content":"lang","dynamic":true,"spread":false}],[{"content":"about","dynamic":false,"spread":false}]],"params":["lang"],"component":"src/pages/[lang]/about/index.astro","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[],"styles":[{"type":"external","src":"_astro/blog.C447ICES.css"}],"routeData":{"route":"/[lang]/blog/[slug]","isIndex":false,"type":"page","pattern":"^\\/([^/]+?)\\/blog\\/([^/]+?)\\/?$","segments":[[{"content":"lang","dynamic":true,"spread":false}],[{"content":"blog","dynamic":false,"spread":false}],[{"content":"slug","dynamic":true,"spread":false}]],"params":["lang","slug"],"component":"src/pages/[lang]/blog/[slug].astro","prerender":false,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[],"styles":[{"type":"external","src":"_astro/Layout.C447ICES.css"}],"routeData":{"route":"/[lang]/blog","isIndex":true,"type":"page","pattern":"^\\/([^/]+?)\\/blog\\/?$","segments":[[{"content":"lang","dynamic":true,"spread":false}],[{"content":"blog","dynamic":false,"spread":false}]],"params":["lang"],"component":"src/pages/[lang]/blog/index.astro","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[],"styles":[{"type":"external","src":"_astro/Layout.C447ICES.css"}],"routeData":{"route":"/[lang]/contact","isIndex":false,"type":"page","pattern":"^\\/([^/]+?)\\/contact\\/?$","segments":[[{"content":"lang","dynamic":true,"spread":false}],[{"content":"contact","dynamic":false,"spread":false}]],"params":["lang"],"component":"src/pages/[lang]/contact.astro","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[],"styles":[],"routeData":{"route":"/[lang]/rss.xml","isIndex":false,"type":"endpoint","pattern":"^\\/([^/]+?)\\/rss\\.xml\\/?$","segments":[[{"content":"lang","dynamic":true,"spread":false}],[{"content":"rss.xml","dynamic":false,"spread":false}]],"params":["lang"],"component":"src/pages/[lang]/rss.xml.ts","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[],"styles":[{"type":"external","src":"_astro/Layout.C447ICES.css"},{"type":"inline","content":".material-symbols-outlined[data-astro-cid-ct3bgug4]{font-variation-settings:\"FILL\" 0,\"wght\" 400,\"GRAD\" 0,\"opsz\" 24}\n"}],"routeData":{"route":"/[lang]","isIndex":true,"type":"page","pattern":"^\\/([^/]+?)\\/?$","segments":[[{"content":"lang","dynamic":true,"spread":false}]],"params":["lang"],"component":"src/pages/[lang]/index.astro","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[],"styles":[{"type":"external","src":"_astro/Layout.C447ICES.css"},{"type":"inline","content":".material-symbols-outlined[data-astro-cid-j7pv25f6]{font-variation-settings:\"FILL\" 0,\"wght\" 400,\"GRAD\" 0,\"opsz\" 24}\n"}],"routeData":{"route":"/","isIndex":true,"type":"page","pattern":"^\\/$","segments":[],"params":[],"component":"src/pages/index.astro","pathname":"/","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}}],"serverLike":true,"middlewareMode":"classic","site":"https://digidevs.no","base":"/","trailingSlash":"ignore","compressHTML":true,"experimentalQueuedRendering":{"enabled":false,"poolSize":0,"contentCache":false},"componentMetadata":[["/Users/fredrikaarvold/Documents/digiDEVS/digiweb-v3/astro-project/src/pages/[lang]/about/competence.astro",{"propagation":"none","containsHead":true}],["/Users/fredrikaarvold/Documents/digiDEVS/digiweb-v3/astro-project/src/pages/[lang]/about/index.astro",{"propagation":"none","containsHead":true}],["/Users/fredrikaarvold/Documents/digiDEVS/digiweb-v3/astro-project/src/pages/[lang]/about/quality.astro",{"propagation":"none","containsHead":true}],["/Users/fredrikaarvold/Documents/digiDEVS/digiweb-v3/astro-project/src/pages/[lang]/blog/index.astro",{"propagation":"none","containsHead":true}],["/Users/fredrikaarvold/Documents/digiDEVS/digiweb-v3/astro-project/src/pages/[lang]/contact.astro",{"propagation":"none","containsHead":true}],["/Users/fredrikaarvold/Documents/digiDEVS/digiweb-v3/astro-project/src/pages/[lang]/index.astro",{"propagation":"none","containsHead":true}],["/Users/fredrikaarvold/Documents/digiDEVS/digiweb-v3/astro-project/src/pages/about/competence.astro",{"propagation":"none","containsHead":true}],["/Users/fredrikaarvold/Documents/digiDEVS/digiweb-v3/astro-project/src/pages/about/index.astro",{"propagation":"none","containsHead":true}],["/Users/fredrikaarvold/Documents/digiDEVS/digiweb-v3/astro-project/src/pages/about/quality.astro",{"propagation":"none","containsHead":true}],["/Users/fredrikaarvold/Documents/digiDEVS/digiweb-v3/astro-project/src/pages/blog/index.astro",{"propagation":"none","containsHead":true}],["/Users/fredrikaarvold/Documents/digiDEVS/digiweb-v3/astro-project/src/pages/contact.astro",{"propagation":"none","containsHead":true}],["/Users/fredrikaarvold/Documents/digiDEVS/digiweb-v3/astro-project/src/pages/index.astro",{"propagation":"none","containsHead":true}],["/Users/fredrikaarvold/Documents/digiDEVS/digiweb-v3/astro-project/src/pages/[lang]/blog/[slug].astro",{"propagation":"none","containsHead":true}],["/Users/fredrikaarvold/Documents/digiDEVS/digiweb-v3/astro-project/src/pages/blog/[slug].astro",{"propagation":"none","containsHead":true}]],"renderers":[],"clientDirectives":[["idle","(()=>{var l=(n,t)=>{let i=async()=>{await(await n())()},e=typeof t.value==\"object\"?t.value:void 0,s={timeout:e==null?void 0:e.timeout};\"requestIdleCallback\"in window?window.requestIdleCallback(i,s):setTimeout(i,s.timeout||200)};(self.Astro||(self.Astro={})).idle=l;window.dispatchEvent(new Event(\"astro:idle\"));})();"],["load","(()=>{var e=async t=>{await(await t())()};(self.Astro||(self.Astro={})).load=e;window.dispatchEvent(new Event(\"astro:load\"));})();"],["media","(()=>{var n=(a,t)=>{let i=async()=>{await(await a())()};if(t.value){let e=matchMedia(t.value);e.matches?i():e.addEventListener(\"change\",i,{once:!0})}};(self.Astro||(self.Astro={})).media=n;window.dispatchEvent(new Event(\"astro:media\"));})();"],["only","(()=>{var e=async t=>{await(await t())()};(self.Astro||(self.Astro={})).only=e;window.dispatchEvent(new Event(\"astro:only\"));})();"],["visible","(()=>{var a=(s,i,o)=>{let r=async()=>{await(await s())()},t=typeof i.value==\"object\"?i.value:void 0,c={rootMargin:t==null?void 0:t.rootMargin},n=new IntersectionObserver(e=>{for(let l of e)if(l.isIntersecting){n.disconnect(),r();break}},c);for(let e of o.children)n.observe(e)};(self.Astro||(self.Astro={})).visible=a;window.dispatchEvent(new Event(\"astro:visible\"));})();"]],"entryModules":{"\u0000virtual:astro:actions/noop-entrypoint":"chunks/noop-entrypoint_BOlrdqWF.mjs","\u0000noop-middleware":"virtual_astro_middleware.mjs","\u0000virtual:astro:session-driver":"chunks/_virtual_astro_session-driver_DYx9Bb3p.mjs","\u0000virtual:astro:server-island-manifest":"chunks/_virtual_astro_server-island-manifest_CQQ1F5PF.mjs","\u0000virtual:astro:page:src/pages/about/competence@_@astro":"chunks/competence_KqyDVjXa.mjs","\u0000virtual:astro:page:src/pages/about/quality@_@astro":"chunks/quality_X76prjon.mjs","\u0000virtual:astro:page:src/pages/about/index@_@astro":"chunks/index_BVF9K1ig.mjs","\u0000virtual:astro:page:src/pages/blog/index@_@astro":"chunks/index_Vj88mx3w.mjs","\u0000virtual:astro:page:src/pages/contact@_@astro":"chunks/contact_DDXgIJwZ.mjs","\u0000virtual:astro:page:src/pages/rss.xml@_@ts":"chunks/rss_D8tdm6-o.mjs","\u0000virtual:astro:page:src/pages/[lang]/about/competence@_@astro":"chunks/competence_sheYwO5J.mjs","\u0000virtual:astro:page:src/pages/[lang]/about/quality@_@astro":"chunks/quality_D-dP1Ure.mjs","\u0000virtual:astro:page:src/pages/[lang]/about/index@_@astro":"chunks/index_CIJLUavG.mjs","\u0000virtual:astro:page:src/pages/[lang]/blog/index@_@astro":"chunks/index_DMrSEPmR.mjs","\u0000virtual:astro:page:src/pages/[lang]/contact@_@astro":"chunks/contact__B8vZVzQ.mjs","\u0000virtual:astro:page:src/pages/[lang]/rss.xml@_@ts":"chunks/rss_ysOZ2t9k.mjs","\u0000virtual:astro:page:src/pages/[lang]/index@_@astro":"chunks/index_Cb3IHzGt.mjs","\u0000virtual:astro:page:src/pages/index@_@astro":"chunks/index_snFl1OeN.mjs","/Users/fredrikaarvold/Documents/digiDEVS/digiweb-v3/astro-project/node_modules/.pnpm/astro@6.1.4_@types+node@24.12.2_@vercel+functions@3.4.3_jiti@2.6.1_lightningcss@1.32.0_rollup@4.60.1/node_modules/astro/dist/assets/services/sharp.js":"chunks/sharp_sPhM0gBm.mjs","astro/entrypoints/prerender":"prerender-entry.0XtTLald.mjs","@astrojs/vercel/entrypoint":"entry.mjs","\u0000virtual:astro:page:src/pages/blog/[slug]@_@astro":"chunks/_slug__DmuBWuEJ.mjs","\u0000virtual:astro:page:src/pages/[lang]/blog/[slug]@_@astro":"chunks/_slug__CERXo4Zi.mjs","/Users/fredrikaarvold/Documents/digiDEVS/digiweb-v3/astro-project/src/components/layout/GlassNavBar":"_astro/GlassNavBar.DLmLChXy.js","/Users/fredrikaarvold/Documents/digiDEVS/digiweb-v3/astro-project/src/components/layout/LangSwitcher":"_astro/LangSwitcher.D-Un3Nac.js","/Users/fredrikaarvold/Documents/digiDEVS/digiweb-v3/astro-project/src/components/layout/MobileNav":"_astro/MobileNav.DpDBjAzu.js","@astrojs/react/client.js":"_astro/client.DyczpTbx.js","astro:scripts/before-hydration.js":""},"inlinedScripts":[],"assets":["/digidevs-logo-dark.svg","/digidevs-logo-v5.svg","/favicon.ico","/favicon.svg","/_astro/GlassNavBar.DLmLChXy.js","/_astro/LangSwitcher.D-Un3Nac.js","/_astro/MobileNav.DpDBjAzu.js","/_astro/client.DyczpTbx.js","/_astro/index.B02hbnpo.js","/_astro/utils.CwmbnHnn.js","/_astro/digidevs-norsk-hero.DRpG81PF.png","/_astro/digidevs-keyboard.oUbPfczP.png","/_astro/digidevs-opera.B44Dte-F.jpg","/_astro/Layout.C447ICES.css","/_astro/blog.C447ICES.css","/about/competence/index.html","/about/quality/index.html","/about/index.html","/blog/index.html","/contact/index.html","/rss.xml","/index.html"],"i18n":{"fallbackType":"redirect","strategy":"pathname-prefix-other-locales","locales":["no","en","hr"],"defaultLocale":"no","domainLookupTable":{}},"buildFormat":"directory","checkOrigin":true,"actionBodySizeLimit":1048576,"serverIslandBodySizeLimit":1048576,"allowedDomains":[],"key":"++9AeZzLdMP2r7xeiMSr399y8zwL1uc5yu+NZr+NnQc=","image":{},"devToolbar":{"enabled":false,"debugInfoOutput":""},"logLevel":"info","shouldInjectCspMetaTags":false}));
+const _manifest = deserializeManifest(({"rootDir":"file:///Users/fredrikaarvold/Documents/digiDEVS/digiweb-v3/astro-project/","cacheDir":"file:///Users/fredrikaarvold/Documents/digiDEVS/digiweb-v3/astro-project/node_modules/.astro/","outDir":"file:///Users/fredrikaarvold/Documents/digiDEVS/digiweb-v3/astro-project/dist/","srcDir":"file:///Users/fredrikaarvold/Documents/digiDEVS/digiweb-v3/astro-project/src/","publicDir":"file:///Users/fredrikaarvold/Documents/digiDEVS/digiweb-v3/astro-project/public/","buildClientDir":"file:///Users/fredrikaarvold/Documents/digiDEVS/digiweb-v3/astro-project/dist/client/","buildServerDir":"file:///Users/fredrikaarvold/Documents/digiDEVS/digiweb-v3/astro-project/dist/server/","adapterName":"@astrojs/vercel","assetsDir":"_astro","routes":[{"file":"","links":[],"scripts":[],"styles":[],"routeData":{"type":"page","component":"_server-islands.astro","params":["name"],"segments":[[{"content":"_server-islands","dynamic":false,"spread":false}],[{"content":"name","dynamic":true,"spread":false}]],"pattern":"^\\/_server-islands\\/([^/]+?)\\/?$","prerender":false,"isIndex":false,"fallbackRoutes":[],"route":"/_server-islands/[name]","origin":"internal","distURL":[],"_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.CqSH2Wis.js"}],"styles":[],"routeData":{"route":"/_image","component":"node_modules/.pnpm/astro@6.1.4_@types+node@24.12.2_@vercel+functions@3.4.3_jiti@2.6.1_lightningcss@1.32.0_rollup@4.60.1/node_modules/astro/dist/assets/endpoint/generic.js","params":[],"pathname":"/_image","pattern":"^\\/_image\\/?$","segments":[[{"content":"_image","dynamic":false,"spread":false}]],"type":"endpoint","prerender":false,"fallbackRoutes":[],"distURL":[],"isIndex":false,"origin":"internal","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.CqSH2Wis.js"}],"styles":[{"type":"external","src":"_astro/Layout.DrQMls0w.css"},{"type":"inline","content":".devicon-mask[data-astro-cid-4ijlhum4]{-webkit-mask-image:var(--devicon-src);mask-image:var(--devicon-src);-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center}.devicon-mask--tertiary[data-astro-cid-4ijlhum4]{background-color:var(--color-tertiary)}.devicon-mask--primary[data-astro-cid-4ijlhum4]{background-color:var(--color-primary)}.devicon-mask--secondary[data-astro-cid-4ijlhum4]{background-color:var(--color-secondary)}\n"}],"routeData":{"route":"/about/competence","isIndex":false,"type":"page","pattern":"^\\/about\\/competence\\/?$","segments":[[{"content":"about","dynamic":false,"spread":false}],[{"content":"competence","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/about/competence.astro","pathname":"/about/competence","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.CqSH2Wis.js"}],"styles":[{"type":"external","src":"_astro/Layout.DrQMls0w.css"}],"routeData":{"route":"/about/quality","isIndex":false,"type":"page","pattern":"^\\/about\\/quality\\/?$","segments":[[{"content":"about","dynamic":false,"spread":false}],[{"content":"quality","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/about/quality.astro","pathname":"/about/quality","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.CqSH2Wis.js"}],"styles":[{"type":"external","src":"_astro/Layout.DrQMls0w.css"}],"routeData":{"route":"/about","isIndex":true,"type":"page","pattern":"^\\/about\\/?$","segments":[[{"content":"about","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/about/index.astro","pathname":"/about","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.CqSH2Wis.js"}],"styles":[{"type":"external","src":"_astro/viewtransitions.E32AALUm.css"}],"routeData":{"route":"/blog/[slug]","isIndex":false,"type":"page","pattern":"^\\/blog\\/([^/]+?)\\/?$","segments":[[{"content":"blog","dynamic":false,"spread":false}],[{"content":"slug","dynamic":true,"spread":false}]],"params":["slug"],"component":"src/pages/blog/[slug].astro","prerender":false,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.CqSH2Wis.js"}],"styles":[{"type":"external","src":"_astro/Layout.DrQMls0w.css"},{"type":"inline","content":"@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media(prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*){animation:none!important}[data-astro-transition-scope]{animation:none!important}}\n"}],"routeData":{"route":"/blog","isIndex":true,"type":"page","pattern":"^\\/blog\\/?$","segments":[[{"content":"blog","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/blog/index.astro","pathname":"/blog","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.CqSH2Wis.js"}],"styles":[{"type":"external","src":"_astro/Layout.DrQMls0w.css"}],"routeData":{"route":"/contact","isIndex":false,"type":"page","pattern":"^\\/contact\\/?$","segments":[[{"content":"contact","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/contact.astro","pathname":"/contact","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.CqSH2Wis.js"}],"styles":[],"routeData":{"route":"/rss.xml","isIndex":false,"type":"endpoint","pattern":"^\\/rss\\.xml$","segments":[[{"content":"rss.xml","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/rss.xml.ts","pathname":"/rss.xml","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.CqSH2Wis.js"}],"styles":[{"type":"external","src":"_astro/Layout.DrQMls0w.css"},{"type":"inline","content":".devicon-mask[data-astro-cid-4ijlhum4]{-webkit-mask-image:var(--devicon-src);mask-image:var(--devicon-src);-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center}.devicon-mask--tertiary[data-astro-cid-4ijlhum4]{background-color:var(--color-tertiary)}.devicon-mask--primary[data-astro-cid-4ijlhum4]{background-color:var(--color-primary)}.devicon-mask--secondary[data-astro-cid-4ijlhum4]{background-color:var(--color-secondary)}\n"}],"routeData":{"route":"/[lang]/about/competence","isIndex":false,"type":"page","pattern":"^\\/([^/]+?)\\/about\\/competence\\/?$","segments":[[{"content":"lang","dynamic":true,"spread":false}],[{"content":"about","dynamic":false,"spread":false}],[{"content":"competence","dynamic":false,"spread":false}]],"params":["lang"],"component":"src/pages/[lang]/about/competence.astro","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.CqSH2Wis.js"}],"styles":[{"type":"external","src":"_astro/Layout.DrQMls0w.css"}],"routeData":{"route":"/[lang]/about/quality","isIndex":false,"type":"page","pattern":"^\\/([^/]+?)\\/about\\/quality\\/?$","segments":[[{"content":"lang","dynamic":true,"spread":false}],[{"content":"about","dynamic":false,"spread":false}],[{"content":"quality","dynamic":false,"spread":false}]],"params":["lang"],"component":"src/pages/[lang]/about/quality.astro","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.CqSH2Wis.js"}],"styles":[{"type":"external","src":"_astro/Layout.DrQMls0w.css"}],"routeData":{"route":"/[lang]/about","isIndex":true,"type":"page","pattern":"^\\/([^/]+?)\\/about\\/?$","segments":[[{"content":"lang","dynamic":true,"spread":false}],[{"content":"about","dynamic":false,"spread":false}]],"params":["lang"],"component":"src/pages/[lang]/about/index.astro","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.CqSH2Wis.js"}],"styles":[{"type":"external","src":"_astro/viewtransitions.E32AALUm.css"}],"routeData":{"route":"/[lang]/blog/[slug]","isIndex":false,"type":"page","pattern":"^\\/([^/]+?)\\/blog\\/([^/]+?)\\/?$","segments":[[{"content":"lang","dynamic":true,"spread":false}],[{"content":"blog","dynamic":false,"spread":false}],[{"content":"slug","dynamic":true,"spread":false}]],"params":["lang","slug"],"component":"src/pages/[lang]/blog/[slug].astro","prerender":false,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.CqSH2Wis.js"}],"styles":[{"type":"external","src":"_astro/Layout.DrQMls0w.css"},{"type":"inline","content":"@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media(prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*){animation:none!important}[data-astro-transition-scope]{animation:none!important}}\n"}],"routeData":{"route":"/[lang]/blog","isIndex":true,"type":"page","pattern":"^\\/([^/]+?)\\/blog\\/?$","segments":[[{"content":"lang","dynamic":true,"spread":false}],[{"content":"blog","dynamic":false,"spread":false}]],"params":["lang"],"component":"src/pages/[lang]/blog/index.astro","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.CqSH2Wis.js"}],"styles":[{"type":"external","src":"_astro/Layout.DrQMls0w.css"}],"routeData":{"route":"/[lang]/contact","isIndex":false,"type":"page","pattern":"^\\/([^/]+?)\\/contact\\/?$","segments":[[{"content":"lang","dynamic":true,"spread":false}],[{"content":"contact","dynamic":false,"spread":false}]],"params":["lang"],"component":"src/pages/[lang]/contact.astro","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.CqSH2Wis.js"}],"styles":[],"routeData":{"route":"/[lang]/rss.xml","isIndex":false,"type":"endpoint","pattern":"^\\/([^/]+?)\\/rss\\.xml\\/?$","segments":[[{"content":"lang","dynamic":true,"spread":false}],[{"content":"rss.xml","dynamic":false,"spread":false}]],"params":["lang"],"component":"src/pages/[lang]/rss.xml.ts","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.CqSH2Wis.js"}],"styles":[{"type":"external","src":"_astro/Layout.DrQMls0w.css"},{"type":"inline","content":".material-symbols-outlined[data-astro-cid-ct3bgug4]{font-variation-settings:\"FILL\" 0,\"wght\" 400,\"GRAD\" 0,\"opsz\" 24}\n@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media(prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*){animation:none!important}[data-astro-transition-scope]{animation:none!important}}\n"}],"routeData":{"route":"/[lang]","isIndex":true,"type":"page","pattern":"^\\/([^/]+?)\\/?$","segments":[[{"content":"lang","dynamic":true,"spread":false}]],"params":["lang"],"component":"src/pages/[lang]/index.astro","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.CqSH2Wis.js"}],"styles":[{"type":"external","src":"_astro/Layout.DrQMls0w.css"},{"type":"inline","content":".material-symbols-outlined[data-astro-cid-j7pv25f6]{font-variation-settings:\"FILL\" 0,\"wght\" 400,\"GRAD\" 0,\"opsz\" 24}\n@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media(prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*){animation:none!important}[data-astro-transition-scope]{animation:none!important}}\n"}],"routeData":{"route":"/","isIndex":true,"type":"page","pattern":"^\\/$","segments":[],"params":[],"component":"src/pages/index.astro","pathname":"/","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}}],"serverLike":true,"middlewareMode":"classic","site":"https://digidevs.no","base":"/","trailingSlash":"ignore","compressHTML":true,"experimentalQueuedRendering":{"enabled":false,"poolSize":0,"contentCache":false},"componentMetadata":[["/Users/fredrikaarvold/Documents/digiDEVS/digiweb-v3/astro-project/src/pages/[lang]/about/competence.astro",{"propagation":"none","containsHead":true}],["/Users/fredrikaarvold/Documents/digiDEVS/digiweb-v3/astro-project/src/pages/[lang]/about/index.astro",{"propagation":"none","containsHead":true}],["/Users/fredrikaarvold/Documents/digiDEVS/digiweb-v3/astro-project/src/pages/[lang]/about/quality.astro",{"propagation":"none","containsHead":true}],["/Users/fredrikaarvold/Documents/digiDEVS/digiweb-v3/astro-project/src/pages/[lang]/blog/index.astro",{"propagation":"in-tree","containsHead":true}],["/Users/fredrikaarvold/Documents/digiDEVS/digiweb-v3/astro-project/src/pages/[lang]/contact.astro",{"propagation":"none","containsHead":true}],["/Users/fredrikaarvold/Documents/digiDEVS/digiweb-v3/astro-project/src/pages/[lang]/index.astro",{"propagation":"in-tree","containsHead":true}],["/Users/fredrikaarvold/Documents/digiDEVS/digiweb-v3/astro-project/src/pages/about/competence.astro",{"propagation":"none","containsHead":true}],["/Users/fredrikaarvold/Documents/digiDEVS/digiweb-v3/astro-project/src/pages/about/index.astro",{"propagation":"none","containsHead":true}],["/Users/fredrikaarvold/Documents/digiDEVS/digiweb-v3/astro-project/src/pages/about/quality.astro",{"propagation":"none","containsHead":true}],["/Users/fredrikaarvold/Documents/digiDEVS/digiweb-v3/astro-project/src/pages/blog/index.astro",{"propagation":"in-tree","containsHead":true}],["/Users/fredrikaarvold/Documents/digiDEVS/digiweb-v3/astro-project/src/pages/contact.astro",{"propagation":"none","containsHead":true}],["/Users/fredrikaarvold/Documents/digiDEVS/digiweb-v3/astro-project/src/pages/index.astro",{"propagation":"in-tree","containsHead":true}],["\u0000virtual:astro:page:src/pages/blog/index@_@astro",{"propagation":"in-tree","containsHead":false}],["\u0000virtual:astro:pages",{"propagation":"in-tree","containsHead":false}],["\u0000virtual:astro:manifest",{"propagation":"in-tree","containsHead":false}],["/Users/fredrikaarvold/Documents/digiDEVS/digiweb-v3/astro-project/node_modules/.pnpm/astro@6.1.4_@types+node@24.12.2_@vercel+functions@3.4.3_jiti@2.6.1_lightningcss@1.32.0_rollup@4.60.1/node_modules/astro/dist/entrypoints/prerender.js",{"propagation":"in-tree","containsHead":false}],["\u0000virtual:astro:page:src/pages/[lang]/blog/index@_@astro",{"propagation":"in-tree","containsHead":false}],["\u0000virtual:astro:page:src/pages/[lang]/index@_@astro",{"propagation":"in-tree","containsHead":false}],["\u0000virtual:astro:page:src/pages/index@_@astro",{"propagation":"in-tree","containsHead":false}],["/Users/fredrikaarvold/Documents/digiDEVS/digiweb-v3/astro-project/src/pages/[lang]/blog/[slug].astro",{"propagation":"in-tree","containsHead":true}],["/Users/fredrikaarvold/Documents/digiDEVS/digiweb-v3/astro-project/src/pages/blog/[slug].astro",{"propagation":"in-tree","containsHead":true}],["\u0000virtual:astro:page:src/pages/blog/[slug]@_@astro",{"propagation":"in-tree","containsHead":false}],["/Users/fredrikaarvold/Documents/digiDEVS/digiweb-v3/astro-project/node_modules/.pnpm/astro@6.1.4_@types+node@24.12.2_@vercel+functions@3.4.3_jiti@2.6.1_lightningcss@1.32.0_rollup@4.60.1/node_modules/astro/dist/core/app/entrypoints/virtual/prod.js",{"propagation":"in-tree","containsHead":false}],["\u0000virtual:astro:app",{"propagation":"in-tree","containsHead":false}],["\u0000virtual:astro:page:src/pages/[lang]/blog/[slug]@_@astro",{"propagation":"in-tree","containsHead":false}]],"renderers":[],"clientDirectives":[["idle","(()=>{var l=(n,t)=>{let i=async()=>{await(await n())()},e=typeof t.value==\"object\"?t.value:void 0,s={timeout:e==null?void 0:e.timeout};\"requestIdleCallback\"in window?window.requestIdleCallback(i,s):setTimeout(i,s.timeout||200)};(self.Astro||(self.Astro={})).idle=l;window.dispatchEvent(new Event(\"astro:idle\"));})();"],["load","(()=>{var e=async t=>{await(await t())()};(self.Astro||(self.Astro={})).load=e;window.dispatchEvent(new Event(\"astro:load\"));})();"],["media","(()=>{var n=(a,t)=>{let i=async()=>{await(await a())()};if(t.value){let e=matchMedia(t.value);e.matches?i():e.addEventListener(\"change\",i,{once:!0})}};(self.Astro||(self.Astro={})).media=n;window.dispatchEvent(new Event(\"astro:media\"));})();"],["only","(()=>{var e=async t=>{await(await t())()};(self.Astro||(self.Astro={})).only=e;window.dispatchEvent(new Event(\"astro:only\"));})();"],["visible","(()=>{var a=(s,i,o)=>{let r=async()=>{await(await s())()},t=typeof i.value==\"object\"?i.value:void 0,c={rootMargin:t==null?void 0:t.rootMargin},n=new IntersectionObserver(e=>{for(let l of e)if(l.isIntersecting){n.disconnect(),r();break}},c);for(let e of o.children)n.observe(e)};(self.Astro||(self.Astro={})).visible=a;window.dispatchEvent(new Event(\"astro:visible\"));})();"]],"entryModules":{"\u0000virtual:astro:actions/noop-entrypoint":"chunks/noop-entrypoint_BOlrdqWF.mjs","\u0000noop-middleware":"virtual_astro_middleware.mjs","\u0000virtual:astro:session-driver":"chunks/_virtual_astro_session-driver_DYx9Bb3p.mjs","\u0000virtual:astro:server-island-manifest":"chunks/_virtual_astro_server-island-manifest_CQQ1F5PF.mjs","\u0000virtual:astro:page:src/pages/about/competence@_@astro":"chunks/competence_D3JKlZL0.mjs","\u0000virtual:astro:page:src/pages/about/quality@_@astro":"chunks/quality_BrxoqMfj.mjs","\u0000virtual:astro:page:src/pages/about/index@_@astro":"chunks/index_BJufrtWf.mjs","\u0000virtual:astro:page:src/pages/blog/index@_@astro":"chunks/index_Ch26f1Lv.mjs","\u0000virtual:astro:page:src/pages/contact@_@astro":"chunks/contact_CMUPzkiX.mjs","\u0000virtual:astro:page:src/pages/rss.xml@_@ts":"chunks/rss_C1vKFXhc.mjs","\u0000virtual:astro:page:src/pages/[lang]/about/competence@_@astro":"chunks/competence_53IGcCNl.mjs","\u0000virtual:astro:page:src/pages/[lang]/about/quality@_@astro":"chunks/quality_BC3cgHU2.mjs","\u0000virtual:astro:page:src/pages/[lang]/about/index@_@astro":"chunks/index_DA9JuSr8.mjs","\u0000virtual:astro:page:src/pages/[lang]/blog/index@_@astro":"chunks/index_ClNfz8_r.mjs","\u0000virtual:astro:page:src/pages/[lang]/contact@_@astro":"chunks/contact_DP-NeLt_.mjs","\u0000virtual:astro:page:src/pages/[lang]/rss.xml@_@ts":"chunks/rss_C78YnkRy.mjs","\u0000virtual:astro:page:src/pages/[lang]/index@_@astro":"chunks/index_B70nhmfn.mjs","\u0000virtual:astro:page:src/pages/index@_@astro":"chunks/index_C2XDAwiv.mjs","/Users/fredrikaarvold/Documents/digiDEVS/digiweb-v3/astro-project/node_modules/.pnpm/astro@6.1.4_@types+node@24.12.2_@vercel+functions@3.4.3_jiti@2.6.1_lightningcss@1.32.0_rollup@4.60.1/node_modules/astro/dist/assets/services/sharp.js":"chunks/sharp_CLEbJmlW.mjs","astro/entrypoints/prerender":"prerender-entry.BTW6axDW.mjs","@astrojs/vercel/entrypoint":"entry.mjs","\u0000virtual:astro:page:node_modules/.pnpm/astro@6.1.4_@types+node@24.12.2_@vercel+functions@3.4.3_jiti@2.6.1_lightningcss@1.32.0_rollup@4.60.1/node_modules/astro/dist/assets/endpoint/generic@_@js":"chunks/generic_B70Pt_Z1.mjs","\u0000virtual:astro:page:src/pages/blog/[slug]@_@astro":"chunks/_slug__DTS0_9Wk.mjs","\u0000virtual:astro:page:src/pages/[lang]/blog/[slug]@_@astro":"chunks/_slug__CFGvRW5L.mjs","/Users/fredrikaarvold/Documents/digiDEVS/digiweb-v3/astro-project/src/components/layout/GlassNavBar":"_astro/GlassNavBar.Ce-5EiUh.js","/Users/fredrikaarvold/Documents/digiDEVS/digiweb-v3/astro-project/src/components/layout/LangSwitcher":"_astro/LangSwitcher.D-Un3Nac.js","/Users/fredrikaarvold/Documents/digiDEVS/digiweb-v3/astro-project/src/components/layout/MobileNav":"_astro/MobileNav.DpDBjAzu.js","@astrojs/react/client.js":"_astro/client.DyczpTbx.js","/Users/fredrikaarvold/Documents/digiDEVS/digiweb-v3/astro-project/node_modules/.pnpm/astro@6.1.4_@types+node@24.12.2_@vercel+functions@3.4.3_jiti@2.6.1_lightningcss@1.32.0_rollup@4.60.1/node_modules/astro/components/ClientRouter.astro?astro&type=script&index=0&lang.ts":"_astro/ClientRouter.astro_astro_type_script_index_0_lang.kB4EFqjn.js","astro:scripts/page.js":"_astro/page.CqSH2Wis.js","astro:scripts/before-hydration.js":""},"inlinedScripts":[],"assets":["/digidevs-logo-dark.svg","/digidevs-logo-v5.svg","/favicon.ico","/favicon.svg","/_astro/ClientRouter.astro_astro_type_script_index_0_lang.kB4EFqjn.js","/_astro/GlassNavBar.Ce-5EiUh.js","/_astro/LangSwitcher.D-Un3Nac.js","/_astro/MobileNav.DpDBjAzu.js","/_astro/client.DyczpTbx.js","/_astro/index.B02hbnpo.js","/_astro/index.qYdffQWl.js","/_astro/page.CqSH2Wis.js","/_astro/utils.CwmbnHnn.js","/_astro/digidevs-norsk-hero.DRpG81PF.png","/_astro/digidevs-keyboard.oUbPfczP.png","/_astro/digidevs-opera.B44Dte-F.jpg","/_astro/Layout.DrQMls0w.css","/_astro/viewtransitions.E32AALUm.css","/_astro/page.CqSH2Wis.js","/about/competence/index.html","/about/quality/index.html","/about/index.html","/blog/index.html","/contact/index.html","/rss.xml","/index.html"],"i18n":{"fallbackType":"redirect","strategy":"pathname-prefix-other-locales","locales":["no","en","hr"],"defaultLocale":"no","domainLookupTable":{}},"buildFormat":"directory","checkOrigin":true,"actionBodySizeLimit":1048576,"serverIslandBodySizeLimit":1048576,"allowedDomains":[],"key":"TBz+7W/h6d0BFj+CU64NPXy1U1KsBmd5xZbwHLCSg5g=","image":{},"devToolbar":{"enabled":false,"debugInfoOutput":""},"logLevel":"info","shouldInjectCspMetaTags":false}));
 					const manifestRoutes = _manifest.routes;
 					
 					const manifest = Object.assign(_manifest, {
@@ -16881,4 +17178,4 @@ var entrypoint_default = {
   }
 };
 
-export { AstroError as A, ExpectedImage as E, FailedToFetchRemoteImageDimensions as F, IncompatibleDescriptorOptions as I, LocalImageUsedWrongly as L, MissingImageDimension as M, NoImageMetadata as N, RemoteImageNotAllowed as R, UnsupportedImageFormat as U, types as a, isRemotePath as b, UnsupportedImageConversion as c, InvalidImageService as d, ExpectedImageOptions as e, ExpectedNotESMImage as f, ImageMissingAlt as g, addAttribute as h, isRemoteAllowed as i, joinPaths as j, FontFamilyNotFound as k, renderComponent as l, maybeRenderHead as m, renderSlot as n, renderHead as o, InvalidComponentArgs as p, MissingSharp as q, renderTemplate as r, spreadAttributes as s, typeHandlers as t, unescapeHTML as u, entrypoint_default as v };
+export { AstroError as A, ExpectedImage as E, FailedToFetchRemoteImageDimensions as F, InvalidComponentArgs as I, LocalImageUsedWrongly as L, MissingImageDimension as M, NoImageMetadata as N, RemoteImageNotAllowed as R, UnsupportedImageFormat as U, isRemoteAllowed as a, renderTemplate as b, renderTransition as c, createRenderInstruction as d, addAttribute as e, renderSlot as f, renderHead as g, types as h, isRemotePath as i, joinPaths as j, IncompatibleDescriptorOptions as k, UnsupportedImageConversion as l, maybeRenderHead as m, InvalidImageService as n, ExpectedImageOptions as o, ExpectedNotESMImage as p, ImageMissingAlt as q, renderComponent as r, spreadAttributes as s, typeHandlers as t, unescapeHTML as u, FontFamilyNotFound as v, MissingSharp as w, entrypoint_default as x };

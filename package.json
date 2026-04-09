@@ -9,6 +9,7 @@
     "dev": "astro dev",
     "dev:with-studio": "concurrently -n astro,studio -c cyan,magenta \"pnpm run dev\" \"pnpm run studio\"",
     "build": "astro build",
+    "verify:enhancements": "node ./scripts/verify-enhancements.mjs",
     "preview": "astro preview",
     "astro": "astro",
     "seed:sanity": "node --env-file=.env ./scripts/seed-sanity-blog.mjs",

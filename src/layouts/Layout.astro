@@ -1,5 +1,6 @@
 ---
 import "../styles/global.css";
+import { ClientRouter } from "astro:transitions";
 import type { Locale } from "../i18n/locales";
 import { LOCALE_HTML_LANG } from "../i18n/locales";
 import { stripLocalePrefixFromPathname } from "../i18n/utils";
@@ -9,6 +10,8 @@ import SiteFooter from "../components/layout/SiteFooter.astro";
 interface Props {
 	title?: string;
 	description?: string;
+	/** Comma-separated meta keywords (optional; many crawlers ignore this, but useful internally) */
+	keywords?: string;
 	lang?: Locale;
 	/** Full URL; defaults to current path on PUBLIC_SITE_URL */
 	canonicalUrl?: string;
@@ -21,6 +24,7 @@ interface Props {
 const {
 	title = "digiDEVS",
 	description = "Norwegian-led development studio. Web apps, mobile apps, and AI-powered products — EU quality without the Oslo price tag.",
+	keywords,
 	lang = "no",
 	canonicalUrl,
 	ogImage,
@@ -54,6 +58,7 @@ const htmlLang = LOCALE_HTML_LANG[lang] ?? lang;
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta name="generator" content={Astro.generator} />
 		<meta name="description" content={description} />
+		{keywords && <meta name="keywords" content={keywords} />}
 		{noIndex && <meta name="robots" content="noindex, nofollow" />}
 		<link rel="canonical" href={canonical} />
 		<meta property="og:title" content={title} />
@@ -78,11 +83,21 @@ const htmlLang = LOCALE_HTML_LANG[lang] ?? lang;
 			href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700&family=Manrope:wght@200..800&family=Space+Grotesk:wght@300..700&display=swap"
 			rel="stylesheet"
 		/>
+		<ClientRouter />
 		<slot name="head" />
 	</head>
 	<body class="selection:bg-primary-container/90 selection:text-on-primary-container">
 		<SiteNavbar pathname={pathname} lang={lang} />
 		<slot />
 		<SiteFooter lang={lang} />
+		<script is:inline>
+			document.addEventListener("astro:after-swap", () => {
+				document.querySelectorAll(".aurora-bar").forEach((el) => {
+					el.classList.remove("aurora-bar");
+					void el.offsetWidth;
+					el.classList.add("aurora-bar");
+				});
+			});
+		</script>
 	</body>
 </html>

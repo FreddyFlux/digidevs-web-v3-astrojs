@@ -1,4 +1,4 @@
-import { defineField, defineType } from "sanity";
+import { defineArrayMember, defineField, defineType } from "sanity";
 
 export const seo = defineType({
 	name: "seo",
@@ -19,6 +19,17 @@ export const seo = defineType({
 			type: "text",
 			rows: 3,
 			validation: (Rule) => Rule.max(200).warning("Keep under ~160 characters"),
+		}),
+		defineField({
+			name: "keywords",
+			title: "Keywords / tags",
+			description:
+				"Search and topic tags for this post (meta keywords and structured data). Separate concepts with new tags.",
+			type: "array",
+			of: [defineArrayMember({ type: "string" })],
+			options: { layout: "tags" },
+			validation: (Rule) =>
+				Rule.max(20).warning("Fewer, specific keywords usually work better than long lists"),
 		}),
 		defineField({
 			name: "noIndex",

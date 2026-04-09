@@ -63,6 +63,7 @@ const t = useTranslations(lang);
 			<div class="relative z-20 mx-auto w-full max-w-[1200px] px-6 pb-16 pt-28 md:px-10 md:pb-24 md:pt-32 lg:px-12">
 				<h1
 					class="font-headline text-[clamp(3rem,8vw,7.5rem)] font-black leading-[1.01] tracking-tighter text-on-surface"
+					transition:animate="slide"
 				>
 					{t("home.hero_headline_1")}
 					<br />
@@ -104,7 +105,11 @@ const t = useTranslations(lang);
 			</div>
 		</section>
 
-		<section id="capabilities" class="bg-surface px-6 py-24 md:px-10 md:py-32 lg:px-12">
+		<section
+			id="capabilities"
+			class="bg-surface px-6 py-24 md:px-10 md:py-32 lg:px-12"
+			transition:animate="fade"
+		>
 			<div class="mx-auto max-w-[1920px]">
 				<div class="mb-16 md:mb-20">
 					<h2 class="font-headline text-4xl font-bold uppercase tracking-tighter md:text-5xl">

@@ -21,6 +21,8 @@ export type BlogPost = {
 	seoDescription?: string;
 	noIndex?: boolean;
 	canonicalUrl?: string;
+	/** SEO keywords from Sanity (meta + JSON-LD) */
+	seoKeywords?: string[];
 };
 
 export type SanityPostDoc = {
@@ -45,6 +47,7 @@ export type SanityPostDoc = {
 	seo?: {
 		seoTitle?: string;
 		seoDescription?: string;
+		keywords?: string[];
 		noIndex?: boolean;
 		canonicalUrl?: string;
 	};
@@ -107,9 +110,16 @@ function mapDocToPost(doc: SanityPostDoc): BlogPost {
 		updatedAt: doc.updatedAt,
 		seoTitle: seo?.seoTitle,
 		seoDescription: seo?.seoDescription,
+		seoKeywords: normalizeSeoKeywords(seo?.keywords),
 		noIndex: seo?.noIndex,
 		canonicalUrl: seo?.canonicalUrl,
 	};
+}
+
+function normalizeSeoKeywords(raw: string[] | undefined): string[] | undefined {
+	if (!raw?.length) return undefined;
+	const list = raw.map((k) => k.trim()).filter(Boolean);
+	return list.length ? list : undefined;
 }
 
 export async function fetchAllPosts(lang: Locale): Promise<BlogPost[]> {
