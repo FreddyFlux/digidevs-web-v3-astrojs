@@ -359,6 +359,89 @@
 }
 
 /*
+ * Modern Stack bento: smooth <details> height + copy/card motion (CSS only).
+ */
+.cap-stack-bento {
+  transition:
+    box-shadow 0.55s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.55s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.cap-stack-copy {
+  transition:
+    transform 0.55s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.5s ease;
+}
+
+.cap-stack-bento:has(#capability-stack-details[open]) {
+  box-shadow:
+    0 20px 50px -15px color-mix(in oklab, var(--color-background) 65%, transparent),
+    0 0 0 1px color-mix(in oklab, var(--color-outline-variant) 25%, transparent);
+  transform: translateY(-2px);
+}
+
+.cap-stack-bento:has(#capability-stack-details[open]) .cap-stack-copy {
+  transform: translateY(-3px);
+  opacity: 0.94;
+}
+
+/* JS adds this ~0.2s before icon exit ends: start panel + card easing back while icons finish. */
+.cap-stack-bento:has(#capability-stack-details[open].is-panel-early-collapse) {
+  box-shadow: none;
+  transform: none;
+}
+
+.cap-stack-bento:has(#capability-stack-details[open].is-panel-early-collapse) .cap-stack-copy {
+  transform: none;
+  opacity: 1;
+}
+
+/* Grid 0fr → 1fr: animated height for accordion body without JS. */
+.cap-details-panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.55s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#capability-stack-details[open] .cap-details-panel {
+  grid-template-rows: 1fr;
+}
+
+#capability-stack-details[open].is-panel-early-collapse .cap-details-panel {
+  grid-template-rows: 0fr;
+}
+
+.cap-details-panel-inner {
+  overflow: hidden;
+  min-height: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cap-stack-bento,
+  .cap-stack-copy {
+    transition: none;
+  }
+
+  .cap-details-panel {
+    transition: none;
+  }
+
+  .cap-stack-bento:has(#capability-stack-details[open]) {
+    transform: none;
+    box-shadow: none;
+  }
+
+  .cap-stack-bento:has(#capability-stack-details[open]) .cap-stack-copy {
+    transform: none;
+    opacity: 1;
+  }
+
+  #capability-stack-details[open].is-panel-early-collapse .cap-details-panel {
+    transition: none;
+  }
+}
+
+/*
  * Capability list devicons: entrance + 360° spin on .devicon-enter-wrap only.
  * The mask stays transform-free (tint / Astro scoped styles / Tailwind can’t break spin).
  * Unlayered so utilities/HMR order can’t override. competence.astro: devicon-enter-wrap.
@@ -374,6 +457,17 @@
   }
 }
 
+@keyframes devicon-spring-out {
+  from {
+    opacity: 1;
+    transform: scale(1) rotate(360deg);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.88) rotate(0deg);
+  }
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .devicon-enter-stagger .devicon-enter-wrap {
     display: inline-block;
@@ -385,9 +479,17 @@
     transform: scale(0.88) rotate(0deg);
   }
 
-  details[open] .devicon-enter-stagger .devicon-enter-wrap {
+  details[open]:not(.is-closing-capability) .devicon-enter-stagger .devicon-enter-wrap {
     animation: devicon-spring-in 0.65s cubic-bezier(0.34, 1.56, 0.64, 1) both;
     animation-delay: calc(var(--devicon-stagger-index, 0) * 0.1s);
+  }
+
+  /* Reverse stagger: last icon exits first (JS keeps <details open> until this finishes). */
+  details[open].is-closing-capability .devicon-enter-stagger .devicon-enter-wrap {
+    animation: devicon-spring-out 0.65s cubic-bezier(0.4, 0, 0.2, 1) both;
+    animation-delay: calc(
+      (var(--devicon-stagger-total) - 1 - var(--devicon-stagger-index, 0)) * 0.1s
+    );
   }
 }
 

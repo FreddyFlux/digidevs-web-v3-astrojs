@@ -122,28 +122,40 @@ const capabilityStackPaths = [
 				</div>
 
 				<div
-					class="flex flex-col items-center gap-12 rounded-2xl bg-surface-container p-10 md:col-span-7 md:flex-row"
+					class="cap-stack-bento flex flex-col items-center gap-12 rounded-2xl bg-surface-container p-10 md:col-span-7 md:flex-row"
 				>
 					<div class="flex-1">
-						<h3 class="font-headline mb-6 text-3xl font-bold tracking-editorial text-on-surface">Modern Stack Mastery</h3>
-						<p class="font-body mb-6 text-on-surface-variant">
-							We build with technologies designed for the future: Rust, TypeScript, and distributed systems architecture.
-						</p>
-						<details class="group/cap [&_summary::-webkit-details-marker]:hidden [&_summary]:list-none">
+						<div class="cap-stack-copy">
+							<h3 class="font-headline mb-6 text-3xl font-bold tracking-editorial text-on-surface">Modern Stack Mastery</h3>
+							<p class="font-body mb-6 text-on-surface-variant">
+								We build with technologies designed for the future: Rust, TypeScript, and distributed systems architecture.
+							</p>
+						</div>
+						<details
+							id="capability-stack-details"
+							class="group/cap [&_summary::-webkit-details-marker]:hidden [&_summary]:list-none"
+						>
 							<summary
 								class="link-tertiary inline-flex cursor-pointer list-none items-center gap-2 font-label text-sm font-medium uppercase tracking-widest outline-none focus-visible:ring-2 focus-visible:ring-secondary-focus focus-visible:ring-offset-2 focus-visible:ring-offset-surface-container"
 							>
 								Full capability list &darr;
 		
 							</summary>
-							<div class="devicon-enter-stagger mt-6 flex max-w-xs flex-wrap gap-2">
-								{
-									capabilityStackPaths.map((path, index) => (
-										<span class="devicon-enter-wrap" style={`--devicon-stagger-index: ${index}`}>
-											<DeviconMask path={path} tint="secondary" />
-										</span>
-									))
-								}
+							<div class="cap-details-panel">
+								<div class="cap-details-panel-inner">
+									<div
+										class="devicon-enter-stagger mt-6 flex max-w-xs flex-wrap gap-2"
+										style={`--devicon-stagger-total: ${capabilityStackPaths.length}`}
+									>
+										{
+											capabilityStackPaths.map((path, index) => (
+												<span class="devicon-enter-wrap" style={`--devicon-stagger-index: ${index}`}>
+													<DeviconMask path={path} tint="secondary" />
+												</span>
+											))
+										}
+									</div>
+								</div>
 							</div>
 						</details>
 					</div>
@@ -218,4 +230,69 @@ const capabilityStackPaths = [
 			</div>
 		</section>
 	</main>
+
+	<script is:inline>
+		const CAPABILITY_STAGGER_MS = 100;
+		const CAPABILITY_ANIM_MS = 650;
+		/** Start panel + bento collapse this many ms before the last icon’s exit finishes. */
+		const CAPABILITY_PANEL_EARLY_MS = 800;
+
+		function restartCapabilityDeviconAnimations(details) {
+			if (!details.open) return;
+			for (const el of details.querySelectorAll(".devicon-enter-wrap")) {
+				el.style.animation = "none";
+				void el.offsetWidth;
+				el.style.removeProperty("animation");
+			}
+		}
+
+		function closeCapabilityStackAnimated(details) {
+			if (!details.open || details.classList.contains("is-closing-capability")) return;
+			const wraps = details.querySelectorAll(".devicon-enter-wrap");
+			const n = wraps.length;
+			const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+			if (reduced) {
+				details.open = false;
+				return;
+			}
+			details.classList.add("is-closing-capability");
+
+			const totalExitMs = (n - 1) * CAPABILITY_STAGGER_MS + CAPABILITY_ANIM_MS;
+			const panelEarlyMs = Math.max(0, totalExitMs - CAPABILITY_PANEL_EARLY_MS);
+			const finalizeMs = totalExitMs + 40;
+
+			window.setTimeout(() => {
+				details.classList.add("is-panel-early-collapse");
+			}, panelEarlyMs);
+
+			window.setTimeout(() => {
+				details.classList.remove("is-closing-capability");
+				details.classList.remove("is-panel-early-collapse");
+				details.open = false;
+			}, finalizeMs);
+		}
+
+		function setupCapabilityStackDetails() {
+			const details = document.getElementById("capability-stack-details");
+			if (!details || details.dataset.deviconAnimBound === "true") return;
+			details.dataset.deviconAnimBound = "true";
+			const summary = details.querySelector("summary");
+			if (!summary) return;
+
+			details.addEventListener("toggle", () => restartCapabilityDeviconAnimations(details));
+
+			summary.addEventListener(
+				"click",
+				(e) => {
+					if (!details.open) return;
+					e.preventDefault();
+					closeCapabilityStackAnimated(details);
+				},
+				true,
+			);
+		}
+
+		setupCapabilityStackDetails();
+		document.addEventListener("astro:page-load", setupCapabilityStackDetails);
+	</script>
 </Layout>
