@@ -62,7 +62,7 @@ const t = useTranslations(lang);
 
 			<div class="relative z-20 mx-auto w-full max-w-[1200px] px-6 pb-16 pt-28 md:px-10 md:pb-24 md:pt-32 lg:px-12">
 				<h1
-					class="font-headline text-[clamp(3rem,8vw,7.5rem)] font-black leading-[1.01] tracking-tighter text-on-surface"
+					class="font-headline text-[clamp(1.944rem,5.184vw,4.86rem)] font-black leading-[1.01] tracking-tighter text-on-surface"
 					transition:animate="slide"
 				>
 					{t("home.hero_headline_1")}
@@ -76,7 +76,8 @@ const t = useTranslations(lang);
 
 				<div class="mt-10 max-w-lg md:max-w-none">
 					<div class="grid grid-cols-12 gap-6">
-						<div class="col-span-12 md:col-span-5 md:col-start-7">
+
+						<div class="order-1 col-span-12 md:order-2 md:col-span-5 md:col-start-7">
 							<StaticGlassBox class="mb-10">
 								<p class="font-body text-lg font-light leading-relaxed text-[#111111] md:text-xl">
 									{t("home.hero_body")}
@@ -95,9 +96,6 @@ const t = useTranslations(lang);
 								>
 									{t("home.cta_work")}
 								</a>
-							</div>
-							<div class="max-w-xs">
-								<div class="aurora-bar"></div>
 							</div>
 						</div>
 					</div>

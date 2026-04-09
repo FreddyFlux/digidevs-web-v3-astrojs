@@ -1,0 +1,297 @@
+---
+import { Image } from "astro:assets";
+import type { Locale } from "../../i18n/locales";
+import { useTranslations } from "../../i18n/utils";
+import digidevsMountains from "../../assets/digidevs-mountains.png";
+import splitVidilice from "../../assets/split-vidilice.jpg";
+
+interface Props {
+	lang: Locale;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<main class="relative min-h-screen overflow-hidden pb-20 pt-24 md:pt-28">
+	<!-- Background -->
+	<div class="absolute inset-0 -z-20">
+		<Image
+			src={digidevsMountains}
+			alt=""
+			width={digidevsMountains.width}
+			height={digidevsMountains.height}
+			layout="full-width"
+			fit="cover"
+			position="center"
+			sizes="100vw"
+			quality="high"
+			format="avif"
+			priority
+			decoding="async"
+			class="absolute inset-0 z-0 size-full object-cover object-center opacity-30 mix-blend-luminosity"
+		/>
+		<div
+			class="absolute inset-0 bg-linear-to-b from-surface via-surface/80 to-surface"
+			aria-hidden="true"
+		>
+		</div>
+	</div>
+	<div
+		class="pointer-events-none absolute -left-[10%] top-[-20%] -z-10 size-[600px] rounded-full bg-secondary aurora-blur"
+		aria-hidden="true"
+	>
+	</div>
+	<div
+		class="pointer-events-none absolute bottom-[10%] -right-[5%] -z-10 size-[400px] rounded-full bg-tertiary aurora-blur"
+		aria-hidden="true"
+	>
+	</div>
+
+	<div class="relative mx-auto grid max-w-screen-2xl grid-cols-1 gap-16 px-8 lg:grid-cols-12">
+		<section class="mb-20 mt-12 lg:col-span-12">
+			<h1
+				class="font-headline mb-8 text-6xl font-bold leading-[0.9] tracking-tight text-on-surface md:text-8xl lg:text-9xl"
+			>
+				{t("contact.hero_line1")}
+				<br />
+				<span class="text-primary-container">{t("contact.hero_line2")}</span>
+			</h1>
+			<div class="grid grid-cols-1 lg:grid-cols-12">
+				<p
+					class="font-body text-lg leading-relaxed text-on-surface-variant md:text-xl lg:col-span-5 lg:col-start-7"
+				>
+					{t("contact.hero_blurb")}
+				</p>
+			</div>
+		</section>
+
+		<div class="lg:col-span-7">
+			<div
+				class="rounded-xl border border-outline-variant/15 bg-surface-container-low p-8 backdrop-blur-md md:p-12"
+			>
+				<form
+					class="space-y-8"
+					method="post"
+					action="#"
+					data-contact-form
+					data-mailto={t("contact.email_address")}
+				>
+					<div class="grid grid-cols-1 gap-8 md:grid-cols-2">
+						<div class="relative">
+							<label
+								class="font-label mb-2 block text-xs uppercase tracking-widest text-[#72e4d7]"
+								for="contact-name"
+							>
+								{t("contact.form_name_label")}
+							</label>
+							<input
+								class="input-editorial w-full rounded-lg border-none p-4 placeholder:text-on-surface-variant/40"
+								id="contact-name"
+								name="name"
+								type="text"
+								autocomplete="name"
+								placeholder={t("contact.form_name_placeholder")}
+							/>
+						</div>
+						<div class="relative">
+							<label
+								class="font-label mb-2 block text-xs uppercase tracking-widest text-[#72e4d7]"
+								for="contact-company"
+							>
+								{t("contact.form_company_label")}
+							</label>
+							<input
+								class="input-editorial w-full rounded-lg border-none p-4 placeholder:text-on-surface-variant/40"
+								id="contact-company"
+								name="company"
+								type="text"
+								autocomplete="organization"
+								placeholder={t("contact.form_company_placeholder")}
+							/>
+						</div>
+					</div>
+					<div class="relative">
+						<label
+							class="font-label mb-2 block text-xs uppercase tracking-widest text-[#72e4d7]"
+							for="contact-email"
+						>
+							{t("contact.form_email_label")}
+						</label>
+						<input
+							class="input-editorial w-full rounded-lg border-none p-4 placeholder:text-on-surface-variant/40"
+							id="contact-email"
+							name="email"
+							type="email"
+							autocomplete="email"
+							required
+							placeholder={t("contact.form_email_placeholder")}
+						/>
+					</div>
+					<div class="relative">
+						<label
+							class="font-label mb-2 block text-xs uppercase tracking-widest text-[#72e4d7]"
+							for="contact-brief"
+						>
+							{t("contact.form_brief_label")}
+						</label>
+						<textarea
+							class="input-editorial resize-none rounded-lg border-none p-4 placeholder:text-on-surface-variant/40"
+							id="contact-brief"
+							name="message"
+							rows={5}
+							placeholder={t("contact.form_brief_placeholder")}
+						></textarea>
+					</div>
+					<button
+						class="font-headline w-full rounded-full bg-primary-container px-12 py-5 text-lg font-bold text-on-primary-container shadow-lg shadow-primary-container/10 transition-all hover:brightness-110 active:scale-95 md:w-auto"
+						type="submit"
+					>
+						{t("contact.form_submit")}
+					</button>
+				</form>
+			</div>
+		</div>
+
+		<aside class="flex flex-col justify-between py-4 lg:col-span-5">
+			<div class="space-y-16">
+				<div>
+					<h4
+						class="font-label mb-6 flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-[#ff9475]"
+					>
+						<span class="material-symbols-outlined text-sm" aria-hidden="true">alternate_email</span>
+						{t("contact.aside_email_heading")}
+					</h4>
+					<a
+						class="font-headline border-b border-outline-variant/30 pb-2 text-2xl font-medium text-on-surface transition-colors hover:text-primary-container md:text-3xl"
+						href={`mailto:${t("contact.email_address")}`}
+					>
+						{t("contact.email_address")}
+					</a>
+				</div>
+
+				<div>
+					<h4
+						class="font-label mb-6 flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-[#ff9475]"
+					>
+						<span class="material-symbols-outlined text-sm" aria-hidden="true">location_on</span>
+						{t("contact.aside_locations_heading")}
+					</h4>
+					<div class="grid grid-cols-1 gap-8 sm:grid-cols-2">
+						<div class="group">
+							<p class="font-headline text-xl text-on-surface">{t("contact.location_oslo")}</p>
+							<p class="mt-1 text-sm text-on-surface-variant">{t("contact.location_oslo_sub")}</p>
+							<div
+								class="mt-4 h-px w-0 bg-[#72e4d7] transition-all duration-500 group-hover:w-full"
+								aria-hidden="true"
+							>
+							</div>
+						</div>
+						<div class="group">
+							<p class="font-headline text-xl text-on-surface">{t("contact.location_zagreb")}</p>
+							<p class="mt-1 text-sm text-on-surface-variant">
+								{t("contact.location_zagreb_sub")}
+							</p>
+							<div
+								class="mt-4 h-px w-0 bg-[#72e4d7] transition-all duration-500 group-hover:w-full"
+								aria-hidden="true"
+							>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div>
+					<h4
+						class="font-label mb-6 flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-[#ff9475]"
+					>
+						<span class="material-symbols-outlined text-sm" aria-hidden="true">share</span>
+						{t("contact.aside_social_heading")}
+					</h4>
+					<div class="flex flex-wrap gap-4">
+						<a
+							class="font-label rounded-full border border-outline-variant/10 bg-surface-container px-6 py-2 text-sm uppercase tracking-widest text-on-surface-variant transition-all hover:bg-surface-container-high hover:text-secondary"
+							href="https://www.linkedin.com"
+							target="_blank"
+							rel="noopener noreferrer"
+						>
+							{t("contact.social_linkedin")}
+						</a>
+						<a
+							class="font-label rounded-full border border-outline-variant/10 bg-surface-container px-6 py-2 text-sm uppercase tracking-widest text-on-surface-variant transition-all hover:bg-surface-container-high hover:text-secondary"
+							href="https://github.com"
+							target="_blank"
+							rel="noopener noreferrer"
+						>
+							{t("contact.social_github")}
+						</a>
+						<a
+							class="font-label rounded-full border border-outline-variant/10 bg-surface-container px-6 py-2 text-sm uppercase tracking-widest text-on-surface-variant transition-all hover:bg-surface-container-high hover:text-secondary"
+							href="https://www.instagram.com"
+							target="_blank"
+							rel="noopener noreferrer"
+						>
+							{t("contact.social_instagram")}
+						</a>
+					</div>
+				</div>
+			</div>
+
+			<div class="mt-12 opacity-40">
+				<div
+					class="aspect-video w-full overflow-hidden rounded-xl border border-outline-variant/15 bg-surface-container grayscale"
+				>
+					<Image
+						src={splitVidilice}
+						alt=""
+						width={splitVidilice.width}
+						height={splitVidilice.height}
+						sizes="(max-width: 1024px) 100vw, min(42rem, 40vw)"
+						loading="lazy"
+						decoding="async"
+						format="avif"
+						class="size-full object-cover object-center"
+					/>
+				</div>
+			</div>
+		</aside>
+	</div>
+</main>
+
+<style>
+	.material-symbols-outlined {
+		font-variation-settings:
+			"FILL" 0,
+			"wght" 300,
+			"GRAD" 0,
+			"opsz" 24;
+	}
+</style>
+
+<script>
+	const w = globalThis as typeof globalThis & { __digiContactFormBound?: boolean };
+	if (!w.__digiContactFormBound) {
+		w.__digiContactFormBound = true;
+		document.addEventListener("submit", (e) => {
+			const target = e.target;
+			if (!(target instanceof Element)) return;
+			const form = target.closest("[data-contact-form]");
+			if (!(form instanceof HTMLFormElement)) return;
+			e.preventDefault();
+			const mailto = form.dataset.mailto;
+			if (!mailto) return;
+			const fd = new FormData(form);
+			const name = String(fd.get("name") ?? "").trim();
+			const company = String(fd.get("company") ?? "").trim();
+			const email = String(fd.get("email") ?? "").trim();
+			const message = String(fd.get("message") ?? "").trim();
+			const subject = encodeURIComponent("Contact — digiDEVS");
+			const body = encodeURIComponent(
+				[name && `Name: ${name}`, company && `Company: ${company}`, email && `Email: ${email}`, "", message]
+					.filter(Boolean)
+					.join("\n"),
+			);
+			window.location.href = `mailto:${mailto}?subject=${subject}&body=${body}`;
+		});
+	}
+</script>
