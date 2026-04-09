@@ -1,0 +1,49 @@
+---
+/**
+ * Renders a [Devicon](https://devicon.dev/) SVG as a single-color silhouette using CSS mask,
+ * tinted with a project semantic color.
+ */
+export const DEVICON_CDN = "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons";
+
+export type DeviconTint = "tertiary" | "primary" | "secondary";
+
+interface Props {
+	/** Path under `icons/`, without `.svg` — e.g. `react/react-original` or `astro/astro-plain` */
+	path: string;
+	tint?: DeviconTint;
+	class?: string;
+}
+
+const { path, tint = "tertiary", class: className = "" } = Astro.props;
+const src = `${DEVICON_CDN}/${path}.svg`;
+const tintClass =
+	tint === "primary" ? "devicon-mask--primary" : tint === "secondary" ? "devicon-mask--secondary" : "devicon-mask--tertiary";
+---
+
+<span
+	class:list={["devicon-mask", tintClass, "inline-block size-5 shrink-0", className]}
+	style={`--devicon-src: url('${src}')`}
+	aria-hidden="true"
+/>
+
+<style>
+	.devicon-mask {
+		-webkit-mask-image: var(--devicon-src);
+		mask-image: var(--devicon-src);
+		-webkit-mask-size: contain;
+		mask-size: contain;
+		-webkit-mask-repeat: no-repeat;
+		mask-repeat: no-repeat;
+		-webkit-mask-position: center;
+		mask-position: center;
+	}
+	.devicon-mask--tertiary {
+		background-color: var(--color-tertiary);
+	}
+	.devicon-mask--primary {
+		background-color: var(--color-primary);
+	}
+	.devicon-mask--secondary {
+		background-color: var(--color-secondary);
+	}
+</style>
