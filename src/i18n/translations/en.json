@@ -65,7 +65,11 @@
     "digest_title": "The Senior Developer's Digest",
     "digest_body": "No fluff. No spam. Just technical excellence and occasional philosophical rants delivered monthly.",
     "subscribe": "Subscribe",
-    "email_placeholder": "email@address.com"
+    "email_placeholder": "email@address.com",
+    "filter_label": "Topics",
+    "filter_clear": "Show all",
+    "filter_empty": "No posts match these topics. Try another filter or show all posts.",
+    "filter_aria": "Filter posts by category"
   },
   "blog_post": {
     "title_suffix": " — digiDEVS"

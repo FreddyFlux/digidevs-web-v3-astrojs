@@ -65,7 +65,11 @@
     "digest_title": "Seniorutviklerens digest",
     "digest_body": "Ingen fluff. Ingen spam. Bare teknisk dyktighet og sporadiske filosofiske utbrudd — levert månedlig.",
     "subscribe": "Abonner",
-    "email_placeholder": "epost@adresse.no"
+    "email_placeholder": "epost@adresse.no",
+    "filter_label": "Emner",
+    "filter_clear": "Vis alle",
+    "filter_empty": "Ingen innlegg samsvarer med disse filtrene. Prøv et annet filter eller vis alle innlegg.",
+    "filter_aria": "Filtrer innlegg etter kategori"
   },
   "blog_post": {
     "title_suffix": " — digiDEVS"

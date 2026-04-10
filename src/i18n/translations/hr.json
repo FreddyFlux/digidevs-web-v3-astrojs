@@ -65,7 +65,11 @@
     "digest_title": "Digest senior developera",
     "digest_body": "Bez šupljih riječi. Bez spama. Samo tehnička izvrsnost i povremene filozofije — mjesečno.",
     "subscribe": "Pretplati se",
-    "email_placeholder": "email@adresa.com"
+    "email_placeholder": "email@adresa.com",
+    "filter_label": "Teme",
+    "filter_clear": "Prikaži sve",
+    "filter_empty": "Nema postova koji odgovaraju ovim temama. Pokušajte drugi filter ili prikažite sve postove.",
+    "filter_aria": "Filtriraj postove po kategoriji"
   },
   "blog_post": {
     "title_suffix": " — digiDEVS"

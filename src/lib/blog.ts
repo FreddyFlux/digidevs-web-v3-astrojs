@@ -190,3 +190,69 @@ export function getGridPosts(posts: BlogPost[], featured: BlogPost | undefined):
 export function getPostBySlug(posts: BlogPost[], slug: string): BlogPost | undefined {
 	return posts.find((p) => p.slug === slug);
 }
+
+/** Sanity `post.categories` allowed values — keep in sync with sanity-studio/schemaTypes/post.ts */
+export const BLOG_CATEGORY_VALUES = [
+	"News",
+	"Work",
+	"Tech",
+	"Business",
+	"Frontend",
+	"Backend",
+	"AI",
+] as const;
+
+/**
+ * Reads `category` (repeatable) and optional `categories` (comma-separated) from the URL.
+ * Values must match Sanity strings exactly.
+ */
+export function parseCategoryFiltersFromSearchParams(searchParams: URLSearchParams): string[] {
+	const fromRepeated = searchParams.getAll("category").map((s) => s.trim()).filter(Boolean);
+	const fromCsv = (searchParams.get("categories") ?? "")
+		.split(",")
+		.map((s) => s.trim())
+		.filter(Boolean);
+	const merged = [...fromRepeated, ...fromCsv];
+	return [...new Set(merged)];
+}
+
+/** OR: keep posts that have at least one of the selected categories. Empty selection = no filter. */
+export function filterPostsByCategories(posts: BlogPost[], selected: string[]): BlogPost[] {
+	if (!selected.length) return posts;
+	const set = new Set(selected);
+	return posts.filter((p) => (p.categories ?? []).some((c) => set.has(c)));
+}
+
+/** Union of categories present on posts, ordered like BLOG_CATEGORY_VALUES then any extras. */
+export function collectCategoriesFromPosts(posts: BlogPost[]): string[] {
+	const present = new Set<string>();
+	for (const p of posts) {
+		for (const c of p.categories ?? []) {
+			if (c) present.add(c);
+		}
+	}
+	const order = new Map(BLOG_CATEGORY_VALUES.map((v, i) => [v, i]));
+	const list = [...present];
+	list.sort((a, b) => {
+		const ia = order.has(a) ? order.get(a)! : 999;
+		const ib = order.has(b) ? order.get(b)! : 999;
+		if (ia !== ib) return ia - ib;
+		return a.localeCompare(b);
+	});
+	return list;
+}
+
+export function toggleCategoryInSelection(selected: string[], category: string): string[] {
+	const has = selected.includes(category);
+	if (has) return selected.filter((c) => c !== category);
+	return [...selected, category];
+}
+
+/** `urlPrefix` is "" for default locale (`/blog`) or `"/en"` / `"/hr"` for prefixed blog. */
+export function buildBlogListingHref(urlPrefix: string, selected: string[]): string {
+	const base = urlPrefix ? `${urlPrefix}/blog` : "/blog";
+	if (!selected.length) return base;
+	const sp = new URLSearchParams();
+	for (const c of [...selected].sort()) sp.append("category", c);
+	return `${base}?${sp.toString()}`;
+}

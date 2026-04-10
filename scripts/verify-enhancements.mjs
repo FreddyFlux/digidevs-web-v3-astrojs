@@ -34,8 +34,13 @@ assert(layout.includes("astro:after-swap"), "Layout has astro:after-swap aurora-
 const cfg = read("astro.config.mjs");
 assert(/prefetch\s*:\s*\{/.test(cfg) && cfg.includes("prefetchAll"), "astro.config has prefetch.prefetchAll");
 
-const blog = read("src/pages/blog/index.astro");
-assert(blog.includes('transition:name={`blog-cover-${') && blog.includes("astro:assets"), "Blog index uses Image + transition:name");
+const blogIndex = read("src/pages/blog/index.astro");
+const blogListing = read("src/components/blog/BlogListing.astro");
+assert(blogIndex.includes("BlogListing"), "Blog index renders BlogListing");
+assert(
+	blogListing.includes('transition:name={`blog-cover-${') && blogListing.includes("astro:assets"),
+	"BlogListing uses Image + transition:name",
+);
 
 const slug = read("src/pages/blog/[slug].astro");
 assert(slug.includes("transition:name") && slug.includes("astro:assets"), "Blog slug page uses Image + transition:name");
