@@ -11,9 +11,21 @@ export const post = defineType({
 	fields: [
 		defineField({
 			name: "language",
+			title: "Language",
 			type: "string",
 			readOnly: true,
-			hidden: true,
+			hidden: false,
+			group: "meta",
+			description:
+				"Set automatically when you create a post from a language template or use Translations → add translation. Not editable here.",
+			options: {
+				list: [
+					{ title: "Norsk", value: "no" },
+					{ title: "English", value: "en" },
+					{ title: "Hrvatski", value: "hr" },
+				],
+				layout: "radio",
+			},
 		}),
 		defineField({
 			name: "title",
@@ -157,6 +169,7 @@ export const post = defineType({
 						],
 					},
 				}),
+				defineArrayMember({ type: "pricingTable" }),
 			],
 			validation: (Rule) => Rule.required(),
 			group: "content",

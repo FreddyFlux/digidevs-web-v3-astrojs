@@ -27,7 +27,7 @@ export default function LangSwitcher({
 						className={`font-label text-xs uppercase tracking-widest transition-colors ${
 							locale === lang
 								? "font-bold text-secondary"
-								: "text-[#242424]/80 hover:text-secondary"
+								: "font-medium text-[#141414] hover:text-secondary"
 						}`}
 						aria-label={LOCALE_LABELS[locale]}
 						aria-current={locale === lang ? "true" : undefined}

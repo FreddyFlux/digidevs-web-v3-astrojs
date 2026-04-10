@@ -23,7 +23,7 @@
   },
   "footer": {
     "rights": "Sva prava pridržana.",
-    "cities": "Oslo • Zagreb"
+    "cities": "Split - Trondheim"
   },
   "home": {
     "meta_title": "digiDEVS — Razvoj seniorske razine, kvaliteta EU-a",
@@ -86,12 +86,12 @@
     "form_brief_placeholder": "Opišite svoju viziju...",
     "form_submit": "Pošalji poruku",
     "aside_email_heading": "Izravna veza",
-    "email_address": "hello@digidevs.com",
+    "email_address": "fredrik@digidevs.no",
     "aside_locations_heading": "Čvorovi",
-    "location_oslo": "Oslo",
-    "location_oslo_sub": "Sjedište",
-    "location_zagreb": "Zagreb",
-    "location_zagreb_sub": "Inženjerski hub",
+    "location_split": "Split, Hrvatska",
+    "location_split_sub": "Sjedište",
+    "location_trondheim": "Trondheim, Norveška",
+    "location_trondheim_sub": "Djelomična prisutnost",
     "aside_social_heading": "Društveni kanali",
     "social_linkedin": "LinkedIn",
     "social_github": "GitHub",

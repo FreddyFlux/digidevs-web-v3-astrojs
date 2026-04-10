@@ -1,8 +1,40 @@
 import type { PortableTextBlock } from "@portabletext/types";
-import { defaultComponents, mergeComponents, toHTML } from "@portabletext/to-html";
+import { defaultComponents, escapeHTML, mergeComponents, toHTML } from "@portabletext/to-html";
 import type { Locale } from "../i18n/locales";
+import type { PricingTableBlock } from "../types/sanity";
 import { getSanityClient, urlForImage } from "./sanity";
 import { POSTS_BY_LANG_QUERY, SINGLE_POST_BY_SLUG_QUERY } from "./queries";
+
+const PRICING_TABLE_DEFAULT_LABELS = {
+	col1: "Project Type",
+	col2: "Norwegian Agency",
+	col3: "DigiDevs",
+} as const;
+
+function pricingTableBlockToHtml(value: PricingTableBlock): string {
+	const labels = value.columnLabels ?? {};
+	const l1 = labels.col1?.trim() || PRICING_TABLE_DEFAULT_LABELS.col1;
+	const l2 = labels.col2?.trim() || PRICING_TABLE_DEFAULT_LABELS.col2;
+	const l3 = labels.col3?.trim() || PRICING_TABLE_DEFAULT_LABELS.col3;
+	const rows = value.rows ?? [];
+
+	const headingHtml = value.heading?.trim()
+		? `<h3>${escapeHTML(value.heading.trim())}</h3>`
+		: "";
+
+	const thead = `<thead><tr class="border-b border-outline/30 bg-surface-container-low/80"><th scope="col" class="px-4 py-3 text-left font-label text-xs font-semibold uppercase tracking-wider text-on-surface-variant">${escapeHTML(l1)}</th><th scope="col" class="px-4 py-3 text-left font-label text-xs font-semibold uppercase tracking-wider text-on-surface-variant">${escapeHTML(l2)}</th><th scope="col" class="px-4 py-3 text-left font-label text-xs font-semibold uppercase tracking-wider text-on-surface-variant">${escapeHTML(l3)}</th></tr></thead>`;
+
+	const tbodyRows = rows
+		.map(
+			(r) =>
+				`<tr class="border-b border-outline/15 last:border-0"><td class="px-4 py-3 font-medium text-on-surface">${escapeHTML(r.projectType)}</td><td class="px-4 py-3 text-on-surface-variant">${escapeHTML(r.col2Value)}</td><td class="px-4 py-3 text-on-surface-variant">${escapeHTML(r.col3Value)}</td></tr>`,
+		)
+		.join("");
+
+	const tableHtml = `<div class="not-prose my-8 overflow-x-auto rounded-xl border border-outline/20"><table class="w-full min-w-[28rem] border-collapse text-left text-base">${thead}<tbody>${tbodyRows}</tbody></table></div>`;
+
+	return `${headingHtml}${tableHtml}`;
+}
 
 export type BlogPost = {
 	slug: string;
@@ -57,6 +89,9 @@ function portableTextToHtml(blocks: PortableTextBlock[] | undefined): string {
 	if (!blocks?.length) return "";
 	return toHTML(blocks, {
 		components: mergeComponents(defaultComponents, {
+			types: {
+				pricingTable: ({ value }) => pricingTableBlockToHtml(value as PricingTableBlock),
+			},
 			marks: {
 				link: ({ value, children }) => {
 					const href = (value as { href?: string } | undefined)?.href ?? "#";

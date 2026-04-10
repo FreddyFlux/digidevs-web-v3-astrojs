@@ -23,7 +23,7 @@
   },
   "footer": {
     "rights": "All rights reserved.",
-    "cities": "Oslo • Zagreb"
+    "cities": "Split - Trondheim"
   },
   "home": {
     "meta_title": "digiDEVS — Senior-level development, EU quality",
@@ -86,12 +86,12 @@
     "form_brief_placeholder": "Tell us about your vision...",
     "form_submit": "Send Transmission",
     "aside_email_heading": "Direct Link",
-    "email_address": "hello@digidevs.com",
+    "email_address": "fredrik@digidevs.no",
     "aside_locations_heading": "Nodes",
-    "location_oslo": "Oslo",
-    "location_oslo_sub": "Headquarters",
-    "location_zagreb": "Zagreb",
-    "location_zagreb_sub": "Engineering Hub",
+    "location_split": "Split, Croatia",
+    "location_split_sub": "Headquarters",
+    "location_trondheim": "Trondheim, Norway",
+    "location_trondheim_sub": "Partial Presence",
     "aside_social_heading": "Social Signal",
     "social_linkedin": "LinkedIn",
     "social_github": "GitHub",

@@ -23,7 +23,7 @@
   },
   "footer": {
     "rights": "Alle rettigheter forbeholdt.",
-    "cities": "Oslo • Zagreb"
+    "cities": "Split - Trondheim"
   },
   "home": {
     "meta_title": "digiDEVS — Seniorutvikling, EU-kvalitet",
@@ -86,12 +86,12 @@
     "form_brief_placeholder": "Fortell oss om visjonen din...",
     "form_submit": "Send melding",
     "aside_email_heading": "Direkte linje",
-    "email_address": "hello@digidevs.com",
+    "email_address": "fredrik@digidevs.no",
     "aside_locations_heading": "Noder",
-    "location_oslo": "Oslo",
-    "location_oslo_sub": "Hovedkontor",
-    "location_zagreb": "Zagreb",
-    "location_zagreb_sub": "Utviklingssenter",
+    "location_split": "Split, Kroatia",
+    "location_split_sub": "Hovedkontor",
+    "location_trondheim": "Trondheim, Norge",
+    "location_trondheim_sub": "Delvis tilstedeværelse",
     "aside_social_heading": "Sosiale kanaler",
     "social_linkedin": "LinkedIn",
     "social_github": "GitHub",
