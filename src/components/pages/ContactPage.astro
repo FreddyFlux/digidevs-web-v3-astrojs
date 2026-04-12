@@ -15,6 +15,7 @@ const t = useTranslations(lang);
 const contactFormLoading = t("contact.form_loading");
 const contactFormSuccess = t("contact.form_success");
 const contactFormError = t("contact.form_error");
+const contactFormRateLimited = t("contact.form_rate_limited");
 const contactFormSubmit = t("contact.form_submit");
 ---
 
@@ -76,7 +77,7 @@ const contactFormSubmit = t("contact.form_submit");
 				class="rounded-xl border border-outline-variant/15 bg-surface-container-low p-8 backdrop-blur-md md:p-12"
 			>
 				<form
-					class="space-y-8"
+					class="relative space-y-8"
 					method="post"
 					action="/api/contact"
 					data-contact-form
@@ -146,6 +147,18 @@ const contactFormSubmit = t("contact.form_submit");
 							rows={5}
 							placeholder={t("contact.form_brief_placeholder")}
 						></textarea>
+					</div>
+					<!-- Honeypot: must stay empty; hidden from view and assistive tech -->
+					<div class="absolute -left-[9999px] h-px w-px overflow-hidden" aria-hidden="true">
+						<label for="contact-hp">Leave blank</label>
+						<input
+							id="contact-hp"
+							type="text"
+							name="contact_hp"
+							tabindex="-1"
+							autocomplete="off"
+							value=""
+						/>
 					</div>
 					<button
 						class="font-headline w-full rounded-full bg-primary-container px-12 py-5 text-lg font-bold text-on-primary-container shadow-lg shadow-primary-container/10 transition-all hover:brightness-110 active:scale-95 disabled:pointer-events-none disabled:opacity-60 md:w-auto"
@@ -284,6 +297,7 @@ const contactFormSubmit = t("contact.form_submit");
 		loadingLabel: contactFormLoading,
 		successLabel: contactFormSuccess,
 		errorLabel: contactFormError,
+		rateLimitedLabel: contactFormRateLimited,
 		submitLabel: contactFormSubmit,
 	}}
 >
@@ -310,6 +324,7 @@ const contactFormSubmit = t("contact.form_submit");
 			const company = String(fd.get("company") ?? "").trim();
 			const email = String(fd.get("email") ?? "").trim();
 			const message = String(fd.get("message") ?? "").trim();
+			const contact_hp = String(fd.get("contact_hp") ?? "").trim();
 
 			submitBtn.disabled = true;
 			submitBtn.textContent = loadingLabel;
@@ -318,7 +333,7 @@ const contactFormSubmit = t("contact.form_submit");
 				const res = await fetch("/api/contact", {
 					method: "POST",
 					headers: { "Content-Type": "application/json", Accept: "application/json" },
-					body: JSON.stringify({ name, email, company, message }),
+					body: JSON.stringify({ name, email, company, message, contact_hp }),
 				});
 
 				if (res.ok) {
@@ -326,6 +341,10 @@ const contactFormSubmit = t("contact.form_submit");
 					feedback.classList.remove("hidden");
 					feedback.classList.add("text-emerald-400");
 					form.reset();
+				} else if (res.status === 429) {
+					feedback.textContent = rateLimitedLabel;
+					feedback.classList.remove("hidden");
+					feedback.classList.add("text-red-400");
 				} else {
 					feedback.textContent = errorLabel;
 					feedback.classList.remove("hidden");

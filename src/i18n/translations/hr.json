@@ -92,6 +92,7 @@
     "form_loading": "Slanje…",
     "form_success": "Hvala — poruka je poslana. Javit ćemo vam se uskoro.",
     "form_error": "Nešto je pošlo po krivu. Pokušajte ponovno ili nam pišite izravno.",
+    "form_rate_limited": "Previše poruka s ove veze. Pričekajte nekoliko minuta pa pokušajte ponovno.",
     "aside_email_heading": "Izravna veza",
     "email_address": "fredrik@digidevs.no",
     "aside_locations_heading": "Čvorovi",

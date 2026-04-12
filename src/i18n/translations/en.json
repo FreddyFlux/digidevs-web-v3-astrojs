@@ -92,6 +92,7 @@
     "form_loading": "Sending…",
     "form_success": "Thanks — your message was sent. We will get back to you soon.",
     "form_error": "Something went wrong. Please try again or email us directly.",
+    "form_rate_limited": "Too many messages from this connection. Please wait a few minutes and try again.",
     "aside_email_heading": "Direct Link",
     "email_address": "fredrik@digidevs.no",
     "aside_locations_heading": "Nodes",

@@ -1,4 +1,5 @@
 import type { APIRoute } from "astro";
+import { checkContactRateLimit, getClientIp } from "../../lib/contact-rate-limit";
 
 export const prerender = false;
 
@@ -24,6 +25,7 @@ async function parseBody(request: Request): Promise<{
 	email: string;
 	company: string;
 	message: string;
+	contact_hp: string;
 } | null> {
 	const ct = request.headers.get("content-type") ?? "";
 	try {
@@ -34,6 +36,8 @@ async function parseBody(request: Request): Promise<{
 				email: typeof raw.email === "string" ? raw.email : "",
 				company: typeof raw.company === "string" ? raw.company : "",
 				message: typeof raw.message === "string" ? raw.message : "",
+				contact_hp:
+					typeof raw.contact_hp === "string" ? raw.contact_hp : "",
 			};
 		}
 		if (
@@ -46,6 +50,7 @@ async function parseBody(request: Request): Promise<{
 				email: String(fd.get("email") ?? ""),
 				company: String(fd.get("company") ?? ""),
 				message: String(fd.get("message") ?? ""),
+				contact_hp: String(fd.get("contact_hp") ?? ""),
 			};
 		}
 	} catch {
@@ -69,6 +74,24 @@ export const POST: APIRoute = async ({ request }) => {
 		const email = parsed.email.trim();
 		const company = parsed.company.trim();
 		const message = parsed.message.trim();
+		const contactHp = parsed.contact_hp.trim();
+
+		// Honeypot: pretend success so simple bots cannot probe the field
+		if (contactHp) {
+			return jsonResponse({ success: true }, 200);
+		}
+
+		const ip = getClientIp(request);
+		const limit = checkContactRateLimit(ip);
+		if (!limit.ok) {
+			return new Response(JSON.stringify({ error: "rate_limited" }), {
+				status: 429,
+				headers: {
+					"Content-Type": "application/json",
+					"Retry-After": String(limit.retryAfterSec),
+				},
+			});
+		}
 
 		if (!email || !message) {
 			return jsonResponse(

@@ -92,6 +92,7 @@
     "form_loading": "Sender…",
     "form_success": "Takk — meldingen er sendt. Vi tar kontakt så snart vi kan.",
     "form_error": "Noe gikk galt. Prøv igjen eller send oss e-post direkte.",
+    "form_rate_limited": "For mange meldinger fra denne tilkoblingen. Vent noen minutter og prøv igjen.",
     "aside_email_heading": "Direkte linje",
     "email_address": "fredrik@digidevs.no",
     "aside_locations_heading": "Noder",

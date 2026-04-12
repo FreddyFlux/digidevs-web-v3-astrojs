@@ -58,8 +58,10 @@ export default function GlassNavBar({
 
 	const blogActive = isActive(normalized, "/blog");
 	const aboutNavActive = isActive(normalized, "/about");
+	const contactActive = isActive(normalized, "/contact");
 	const homeHref = langPrefix || "/";
 	const blogHref = `${langPrefix}/blog`;
+	const contactHref = `${langPrefix}/contact`;
 
 	return (
 		<div ref={wrapRef} className="w-full min-w-0">
@@ -150,9 +152,14 @@ export default function GlassNavBar({
 
 								<div className="flex flex-col gap-10 lg:max-w-xs lg:pl-4">
 									<div>
-										<p className="font-headline mb-4 text-[12px] font-bold uppercase tracking-[0.2em] text-secondary">
+										<a
+											href={contactHref}
+											className="font-headline mb-4 inline-block text-[12px] font-bold uppercase tracking-[0.2em] text-secondary transition-colors hover:underline hover:underline-offset-4"
+											onClick={() => setOpen(false)}
+											aria-current={contactActive ? "page" : undefined}
+										>
 											{t("nav_drawer.contact")}
-										</p>
+										</a>
 										<div className="flex flex-col gap-3 font-body text-[17px] leading-tight text-[#111111]">
 											<a
 												className="text-center font-bold transition-colors hover:text-secondary lg:text-left"
