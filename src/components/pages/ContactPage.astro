@@ -11,6 +11,11 @@ interface Props {
 
 const { lang } = Astro.props;
 const t = useTranslations(lang);
+
+const contactFormLoading = t("contact.form_loading");
+const contactFormSuccess = t("contact.form_success");
+const contactFormError = t("contact.form_error");
+const contactFormSubmit = t("contact.form_submit");
 ---
 
 <main class="relative min-h-screen overflow-hidden pb-20 pt-24 md:pt-28">
@@ -73,9 +78,8 @@ const t = useTranslations(lang);
 				<form
 					class="space-y-8"
 					method="post"
-					action="#"
+					action="/api/contact"
 					data-contact-form
-					data-mailto={t("contact.email_address")}
 				>
 					<div class="grid grid-cols-1 gap-8 md:grid-cols-2">
 						<div class="relative">
@@ -144,11 +148,18 @@ const t = useTranslations(lang);
 						></textarea>
 					</div>
 					<button
-						class="font-headline w-full rounded-full bg-primary-container px-12 py-5 text-lg font-bold text-on-primary-container shadow-lg shadow-primary-container/10 transition-all hover:brightness-110 active:scale-95 md:w-auto"
+						class="font-headline w-full rounded-full bg-primary-container px-12 py-5 text-lg font-bold text-on-primary-container shadow-lg shadow-primary-container/10 transition-all hover:brightness-110 active:scale-95 disabled:pointer-events-none disabled:opacity-60 md:w-auto"
 						type="submit"
+						data-contact-submit
 					>
 						{t("contact.form_submit")}
 					</button>
+					<p
+						class="hidden text-sm leading-relaxed"
+						data-contact-feedback
+						role="status"
+						aria-live="polite"
+					></p>
 				</form>
 			</div>
 		</div>
@@ -268,30 +279,66 @@ const t = useTranslations(lang);
 	}
 </style>
 
-<script>
-	const w = globalThis as typeof globalThis & { __digiContactFormBound?: boolean };
+<script
+	define:vars={{
+		loadingLabel: contactFormLoading,
+		successLabel: contactFormSuccess,
+		errorLabel: contactFormError,
+		submitLabel: contactFormSubmit,
+	}}
+>
+	const w = globalThis;
 	if (!w.__digiContactFormBound) {
 		w.__digiContactFormBound = true;
-		document.addEventListener("submit", (e) => {
+		document.addEventListener("submit", async (e) => {
 			const target = e.target;
 			if (!(target instanceof Element)) return;
 			const form = target.closest("[data-contact-form]");
 			if (!(form instanceof HTMLFormElement)) return;
 			e.preventDefault();
-			const mailto = form.dataset.mailto;
-			if (!mailto) return;
+
+			const feedback = form.querySelector("[data-contact-feedback]");
+			const submitBtn = form.querySelector("[data-contact-submit]");
+			if (!(feedback instanceof HTMLParagraphElement) || !(submitBtn instanceof HTMLButtonElement)) return;
+
+			feedback.textContent = "";
+			feedback.classList.add("hidden");
+			feedback.classList.remove("text-emerald-400", "text-red-400");
+
 			const fd = new FormData(form);
 			const name = String(fd.get("name") ?? "").trim();
 			const company = String(fd.get("company") ?? "").trim();
 			const email = String(fd.get("email") ?? "").trim();
 			const message = String(fd.get("message") ?? "").trim();
-			const subject = encodeURIComponent("Contact — digiDEVS");
-			const body = encodeURIComponent(
-				[name && `Name: ${name}`, company && `Company: ${company}`, email && `Email: ${email}`, "", message]
-					.filter(Boolean)
-					.join("\n"),
-			);
-			window.location.href = `mailto:${mailto}?subject=${subject}&body=${body}`;
+
+			submitBtn.disabled = true;
+			submitBtn.textContent = loadingLabel;
+
+			try {
+				const res = await fetch("/api/contact", {
+					method: "POST",
+					headers: { "Content-Type": "application/json", Accept: "application/json" },
+					body: JSON.stringify({ name, email, company, message }),
+				});
+
+				if (res.ok) {
+					feedback.textContent = successLabel;
+					feedback.classList.remove("hidden");
+					feedback.classList.add("text-emerald-400");
+					form.reset();
+				} else {
+					feedback.textContent = errorLabel;
+					feedback.classList.remove("hidden");
+					feedback.classList.add("text-red-400");
+				}
+			} catch {
+				feedback.textContent = errorLabel;
+				feedback.classList.remove("hidden");
+				feedback.classList.add("text-red-400");
+			} finally {
+				submitBtn.disabled = false;
+				submitBtn.textContent = submitLabel;
+			}
 		});
 	}
 </script>
