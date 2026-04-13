@@ -62,7 +62,7 @@ const t = useTranslations(lang);
 
 			<div class="relative z-20 mx-auto w-full max-w-[1200px] px-6 pb-16 pt-28 md:px-10 md:pb-24 md:pt-32 lg:px-12">
 				<h1
-					class="font-headline text-[clamp(1.944rem,5.184vw,4.86rem)] font-black leading-[1.01] tracking-tighter text-on-surface"
+					class="font-headline text-[clamp(3rem,calc(6vw+1rem),4.86rem)] font-black leading-[1.01] tracking-tighter text-on-surface"
 					transition:animate="slide"
 				>
 					{t("home.hero_headline_1")}
@@ -74,18 +74,18 @@ const t = useTranslations(lang);
 					</span>
 				</h1>
 
-				<div class="mt-10 max-w-lg md:max-w-none">
+				<div class="mt-40 max-w-lg md:mt-40 md:max-w-none">
 					<div class="grid grid-cols-12 gap-6">
 
 						<div class="order-1 col-span-12 md:order-2 md:col-span-5 md:col-start-7">
-							<StaticGlassBox class="mb-10">
-								<p class="font-body text-lg font-light leading-relaxed text-[#111111] md:text-xl">
+							<StaticGlassBox class="mb-6 px-4 py-3 sm:mb-10 sm:px-8 sm:py-5">
+								<p class="font-body text-sm font-light leading-relaxed text-[#111111] sm:text-base md:text-xl">
 									{t("home.hero_body")}
 								</p>
 							</StaticGlassBox>
-							<div class="mb-12 flex flex-wrap items-center gap-8">
+							<div class="mb-8 flex flex-wrap items-center gap-4 md:mb-12 md:gap-8">
 								<a
-									class="inline-flex rounded-full bg-primary-container px-10 py-5 font-headline text-lg font-bold uppercase tracking-tighter text-on-primary-container transition-transform hover:scale-95"
+									class="inline-flex rounded-full bg-primary-container px-6 py-3 font-headline text-sm font-bold uppercase tracking-tighter text-on-primary-container transition-transform hover:scale-95 md:px-10 md:py-5 md:text-lg"
 									href={`/${lang}/contact`}
 								>
 									{t("home.cta_call")}
@@ -116,9 +116,9 @@ const t = useTranslations(lang);
 					<div class="mt-2 h-1 w-20 bg-secondary"></div>
 				</div>
 
-				<div class="grid auto-rows-[minmax(280px,auto)] grid-cols-1 gap-6 md:grid-cols-12 md:auto-rows-[300px]">
+				<div class="grid auto-rows-auto grid-cols-1 gap-6 md:grid-cols-12 md:auto-rows-[350px]">
 					<div
-						class="group relative flex flex-col justify-end overflow-hidden bg-surface-container-low p-8 md:col-span-8 md:row-span-2 md:p-10"
+						class="group relative flex min-h-[min(620px,98vw)] flex-col justify-start overflow-hidden bg-surface-container-low p-8 max-md:pb-5 md:min-h-0 md:justify-end md:col-span-8 md:row-span-2 md:p-10"
 					>
 						<Image
 							src={bentoOpera}
@@ -130,38 +130,40 @@ const t = useTranslations(lang);
 							decoding="async"
 						/>
 						<div
-							class="pointer-events-none absolute inset-0 z-1 bg-[linear-gradient(to_top,var(--color-background)_0%,var(--color-background)_8%,color-mix(in_oklab,var(--color-background)_15%,transparent)_22%,transparent_76%)]"
+							class="pointer-events-none absolute inset-0 z-1 bg-[linear-gradient(to_top,var(--color-background)_0%,var(--color-background)_18%,color-mix(in_oklab,var(--color-background)_25%,transparent)_35%,transparent_76%)] md:bg-[linear-gradient(to_top,var(--color-background)_0%,var(--color-background)_8%,color-mix(in_oklab,var(--color-background)_15%,transparent)_22%,transparent_76%)]"
 							aria-hidden="true"
 						>
 						</div>
-						<div class="relative z-10">
+						<div
+							class="relative z-10 flex w-full flex-col max-md:min-h-0 max-md:flex-1 md:block"
+						>
 							<span class="mb-4 block font-headline text-sm uppercase tracking-widest text-secondary"
 								>{t("home.bento_guide_label")}</span
 							>
-							<h3 class="mb-4 font-headline text-3xl font-bold tracking-tighter text-on-surface md:text-4xl">
+							<h3 class="mb-8 font-headline text-3xl font-bold tracking-tighter text-on-surface md:mb-10 md:text-4xl">
 								{t("home.bento_guide_title")}
 							</h3>
-							<p class="max-w-md text-on-surface-variant">
+							<p class="text-bento-body max-w-md max-md:mt-auto max-md:translate-y-1.5">
 								{t("home.bento_guide_body")}
 							</p>
 						</div>
 					</div>
 
 					<div
-						class="flex flex-col justify-between border-l-2 border-secondary/40 bg-surface-container p-8 md:col-span-4"
+						class="flex flex-col gap-3 border-l-2 border-secondary/40 bg-surface-container p-5 md:col-span-4 md:justify-between md:gap-0 md:p-8"
 					>
-						<span class="material-symbols-outlined text-4xl text-secondary" aria-hidden="true">science</span>
+						<span class="material-symbols-outlined shrink-0 text-3xl text-secondary md:text-4xl" aria-hidden="true">science</span>
 						<div>
-							<h3 class="mb-2 font-headline text-2xl font-bold tracking-tighter">{t("home.bento_ai_title")}</h3>
-							<p class="text-sm text-on-surface-variant">{t("home.bento_ai_body")}</p>
+							<h3 class="mb-1.5 font-headline text-xl font-bold tracking-tighter md:mb-2 md:text-2xl">{t("home.bento_ai_title")}</h3>
+							<p class="text-bento-body text-sm leading-snug">{t("home.bento_ai_body")}</p>
 						</div>
 					</div>
 
-					<div class="flex flex-col justify-between bg-surface-container-high p-8 md:col-span-4">
-						<div class="mb-4 h-1 w-12 bg-tertiary"></div>
+					<div class="flex flex-col gap-3 bg-surface-container-high p-5 md:col-span-4 md:justify-between md:gap-0 md:p-8">
+						<div class="h-1 w-10 shrink-0 bg-tertiary md:mb-0 md:w-12"></div>
 						<div>
-							<h3 class="mb-2 font-headline text-2xl font-bold tracking-tighter">{t("home.bento_web_title")}</h3>
-							<p class="text-sm text-on-surface-variant">{t("home.bento_web_body")}</p>
+							<h3 class="mb-1.5 font-headline text-xl font-bold tracking-tighter md:mb-2 md:text-2xl">{t("home.bento_web_title")}</h3>
+							<p class="text-bento-body text-sm leading-snug">{t("home.bento_web_body")}</p>
 						</div>
 					</div>
 
@@ -198,7 +200,7 @@ const t = useTranslations(lang);
 							<h3 class="mb-4 font-headline text-2xl font-bold tracking-tighter md:text-3xl">
 								{t("home.bento_outsourced_title")}
 							</h3>
-							<p class="max-w-sm text-on-surface-variant">
+							<p class="text-bento-body max-w-sm">
 								{t("home.bento_outsourced_body")}
 							</p>
 						</div>

@@ -13,12 +13,14 @@ export default function LangSwitcher({
 	attachLeft?: boolean;
 }) {
 	const outerClass = [
-		"origin-top shrink-0 scale-[0.945] overflow-hidden backdrop-blur-[10px] transition-transform duration-300 ease-out hover:scale-[0.99225]",
-		attachLeft ? "rounded-[20px] rounded-l-none" : "rounded-[20px]",
+		"origin-top shrink-0 overflow-hidden backdrop-blur-[10px] transition-transform duration-300 ease-out md:scale-[0.945] md:hover:scale-[0.99225]",
+		attachLeft
+			? "rounded-[10px] rounded-l-none md:rounded-[20px] md:rounded-l-none"
+			: "rounded-[10px] md:rounded-[20px]",
 	].join(" ");
 
 	return (
-		<div className={outerClass} style={{ backgroundColor: "rgba(242, 242, 242, 0.45)" }}>
+		<div className={outerClass} style={{ backgroundColor: "rgba(255, 255, 255, 0.4)" }}>
 			<div className="flex items-center gap-2 px-[13px] py-[10px] sm:px-[21px] sm:py-[13px]">
 				{LOCALES.map((locale) => (
 					<a

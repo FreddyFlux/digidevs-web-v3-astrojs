@@ -118,6 +118,15 @@ article.blog-listing-card:has(a:focus-visible) .blog-listing-image,
   opacity: 1;
 }
 
+/* Home capabilities bento — body copy slightly brighter than --color-on-surface-variant */
+.text-bento-body {
+  color: color-mix(
+    in oklab,
+    var(--color-on-surface) 78%,
+    var(--color-on-surface-variant) 22%
+  );
+}
+
 :root {
   --radius: 0.75rem;
   --chart-1: #26a69a;
