@@ -1,5 +1,6 @@
 ---
 import { Image } from "astro:assets";
+import MarketingIcon from "../icons/MarketingIcon";
 import type { Locale } from "../../i18n/locales";
 import { useTranslations } from "../../i18n/utils";
 import digidevsMountains from "../../assets/digidevs-mountains.png";
@@ -185,7 +186,7 @@ const contactFormSubmit = t("contact.form_submit");
 					<h4
 						class="font-label mb-6 flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-[#ff9475]"
 					>
-						<span class="material-symbols-outlined text-sm" aria-hidden="true">alternate_email</span>
+						<MarketingIcon client:load name="alternate_email" size={16} className="text-sm" />
 						{t("contact.aside_email_heading")}
 					</h4>
 					<a
@@ -200,7 +201,7 @@ const contactFormSubmit = t("contact.form_submit");
 					<h4
 						class="font-label mb-6 flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-[#ff9475]"
 					>
-						<span class="material-symbols-outlined text-sm" aria-hidden="true">location_on</span>
+						<MarketingIcon client:load name="location_on" size={16} className="text-sm" />
 						{t("contact.aside_locations_heading")}
 					</h4>
 					<div class="grid grid-cols-1 gap-8 sm:grid-cols-2">
@@ -231,7 +232,7 @@ const contactFormSubmit = t("contact.form_submit");
 					<h4
 						class="font-label mb-6 flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-[#ff9475]"
 					>
-						<span class="material-symbols-outlined text-sm" aria-hidden="true">share</span>
+						<MarketingIcon client:load name="share" size={16} className="text-sm" />
 						{t("contact.aside_social_heading")}
 					</h4>
 					<div class="flex flex-wrap gap-4">
@@ -283,16 +284,6 @@ const contactFormSubmit = t("contact.form_submit");
 		</aside>
 	</div>
 </main>
-
-<style>
-	.material-symbols-outlined {
-		font-variation-settings:
-			"FILL" 0,
-			"wght" 300,
-			"GRAD" 0,
-			"opsz" 24;
-	}
-</style>
 
 <script
 	define:vars={{

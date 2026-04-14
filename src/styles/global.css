@@ -1,3 +1,6 @@
+@import "@fontsource-variable/space-grotesk";
+@import "@fontsource-variable/manrope";
+@import "@fontsource/jost/700.css";
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
@@ -6,9 +9,9 @@
 
 /* Editorial Etherealism — Arctic Spectrogram (semantic palette) */
 @theme inline {
-  --font-headline: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
-  --font-body: "Manrope", ui-sans-serif, system-ui, sans-serif;
-  --font-label: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-headline: "Space Grotesk Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-body: "Manrope Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-label: "Space Grotesk Variable", ui-sans-serif, system-ui, sans-serif;
   --font-digidevs: "Jost", ui-sans-serif, system-ui, sans-serif;
   --font-sans: var(--font-body);
   --font-heading: var(--font-headline);

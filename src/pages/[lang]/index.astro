@@ -3,6 +3,7 @@ import { Image } from "astro:assets";
 import type { Locale } from "../../i18n/locales";
 import { DEFAULT_LOCALE, LOCALES } from "../../i18n/locales";
 import Layout from "../../layouts/Layout.astro";
+import MarketingIcon from "../../components/icons/MarketingIcon";
 import StaticGlassBox from "../../components/ui/StaticGlassBox.astro";
 import { useTranslations } from "../../i18n/utils";
 import heroNorsk from "../../assets/digidevs-norsk-hero.png";
@@ -19,12 +20,6 @@ const t = useTranslations(lang);
 ---
 
 <Layout title={t("home.meta_title")} description={t("home.meta_description")} lang={lang}>
-	<link
-		slot="head"
-		href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap"
-		rel="stylesheet"
-	/>
-
 	<main class="bg-background">
 		<section class="relative isolate flex min-h-svh w-full flex-col justify-center overflow-hidden">
 			<div class="absolute inset-0 z-0 min-h-svh w-full">
@@ -152,7 +147,7 @@ const t = useTranslations(lang);
 					<div
 						class="flex flex-col gap-3 border-l-2 border-secondary/40 bg-surface-container p-5 md:col-span-4 md:justify-between md:gap-0 md:p-8"
 					>
-						<span class="material-symbols-outlined shrink-0 text-3xl text-secondary md:text-4xl" aria-hidden="true">science</span>
+						<MarketingIcon client:load name="science" size={36} className="shrink-0 text-secondary" />
 						<div>
 							<h3 class="mb-1.5 font-headline text-xl font-bold tracking-tighter md:mb-2 md:text-2xl">{t("home.bento_ai_title")}</h3>
 							<p class="text-bento-body text-sm leading-snug">{t("home.bento_ai_body")}</p>
@@ -227,13 +222,3 @@ const t = useTranslations(lang);
 		</section>
 	</main>
 </Layout>
-
-<style>
-	.material-symbols-outlined {
-		font-variation-settings:
-			"FILL" 0,
-			"wght" 400,
-			"GRAD" 0,
-			"opsz" 24;
-	}
-</style>

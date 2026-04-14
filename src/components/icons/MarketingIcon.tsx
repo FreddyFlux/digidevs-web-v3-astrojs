@@ -1,12 +1,16 @@
 import type { LucideProps } from "lucide-react";
 import {
 	ArrowRight,
+	AtSign,
 	BadgeCheck,
 	BrainCircuit,
 	Building2,
 	Cloud,
 	Database,
+	FlaskConical,
 	Gauge,
+	MapPin,
+	Share2,
 	User,
 	Shield,
 	Terminal,
@@ -24,6 +28,10 @@ const icons = {
 	arrow_forward: ArrowRight,
 	architecture: Building2,
 	verified_user: BadgeCheck,
+	science: FlaskConical,
+	alternate_email: AtSign,
+	location_on: MapPin,
+	share: Share2,
 } as const;
 
 export type MarketingIconName = keyof typeof icons;
