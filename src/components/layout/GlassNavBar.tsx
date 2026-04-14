@@ -69,17 +69,14 @@ export default function GlassNavBar({
   const blogHref = `${langPrefix}/blog`;
   const contactHref = `${langPrefix}/contact`;
 
-  const glassStyle = { backgroundColor: "rgba(255, 255, 255, 0.4)" } as const;
-
   return (
     <div ref={wrapRef} className="w-full min-w-0">
       <div
-        className={`origin-top overflow-hidden backdrop-blur-[10px] transition-transform duration-300 ease-out md:scale-[0.945] md:hover:scale-[0.99225] ${
+        className={`origin-top overflow-hidden bg-navbar-glass backdrop-blur-[10px] transition-transform duration-300 ease-out md:scale-[0.945] md:hover:scale-[0.99225] ${
           attachRight
             ? "rounded-[10px] rounded-r-none md:rounded-[20px] md:rounded-r-none"
             : "rounded-[10px] md:rounded-[20px]"
         }`}
-        style={glassStyle}
       >
         <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2 px-3 py-3 sm:gap-4 sm:px-8 sm:py-5">
           <div className="flex min-w-0 justify-start">
@@ -88,7 +85,7 @@ export default function GlassNavBar({
               className={`font-headline text-lg font-bold tracking-tight transition-colors sm:text-xl md:text-2xl ${
                 blogActive
                   ? "text-secondary"
-                  : "text-[#242424] hover:text-secondary"
+                  : "text-navbar-glass-fg hover:text-secondary"
               }`}
               aria-current={blogActive ? "page" : undefined}
             >
@@ -125,7 +122,7 @@ export default function GlassNavBar({
               className={`font-headline text-right text-lg font-bold tracking-tight transition-colors sm:text-xl md:text-2xl ${
                 aboutNavActive
                   ? "text-secondary"
-                  : "text-[#242424]/80 hover:text-secondary"
+                  : "text-navbar-glass-fg-muted hover:text-secondary"
               } cursor-pointer`}
               aria-expanded={open}
               aria-controls={panelId}
@@ -146,10 +143,10 @@ export default function GlassNavBar({
           }`}
         >
           <div className="min-h-0 overflow-hidden">
-            <div className="max-h-[min(75dvh,560px)] overflow-y-auto overscroll-contain border-t border-[#222222]/10 px-3 pb-5 pt-2 sm:px-8 sm:pb-8 md:max-h-none md:overflow-visible">
+            <div className="max-h-[min(75dvh,560px)] overflow-y-auto overscroll-contain border-t border-navbar-glass-divider px-3 pb-5 pt-2 sm:px-8 sm:pb-8 md:max-h-none md:overflow-visible">
               <div className="grid gap-8 lg:grid-cols-[1fr_auto] lg:gap-12">
                 <div>
-                  <div className="grid grid-cols-1 gap-0 divide-y divide-[#222222]/10 sm:grid-cols-2 sm:divide-x sm:divide-y">
+                  <div className="grid grid-cols-1 gap-0 divide-y divide-navbar-glass-divider sm:grid-cols-2 sm:divide-x sm:divide-y">
                     {aboutLinks.map((item) => {
                       const href = `${langPrefix}${item.path}`;
                       const active = isActive(normalized, item.path);
@@ -157,7 +154,7 @@ export default function GlassNavBar({
                         <a
                           key={item.path}
                           href={href}
-                          className="group px-0 py-4 font-body text-[16px] font-bold leading-snug text-[#111111] transition-colors first:pt-0 hover:text-secondary sm:px-2 sm:py-5 sm:first:pt-5"
+                          className="group px-0 py-4 font-body text-[16px] font-bold leading-snug text-navbar-glass-fg-strong transition-colors first:pt-0 hover:text-secondary sm:px-2 sm:py-5 sm:first:pt-5"
                           onClick={() => setOpen(false)}
                           aria-current={active ? "page" : undefined}
                         >
@@ -180,16 +177,16 @@ export default function GlassNavBar({
                     >
                       {t("nav_drawer.contact")}
                     </a>
-                    <div className="flex flex-col gap-3 font-body text-[17px] leading-tight text-[#111111]">
+                    <div className="flex flex-col gap-3 font-body text-[17px] leading-tight text-navbar-glass-fg-strong">
                       <a
                         className="text-center font-bold transition-colors hover:text-secondary lg:text-left"
-                        href="tel:+4790000000"
+                        href="tel:+4745399639"
                       >
                         +47 45 39 96 39
                       </a>
                       <a
                         className="text-center font-bold transition-colors hover:text-secondary lg:text-left"
-                        href="mailto:hello@digidevs.no"
+                        href="mailto:fredrik@digidevs.no"
                       >
                         fredrik@digidevs.no
                       </a>
@@ -199,7 +196,7 @@ export default function GlassNavBar({
                     <p className="font-headline mb-2 text-[12px] font-bold uppercase tracking-[0.2em] text-secondary">
                       {t("nav_drawer.visit")}
                     </p>
-                    <p className="font-body text-[17px] font-bold leading-relaxed text-[#111111] whitespace-pre-line">
+                    <p className="font-body text-[17px] font-bold leading-relaxed text-navbar-glass-fg-strong whitespace-pre-line">
                       {t("nav_drawer.locations")}
                     </p>
                   </div>

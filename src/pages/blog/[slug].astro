@@ -2,6 +2,7 @@
 import { Image } from "astro:assets";
 import Layout from "../../layouts/Layout.astro";
 import { fetchPostBySlug, formatCategories } from "../../lib/blog";
+import { organizationPublisherBlock } from "../../lib/seo-jsonld";
 
 /** Resolve at request time so new Sanity posts work in dev (getStaticPaths is cached; /blog listing is not). */
 export const prerender = false;
@@ -23,12 +24,14 @@ const canonical = post.canonicalUrl ?? `${siteBase}/blog/${post.slug}`;
 
 const keywordsMeta = post.seoKeywords?.length ? post.seoKeywords.join(", ") : undefined;
 
+const primarySection = post.categories?.[0];
 const jsonLd = {
 	"@context": "https://schema.org",
 	"@type": "BlogPosting",
 	headline: post.title,
 	description: pageDesc,
 	...(post.seoKeywords?.length && { keywords: post.seoKeywords.join(", ") }),
+	...(primarySection && { articleSection: primarySection }),
 	image: [post.coverImageUrl],
 	datePublished: post.date,
 	dateModified: post.updatedAt ?? post.date,
@@ -36,11 +39,7 @@ const jsonLd = {
 		"@type": "Person",
 		name: post.author,
 	},
-	publisher: {
-		"@type": "Organization",
-		name: "digiDEVS",
-		url: siteBase,
-	},
+	publisher: organizationPublisherBlock(siteBase),
 	mainEntityOfPage: {
 		"@type": "WebPage",
 		"@id": canonical,
@@ -66,7 +65,10 @@ const dateLocale = "nb-NO";
 			<p class="font-label mb-4 text-xs uppercase tracking-widest text-primary">
 				{formatCategories(post.categories)} • {post.readTime}
 			</p>
-			<h1 class="font-headline mb-6 text-4xl font-bold leading-tight tracking-editorial text-on-surface md:text-5xl">
+			<h1
+				class="font-headline mb-6 text-4xl font-bold leading-tight tracking-editorial text-on-surface md:text-5xl"
+				transition:animate="slide"
+			>
 				{post.title}
 			</h1>
 			<p class="font-body text-lg text-on-surface-variant">{post.description}</p>

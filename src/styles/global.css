@@ -52,6 +52,8 @@
   --color-on-tertiary: #ffffff;
   --color-tertiary-container: #5c1a00;
   --color-on-tertiary-container: #ffccbc;
+  /* Lighter tertiary accent — contact aside section labels, complements tertiary */
+  --color-tertiary-light: #ff9475;
 
   --color-on-background: #e8e8e8;
   --color-on-surface: #e8e8e8;
@@ -85,6 +87,21 @@
   --color-input: var(--color-surface-container-highest);
   --color-ring: var(--color-secondary-focus);
 
+  /* Glass navbar — frosted light panel on dark page backgrounds */
+  --color-navbar-glass: color-mix(in oklab, #ffffff 40%, transparent);
+  --color-navbar-glass-fg: #242424;
+  --color-navbar-glass-fg-muted: color-mix(
+    in oklab,
+    var(--color-navbar-glass-fg) 80%,
+    transparent
+  );
+  --color-navbar-glass-fg-strong: #111111;
+  --color-navbar-glass-divider: color-mix(
+    in oklab,
+    var(--color-surface-container-high) 10%,
+    transparent
+  );
+
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -98,6 +115,8 @@
   --color-chart-3: var(--chart-3);
   --color-chart-2: var(--chart-2);
   --color-chart-1: var(--chart-1);
+
+  --tracking-aside: 0.2em;
 
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);

@@ -1,9 +1,11 @@
 ---
+import { Image } from "astro:assets";
 import type { Locale } from "../../../i18n/locales";
 import { DEFAULT_LOCALE, LOCALES } from "../../../i18n/locales";
 import Layout from "../../../layouts/Layout.astro";
 import MarketingIcon from "../../../components/icons/MarketingIcon";
-import { images } from "../../../data/remoteImages";
+import qualityHeroBuilding from "../../../assets/digidevs-building.png";
+import digidevsStones from "../../../assets/digidevs-stones.png";
 import { useTranslations } from "../../../i18n/utils";
 
 export function getStaticPaths() {
@@ -31,16 +33,17 @@ const prefix = `/${lang}`;
 				</div>
 			</div>
 			<div class="group relative h-[min(70vh,614px)] w-full overflow-hidden rounded-2xl bg-surface-container-low">
-				<img
-					src={images.qualityHero}
+				<Image
+					src={qualityHeroBuilding}
 					alt={t("quality.hero_img_alt")}
-					width={1400}
-					height={900}
+					width={qualityHeroBuilding.width}
+					height={qualityHeroBuilding.height}
 					sizes="100vw"
 					class="h-full w-full object-cover grayscale transition-transform duration-700 group-hover:scale-[1.02]"
-					loading="eager"
-					decoding="async"
-					fetchpriority="high"
+					quality="high"
+					format="avif"
+					priority
+					decoding="sync"
 				/>
 				<div class="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-70"></div>
 				<div class="absolute bottom-8 left-8">
@@ -94,12 +97,15 @@ const prefix = `/${lang}`;
 					</p>
 				</div>
 				<div class="h-48 w-full overflow-hidden rounded-xl grayscale brightness-75 transition-all duration-700 group-hover:brightness-100">
-					<img
-						src={images.qualityCraft}
-						alt=""
-						width={800}
-						height={400}
+					<Image
+						src={digidevsStones}
+						alt={t("quality.craft_img_alt")}
+						width={digidevsStones.width}
+						height={digidevsStones.height}
+						sizes="(max-width: 768px) 100vw, 42vw"
 						class="h-full w-full object-cover"
+						quality="high"
+						format="avif"
 						loading="lazy"
 						decoding="async"
 					/>

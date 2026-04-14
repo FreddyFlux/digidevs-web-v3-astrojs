@@ -16,7 +16,7 @@ const { pathname, lang } = Astro.props;
 		<div class="flex w-full min-w-0 max-w-full items-center justify-center gap-0">
 			<GlassNavBar client:load pathname={pathname} lang={lang} attachRight />
 			<div class="relative z-10 shrink-0 -ml-px">
-				<LangSwitcher client:load pathname={pathname} lang={lang} attachLeft />
+				<LangSwitcher pathname={pathname} lang={lang} attachLeft />
 			</div>
 		</div>
 	</div>

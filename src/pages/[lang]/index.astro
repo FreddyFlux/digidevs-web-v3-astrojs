@@ -6,6 +6,7 @@ import Layout from "../../layouts/Layout.astro";
 import MarketingIcon from "../../components/icons/MarketingIcon";
 import StaticGlassBox from "../../components/ui/StaticGlassBox.astro";
 import { useTranslations } from "../../i18n/utils";
+import { buildHomepageJsonLd } from "../../lib/seo-jsonld";
 import heroNorsk from "../../assets/digidevs-norsk-hero.png";
 import bentoOpera from "../../assets/digidevs-opera.jpg";
 import bentoKeyboard from "../../assets/digidevs-keyboard.png";
@@ -17,9 +18,12 @@ export function getStaticPaths() {
 const { lang: langParam } = Astro.params;
 const lang = langParam as Locale;
 const t = useTranslations(lang);
+const siteBase = (import.meta.env.PUBLIC_SITE_URL ?? "https://digidevs.no").replace(/\/$/, "");
+const homepageJsonLd = buildHomepageJsonLd(siteBase, lang);
 ---
 
 <Layout title={t("home.meta_title")} description={t("home.meta_description")} lang={lang}>
+	<script type="application/ld+json" slot="head" set:html={JSON.stringify(homepageJsonLd)} />
 	<main class="bg-background">
 		<section class="relative isolate flex min-h-svh w-full flex-col justify-center overflow-hidden">
 			<div class="absolute inset-0 z-0 min-h-svh w-full">
@@ -147,7 +151,7 @@ const t = useTranslations(lang);
 					<div
 						class="flex flex-col gap-3 border-l-2 border-secondary/40 bg-surface-container p-5 md:col-span-4 md:justify-between md:gap-0 md:p-8"
 					>
-						<MarketingIcon client:load name="science" size={36} className="shrink-0 text-secondary" />
+						<MarketingIcon name="science" size={36} className="shrink-0 text-secondary" />
 						<div>
 							<h3 class="mb-1.5 font-headline text-xl font-bold tracking-tighter md:mb-2 md:text-2xl">{t("home.bento_ai_title")}</h3>
 							<p class="text-bento-body text-sm leading-snug">{t("home.bento_ai_body")}</p>

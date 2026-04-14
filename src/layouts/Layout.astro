@@ -77,6 +77,27 @@ const htmlLang = LOCALE_HTML_LANG[lang] ?? lang;
 		<link rel="alternate" hreflang="en" href={`${siteBase}/en${pathSuffix}`} />
 		<link rel="alternate" hreflang="hr" href={`${siteBase}/hr${pathSuffix}`} />
 		<link rel="alternate" hreflang="x-default" href={`${siteBase}${pathSuffix || "/"}`} />
+		<link
+			rel="alternate"
+			type="application/rss+xml"
+			title="digiDEVS — Blog"
+			href={`${siteBase}/rss.xml`}
+			hreflang="nb"
+		/>
+		<link
+			rel="alternate"
+			type="application/rss+xml"
+			title="digiDEVS — Blog (English)"
+			href={`${siteBase}/en/rss.xml`}
+			hreflang="en"
+		/>
+		<link
+			rel="alternate"
+			type="application/rss+xml"
+			title="digiDEVS — Blog (Hrvatski)"
+			href={`${siteBase}/hr/rss.xml`}
+			hreflang="hr"
+		/>
 		<ClientRouter />
 		<slot name="head" />
 	</head>

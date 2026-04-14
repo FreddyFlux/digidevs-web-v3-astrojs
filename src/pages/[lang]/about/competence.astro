@@ -1,10 +1,11 @@
 ---
 import type { Locale } from "../../../i18n/locales";
 import { DEFAULT_LOCALE, LOCALES } from "../../../i18n/locales";
+import { Image } from "astro:assets";
 import Layout from "../../../layouts/Layout.astro";
 import DeviconMask from "../../../components/icons/DeviconMask.astro";
 import MarketingIcon from "../../../components/icons/MarketingIcon";
-import { images } from "../../../data/remoteImages";
+import digidevsValley from "../../../assets/digidevs-valley.png";
 import { useTranslations } from "../../../i18n/utils";
 
 export function getStaticPaths() {
@@ -114,14 +115,16 @@ const capabilityStackPaths = [
 				</div>
 
 				<div class="relative rounded-2xl bg-surface p-10 md:col-span-5">
-					<img
-						src={images.competenceNorway}
+					<Image
+						src={digidevsValley}
 						alt=""
-						width={800}
-						height={600}
+						width={digidevsValley.width}
+						height={digidevsValley.height}
+						sizes="(max-width: 768px) 100vw, 45vw"
 						class="absolute inset-0 h-full w-full rounded-2xl object-cover opacity-25 grayscale"
 						loading="lazy"
 						decoding="async"
+						format="avif"
 					/>
 					<div class="relative z-10">
 						<span class="font-label mb-8 block text-xs uppercase tracking-widest text-on-surface-variant"

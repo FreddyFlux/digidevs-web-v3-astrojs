@@ -1,8 +1,6 @@
 // @ts-check
+import 'dotenv/config';
 import { createClient } from '@sanity/client';
-import { existsSync, readFileSync } from 'node:fs';
-import { dirname, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'astro/config';
 
 import vercel from '@astrojs/vercel';
@@ -11,29 +9,6 @@ import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 
 const site = process.env.PUBLIC_SITE_URL || 'https://digidevs.no';
-
-/** Astro evaluates this file before `process.env` is filled from `.env`; mirror CLI loading for build-time Sanity fetch. */
-function applyLocalEnvFile() {
-	const envPath = resolve(dirname(fileURLToPath(import.meta.url)), '.env');
-	if (!existsSync(envPath)) return;
-	const raw = readFileSync(envPath, 'utf8');
-	for (const line of raw.split('\n')) {
-		const trimmed = line.trim();
-		if (!trimmed || trimmed.startsWith('#')) continue;
-		const eq = trimmed.indexOf('=');
-		if (eq === -1) continue;
-		const key = trimmed.slice(0, eq).trim();
-		let val = trimmed.slice(eq + 1).trim();
-		if (
-			(val.startsWith('"') && val.endsWith('"')) ||
-			(val.startsWith("'") && val.endsWith("'"))
-		) {
-			val = val.slice(1, -1);
-		}
-		if (process.env[key] === undefined) process.env[key] = val;
-	}
-}
-applyLocalEnvFile();
 
 /** Keep in sync with `src/lib/queries.ts` POST_SLUGS_BY_LANG_QUERY */
 const POST_SLUGS_BY_LANG_QUERY = `*[
