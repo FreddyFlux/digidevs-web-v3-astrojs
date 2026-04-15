@@ -170,6 +170,19 @@ export async function fetchPostBySlug(lang: Locale, slug: string): Promise<BlogP
 	return mapDocToPost(doc);
 }
 
+export async function fetchAllSlugs(lang: Locale): Promise<string[]> {
+	const query = `*[
+    _type == "post" &&
+    !(_id in path("drafts.**")) &&
+    defined(slug.current) &&
+    defined(publishedAt) &&
+    (language == $lang || (!defined(language) && $lang == "no"))
+  ].slug.current`;
+	const client = getSanityClient();
+	const result = await client.fetch<string[]>(query, { lang });
+	return Array.isArray(result) ? result : [];
+}
+
 export function getFeaturedPost(posts: BlogPost[]): BlogPost | undefined {
 	if (!posts.length) return undefined;
 	const featured = posts.filter((p) => p.featured);

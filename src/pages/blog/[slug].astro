@@ -1,11 +1,13 @@
 ---
 import { Image } from "astro:assets";
 import Layout from "../../layouts/Layout.astro";
-import { fetchPostBySlug, formatCategories } from "../../lib/blog";
+import { fetchPostBySlug, fetchAllSlugs, formatCategories } from "../../lib/blog";
 import { organizationPublisherBlock } from "../../lib/seo-jsonld";
 
-/** Resolve at request time so new Sanity posts work in dev (getStaticPaths is cached; /blog listing is not). */
-export const prerender = false;
+export async function getStaticPaths() {
+	const slugs = await fetchAllSlugs("no");
+	return slugs.map((slug) => ({ params: { slug } }));
+}
 
 const slug = Astro.params.slug;
 if (!slug) {
