@@ -2,7 +2,8 @@
 import { Image } from "astro:assets";
 import Layout from "../../layouts/Layout.astro";
 import { fetchPostBySlug, fetchAllSlugs, formatCategories } from "../../lib/blog";
-import { organizationPublisherBlock } from "../../lib/seo-jsonld";
+import { useTranslations } from "../../i18n/utils";
+import { buildBlogBreadcrumbItems, buildBlogPostingJsonLd } from "../../lib/seo-jsonld";
 
 export async function getStaticPaths() {
 	const slugs = await fetchAllSlugs("no");
@@ -14,6 +15,7 @@ if (!slug) {
 	return new Response(null, { status: 404, statusText: "Not Found" });
 }
 
+const t = useTranslations("no");
 const post = await fetchPostBySlug("no", slug);
 if (!post) {
 	return new Response(null, { status: 404, statusText: "Not Found" });
@@ -27,26 +29,19 @@ const canonical = post.canonicalUrl ?? `${siteBase}/blog/${post.slug}`;
 const keywordsMeta = post.seoKeywords?.length ? post.seoKeywords.join(", ") : undefined;
 
 const primarySection = post.categories?.[0];
-const jsonLd = {
-	"@context": "https://schema.org",
-	"@type": "BlogPosting",
+const keywordsJson = post.seoKeywords?.length ? post.seoKeywords.join(", ") : undefined;
+const jsonLd = buildBlogPostingJsonLd(siteBase, "no", {
+	canonical,
 	headline: post.title,
 	description: pageDesc,
-	...(post.seoKeywords?.length && { keywords: post.seoKeywords.join(", ") }),
-	...(primarySection && { articleSection: primarySection }),
-	image: [post.coverImageUrl],
+	image: post.coverImageOgUrl,
 	datePublished: post.date,
 	dateModified: post.updatedAt ?? post.date,
-	author: {
-		"@type": "Person",
-		name: post.author,
-	},
-	publisher: organizationPublisherBlock(siteBase),
-	mainEntityOfPage: {
-		"@type": "WebPage",
-		"@id": canonical,
-	},
-};
+	authorName: post.author,
+	...(keywordsJson && { keywords: keywordsJson }),
+	...(primarySection && { articleSection: primarySection }),
+	breadcrumbItems: buildBlogBreadcrumbItems(siteBase, "no", t, post.title, canonical),
+});
 
 const dateLocale = "nb-NO";
 ---
@@ -57,7 +52,7 @@ const dateLocale = "nb-NO";
 	keywords={keywordsMeta}
 	lang="no"
 	canonicalUrl={canonical}
-	ogImage={post.coverImageUrl}
+	ogImage={post.coverImageOgUrl}
 	ogType="article"
 	noIndex={post.noIndex ?? false}
 >

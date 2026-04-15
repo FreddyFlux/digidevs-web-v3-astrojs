@@ -5,11 +5,22 @@ import MarketingIcon from "../../components/icons/MarketingIcon";
 import qualityHeroBuilding from "../../assets/digidevs-building.png";
 import digidevsStones from "../../assets/digidevs-stones.png";
 import { useTranslations } from "../../i18n/utils";
+import { absoluteUrl, buildAboutBreadcrumbItems, buildAboutSectionJsonLd } from "../../lib/seo-jsonld";
 
 const t = useTranslations("no");
+const siteBase = (import.meta.env.PUBLIC_SITE_URL ?? "https://digidevs.no").replace(/\/$/, "");
+const pageUrl = absoluteUrl(siteBase, "no", "/about/quality");
+const aboutJsonLd = buildAboutSectionJsonLd(siteBase, "no", {
+	pageUrl,
+	title: t("quality.meta_title"),
+	description: t("quality.meta_description"),
+	schemaType: "WebPage",
+	breadcrumbItems: buildAboutBreadcrumbItems(siteBase, "no", t, "quality"),
+});
 ---
 
 <Layout title={t("quality.meta_title")} description={t("quality.meta_description")} lang="no">
+	<script type="application/ld+json" slot="head" set:html={JSON.stringify(aboutJsonLd)} />
 	<main class="mx-auto max-w-7xl px-6 pb-28 pt-36 md:px-10">
 		<header class="misty-transition-enter mb-24">
 			<div class="mb-16 flex flex-col justify-between gap-10 md:flex-row md:items-end">

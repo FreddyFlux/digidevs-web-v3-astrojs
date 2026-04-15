@@ -5,8 +5,18 @@ import DeviconMask from "../../components/icons/DeviconMask.astro";
 import MarketingIcon from "../../components/icons/MarketingIcon";
 import digidevsValley from "../../assets/digidevs-valley.png";
 import { useTranslations } from "../../i18n/utils";
+import { absoluteUrl, buildAboutBreadcrumbItems, buildAboutSectionJsonLd } from "../../lib/seo-jsonld";
 
 const t = useTranslations("no");
+const siteBase = (import.meta.env.PUBLIC_SITE_URL ?? "https://digidevs.no").replace(/\/$/, "");
+const pageUrl = absoluteUrl(siteBase, "no", "/about/competence");
+const aboutJsonLd = buildAboutSectionJsonLd(siteBase, "no", {
+	pageUrl,
+	title: t("competence.meta_title"),
+	description: t("competence.meta_description"),
+	schemaType: "WebPage",
+	breadcrumbItems: buildAboutBreadcrumbItems(siteBase, "no", t, "competence"),
+});
 
 const capabilityStackPaths = [
 	"react/react-original",
@@ -30,6 +40,7 @@ const capabilityStackPaths = [
 ---
 
 <Layout title={t("competence.meta_title")} description={t("competence.meta_description")} lang="no">
+	<script type="application/ld+json" slot="head" set:html={JSON.stringify(aboutJsonLd)} />
 	<main class="relative pt-32">
 		<section class="relative overflow-hidden px-6 py-16 md:px-10 md:py-24">
 			<div class="misty-glow absolute left-1/4 top-0 -z-10 h-full w-full"></div>

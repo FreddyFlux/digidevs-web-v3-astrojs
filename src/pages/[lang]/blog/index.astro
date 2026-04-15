@@ -14,6 +14,7 @@ import {
 	parseCategoryFiltersFromSearchParams,
 } from "../../../lib/blog";
 import { useTranslations } from "../../../i18n/utils";
+import { buildBlogIndexBreadcrumbItems, buildBlogIndexJsonLd } from "../../../lib/seo-jsonld";
 
 const LOCALES_PREFIXED = LOCALES.filter((l) => l !== DEFAULT_LOCALE);
 const { lang: langParam } = Astro.params;
@@ -31,12 +32,20 @@ const posts = getGridPosts(filteredPosts, featured);
 const categoryOptions = collectCategoriesFromPosts(allPosts);
 const urlPrefix = `/${lang}`;
 
+const siteBase = (import.meta.env.PUBLIC_SITE_URL ?? "https://digidevs.no").replace(/\/$/, "");
+const blogIndexJsonLd = buildBlogIndexJsonLd(siteBase, lang, {
+	title: t("blog.meta_title"),
+	description: t("blog.meta_description"),
+	breadcrumbItems: buildBlogIndexBreadcrumbItems(siteBase, lang, t),
+});
+
 const showSanityEmpty = allPosts.length === 0;
 const showFilterEmpty =
 	allPosts.length > 0 && selectedCategories.length > 0 && filteredPosts.length === 0;
 ---
 
 <Layout title={t("blog.meta_title")} description={t("blog.meta_description")} lang={lang}>
+	<script type="application/ld+json" slot="head" set:html={JSON.stringify(blogIndexJsonLd)} />
 	<BlogListing
 		lang={lang}
 		urlPrefix={urlPrefix}

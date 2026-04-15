@@ -2,7 +2,7 @@ import type { PortableTextBlock } from "@portabletext/types";
 import { defaultComponents, escapeHTML, mergeComponents, toHTML } from "@portabletext/to-html";
 import type { Locale } from "../i18n/locales";
 import type { PricingTableBlock } from "../types/sanity";
-import { getSanityClient, urlForImage } from "./sanity";
+import { getSanityClient, urlForImage, urlForOgImage } from "./sanity";
 import { POSTS_BY_LANG_QUERY, SINGLE_POST_BY_SLUG_QUERY } from "./queries";
 
 const PRICING_TABLE_DEFAULT_LABELS = {
@@ -47,6 +47,8 @@ export type BlogPost = {
 	featured?: boolean;
 	bodyHtml: string;
 	coverImageUrl: string;
+	/** Sanity CDN URL sized for og:image / social (~1200×630). */
+	coverImageOgUrl: string;
 	coverImageAlt: string;
 	updatedAt?: string;
 	seoTitle?: string;
@@ -129,6 +131,7 @@ function mapDocToPost(doc: SanityPostDoc): BlogPost {
 			`Post "${doc.slug}" is missing a usable cover image. Add coverImage in Sanity.`,
 		);
 	}
+	const coverOgUrl = urlForOgImage(doc.coverImage) ?? coverUrl;
 	const seo = doc.seo;
 	return {
 		slug: doc.slug,
@@ -141,6 +144,7 @@ function mapDocToPost(doc: SanityPostDoc): BlogPost {
 		featured: doc.featured,
 		bodyHtml: portableTextToHtml(doc.body),
 		coverImageUrl: coverUrl,
+		coverImageOgUrl: coverOgUrl,
 		coverImageAlt: doc.coverImage?.alt?.trim() || doc.title,
 		updatedAt: doc.updatedAt,
 		seoTitle: seo?.seoTitle,

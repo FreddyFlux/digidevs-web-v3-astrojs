@@ -19,7 +19,7 @@ const { lang: langParam } = Astro.params;
 const lang = langParam as Locale;
 const t = useTranslations(lang);
 const siteBase = (import.meta.env.PUBLIC_SITE_URL ?? "https://digidevs.no").replace(/\/$/, "");
-const homepageJsonLd = buildHomepageJsonLd(siteBase, lang);
+const homepageJsonLd = buildHomepageJsonLd(siteBase, lang, { description: t("home.meta_description") });
 ---
 
 <Layout title={t("home.meta_title")} description={t("home.meta_description")} lang={lang}>

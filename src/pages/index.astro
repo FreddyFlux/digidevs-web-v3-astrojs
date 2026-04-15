@@ -11,7 +11,7 @@ import bentoKeyboard from "../assets/digidevs-keyboard.png";
 
 const t = useTranslations("no");
 const siteBase = (import.meta.env.PUBLIC_SITE_URL ?? "https://digidevs.no").replace(/\/$/, "");
-const homepageJsonLd = buildHomepageJsonLd(siteBase, "no");
+const homepageJsonLd = buildHomepageJsonLd(siteBase, "no", { description: t("home.meta_description") });
 ---
 
 <Layout title={t("home.meta_title")} description={t("home.meta_description")} lang="no">

@@ -2,11 +2,22 @@
 import Layout from "../../layouts/Layout.astro";
 import DigiDevsWordmark from "../../components/brand/DigiDevsWordmark.astro";
 import { useTranslations } from "../../i18n/utils";
+import { absoluteUrl, buildAboutBreadcrumbItems, buildAboutSectionJsonLd } from "../../lib/seo-jsonld";
 
 const t = useTranslations("no");
+const siteBase = (import.meta.env.PUBLIC_SITE_URL ?? "https://digidevs.no").replace(/\/$/, "");
+const pageUrl = absoluteUrl(siteBase, "no", "/about");
+const aboutJsonLd = buildAboutSectionJsonLd(siteBase, "no", {
+	pageUrl,
+	title: t("about.meta_title"),
+	description: t("about.meta_description"),
+	schemaType: "AboutPage",
+	breadcrumbItems: buildAboutBreadcrumbItems(siteBase, "no", t, "index"),
+});
 ---
 
 <Layout title={t("about.meta_title")} description={t("about.meta_description")} lang="no">
+	<script type="application/ld+json" slot="head" set:html={JSON.stringify(aboutJsonLd)} />
 	<main class="px-6 pb-28 pt-36 md:px-10">
 		<header class="mx-auto mb-24 max-w-7xl md:flex md:items-end md:justify-between md:gap-16">
 			<div class="max-w-2xl">

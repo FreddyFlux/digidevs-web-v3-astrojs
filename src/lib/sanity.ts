@@ -49,3 +49,19 @@ export function urlForImage(source: SanityImageSource | undefined | null): strin
 		return null;
 	}
 }
+
+/** Open Graph / social share (~1200×630). Prefer over `urlForImage` for meta tags. */
+export function urlForOgImage(source: SanityImageSource | undefined | null): string | null {
+	if (!source) return null;
+	try {
+		return getImageUrlBuilder()
+			.image(source)
+			.width(1200)
+			.height(630)
+			.fit("crop")
+			.auto("format")
+			.url();
+	} catch {
+		return null;
+	}
+}

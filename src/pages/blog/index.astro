@@ -12,8 +12,15 @@ import {
 	parseCategoryFiltersFromSearchParams,
 } from "../../lib/blog";
 import { useTranslations } from "../../i18n/utils";
+import { buildBlogIndexBreadcrumbItems, buildBlogIndexJsonLd } from "../../lib/seo-jsonld";
 
 const t = useTranslations("no");
+const siteBase = (import.meta.env.PUBLIC_SITE_URL ?? "https://digidevs.no").replace(/\/$/, "");
+const blogIndexJsonLd = buildBlogIndexJsonLd(siteBase, "no", {
+	title: t("blog.meta_title"),
+	description: t("blog.meta_description"),
+	breadcrumbItems: buildBlogIndexBreadcrumbItems(siteBase, "no", t),
+});
 const allPosts = await fetchAllPosts("no");
 const selectedCategories = parseCategoryFiltersFromSearchParams(Astro.url.searchParams);
 const filteredPosts = filterPostsByCategories(allPosts, selectedCategories);
@@ -27,6 +34,7 @@ const showFilterEmpty =
 ---
 
 <Layout title={t("blog.meta_title")} description={t("blog.meta_description")} lang="no">
+	<script type="application/ld+json" slot="head" set:html={JSON.stringify(blogIndexJsonLd)} />
 	<BlogListing
 		lang="no"
 		urlPrefix=""
