@@ -30,6 +30,11 @@ function rewriteSanityProxyPath(path) {
 export default defineConfig({
   site,
 
+  /** @astrojs/sitemap emits sitemap-index.xml (not sitemap.xml) when split; many tools expect /sitemap.xml */
+  redirects: {
+    '/sitemap.xml': '/sitemap-index.xml',
+  },
+
   prefetch: {
     prefetchAll: true,
     defaultStrategy: 'hover',
