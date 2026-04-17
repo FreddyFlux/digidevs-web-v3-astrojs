@@ -56,5 +56,15 @@ export const SINGLE_POST_BY_SLUG_QUERY = `*[
   language
 }`;
 
+/** Slugs for each locale from @sanity/document-internationalization translation.metadata */
+export const TRANSLATION_SLUGS_BY_POST_ID_QUERY = `*[
+  _type == "translation.metadata" &&
+  (references($postId) || references($draftPostId))
+][0]{
+  "no": translations[_key == "no"][0].value->slug.current,
+  "en": translations[_key == "en"][0].value->slug.current,
+  "hr": translations[_key == "hr"][0].value->slug.current
+}`;
+
 /** @deprecated use POSTS_BY_LANG_QUERY with $lang */
 export const ALL_POSTS_QUERY = POSTS_BY_LANG_QUERY;

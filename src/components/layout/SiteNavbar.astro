@@ -6,9 +6,11 @@ import LangSwitcher from "./LangSwitcher";
 interface Props {
 	pathname: string;
 	lang: Locale;
+	/** Per-locale paths for pages where slug differs by language (blog posts). */
+	localeHrefs?: Partial<Record<Locale, string>>;
 }
 
-const { pathname, lang } = Astro.props;
+const { pathname, lang, localeHrefs } = Astro.props;
 ---
 
 <header class="pointer-events-none fixed inset-x-0 top-0 z-50">
@@ -16,7 +18,7 @@ const { pathname, lang } = Astro.props;
 		<div class="flex w-full min-w-0 max-w-full items-center justify-center gap-0">
 			<GlassNavBar client:load pathname={pathname} lang={lang} attachRight />
 			<div class="relative z-10 shrink-0 -ml-px">
-				<LangSwitcher pathname={pathname} lang={lang} attachLeft />
+				<LangSwitcher pathname={pathname} lang={lang} attachLeft localeHrefs={localeHrefs} />
 			</div>
 		</div>
 	</div>

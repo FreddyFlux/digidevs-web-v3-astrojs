@@ -1,7 +1,13 @@
 ---
 import { Image } from "astro:assets";
 import Layout from "../../layouts/Layout.astro";
-import { fetchPostBySlug, fetchAllSlugs, formatCategories } from "../../lib/blog";
+import {
+	buildBlogLocaleHrefs,
+	fetchAllSlugs,
+	fetchBlogTranslationSlugs,
+	fetchPostBySlug,
+	formatCategories,
+} from "../../lib/blog";
 import { useTranslations } from "../../i18n/utils";
 import { buildBlogBreadcrumbItems, buildBlogPostingJsonLd } from "../../lib/seo-jsonld";
 
@@ -20,6 +26,9 @@ const post = await fetchPostBySlug("no", slug);
 if (!post) {
 	return new Response(null, { status: 404, statusText: "Not Found" });
 }
+
+const translationSlugs = await fetchBlogTranslationSlugs(post.id);
+const localeHrefs = buildBlogLocaleHrefs("no", post, translationSlugs);
 
 const siteBase = (import.meta.env.PUBLIC_SITE_URL ?? "https://digidevs.no").replace(/\/$/, "");
 const pageTitle = post.seoTitle ? `${post.seoTitle} — digiDEVS` : `${post.title} — digiDEVS`;
@@ -55,6 +64,7 @@ const dateLocale = "nb-NO";
 	ogImage={post.coverImageOgUrl}
 	ogType="article"
 	noIndex={post.noIndex ?? false}
+	localeHrefs={localeHrefs}
 >
 	<script type="application/ld+json" slot="head" set:html={JSON.stringify(jsonLd)} />
 	<article class="mx-auto max-w-3xl px-6 pb-28 pt-36 md:px-10">

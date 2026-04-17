@@ -19,6 +19,8 @@ interface Props {
 	ogType?: "website" | "article";
 	twitterCard?: "summary" | "summary_large_image";
 	noIndex?: boolean;
+	/** Per-locale pathnames for hreflang + lang switcher (e.g. translated blog slugs). */
+	localeHrefs?: Partial<Record<Locale, string>>;
 }
 
 const {
@@ -31,6 +33,7 @@ const {
 	ogType = "website",
 	twitterCard = "summary_large_image",
 	noIndex = false,
+	localeHrefs,
 } = Astro.props;
 
 const pathname = Astro.url.pathname;
@@ -57,6 +60,14 @@ const strippedPath = stripLocalePrefixFromPathname(pathname);
 const pathSuffix = strippedPath === "/" ? "" : strippedPath;
 const ogLocale = ({ no: "nb_NO", en: "en_GB", hr: "hr_HR" } as const)[lang] ?? "nb_NO";
 const htmlLang = LOCALE_HTML_LANG[lang] ?? lang;
+
+const hreflangNb =
+	localeHrefs?.no != null ? `${siteBase}${localeHrefs.no}` : `${siteBase}${pathSuffix || "/"}`;
+const hreflangEn =
+	localeHrefs?.en != null ? `${siteBase}${localeHrefs.en}` : `${siteBase}/en${pathSuffix}`;
+const hreflangHr =
+	localeHrefs?.hr != null ? `${siteBase}${localeHrefs.hr}` : `${siteBase}/hr${pathSuffix}`;
+const hreflangXDefault = localeHrefs?.no != null ? `${siteBase}${localeHrefs.no}` : `${siteBase}${pathSuffix || "/"}`;
 ---
 
 <!doctype html>
@@ -91,10 +102,10 @@ const htmlLang = LOCALE_HTML_LANG[lang] ?? lang;
 		<meta name="twitter:description" content={description} />
 		<meta name="twitter:image" content={ogImageAbsolute} />
 		<title>{title}</title>
-		<link rel="alternate" hreflang="nb" href={`${siteBase}${pathSuffix || "/"}`} />
-		<link rel="alternate" hreflang="en" href={`${siteBase}/en${pathSuffix}`} />
-		<link rel="alternate" hreflang="hr" href={`${siteBase}/hr${pathSuffix}`} />
-		<link rel="alternate" hreflang="x-default" href={`${siteBase}${pathSuffix || "/"}`} />
+		<link rel="alternate" hreflang="nb" href={hreflangNb} />
+		<link rel="alternate" hreflang="en" href={hreflangEn} />
+		<link rel="alternate" hreflang="hr" href={hreflangHr} />
+		<link rel="alternate" hreflang="x-default" href={hreflangXDefault} />
 		<link
 			rel="alternate"
 			type="application/rss+xml"
@@ -120,7 +131,7 @@ const htmlLang = LOCALE_HTML_LANG[lang] ?? lang;
 		<slot name="head" />
 	</head>
 	<body class="selection:bg-primary-container/90 selection:text-on-primary-container">
-		<SiteNavbar pathname={pathname} lang={lang} />
+		<SiteNavbar pathname={pathname} lang={lang} localeHrefs={localeHrefs} />
 		<slot />
 		<SiteFooter lang={lang} />
 		<script is:inline>

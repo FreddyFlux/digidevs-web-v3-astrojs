@@ -6,9 +6,12 @@ export default function LangSwitcher({
 	pathname,
 	lang,
 	attachLeft = false,
+	localeHrefs,
 }: {
 	pathname: string;
 	lang: Locale;
+	/** When set (e.g. blog posts), each locale links to the correct translated path instead of swapping the prefix only. */
+	localeHrefs?: Partial<Record<Locale, string>>;
 	/** Flatten left edge to sit flush against GlassNavBar (ear on the right). */
 	attachLeft?: boolean;
 }) {
@@ -25,7 +28,7 @@ export default function LangSwitcher({
 				{LOCALES.map((locale) => (
 					<a
 						key={locale}
-						href={localePath(pathname, lang, locale)}
+						href={localeHrefs?.[locale] ?? localePath(pathname, lang, locale)}
 						className={`font-label text-xs uppercase tracking-widest transition-colors ${
 							locale === lang
 								? "font-bold text-secondary"

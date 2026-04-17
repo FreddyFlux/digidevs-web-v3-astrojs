@@ -1,9 +1,14 @@
 import type { PortableTextBlock } from "@portabletext/types";
 import { defaultComponents, escapeHTML, mergeComponents, toHTML } from "@portabletext/to-html";
-import type { Locale } from "../i18n/locales";
+import { LOCALES, type Locale } from "../i18n/locales";
+import { blogIndexPath, blogPostPath } from "../i18n/utils";
 import type { PricingTableBlock } from "../types/sanity";
 import { getSanityClient, urlForImage, urlForOgImage } from "./sanity";
-import { POSTS_BY_LANG_QUERY, SINGLE_POST_BY_SLUG_QUERY } from "./queries";
+import {
+	POSTS_BY_LANG_QUERY,
+	SINGLE_POST_BY_SLUG_QUERY,
+	TRANSLATION_SLUGS_BY_POST_ID_QUERY,
+} from "./queries";
 
 const PRICING_TABLE_DEFAULT_LABELS = {
 	col1: "Project Type",
@@ -37,6 +42,8 @@ function pricingTableBlockToHtml(value: PricingTableBlock): string {
 }
 
 export type BlogPost = {
+	/** Sanity document id (published or draft-prefixed) */
+	id: string;
 	slug: string;
 	title: string;
 	description: string;
@@ -134,6 +141,7 @@ function mapDocToPost(doc: SanityPostDoc): BlogPost {
 	const coverOgUrl = urlForOgImage(doc.coverImage) ?? coverUrl;
 	const seo = doc.seo;
 	return {
+		id: doc._id,
 		slug: doc.slug,
 		title: doc.title,
 		description: doc.excerpt,
@@ -172,6 +180,47 @@ export async function fetchPostBySlug(lang: Locale, slug: string): Promise<BlogP
 	const doc = await client.fetch<SanityPostDoc | null>(SINGLE_POST_BY_SLUG_QUERY, { lang, slug });
 	if (!doc) return undefined;
 	return mapDocToPost(doc);
+}
+
+function publishedPostIdForRefs(postId: string): string {
+	return postId.startsWith("drafts.") ? postId.slice("drafts.".length) : postId;
+}
+
+/** Slugs for sibling translations from translation.metadata; empty object if none. */
+export async function fetchBlogTranslationSlugs(
+	postId: string,
+): Promise<Partial<Record<Locale, string>>> {
+	const client = getSanityClient();
+	const base = publishedPostIdForRefs(postId);
+	const draftPostId = `drafts.${base}`;
+	const row = await client.fetch<Partial<Record<Locale, string | null>> | null>(
+		TRANSLATION_SLUGS_BY_POST_ID_QUERY,
+		{ postId: base, draftPostId },
+	);
+	if (!row) return {};
+	const out: Partial<Record<Locale, string>> = {};
+	for (const loc of LOCALES) {
+		const s = row[loc];
+		if (typeof s === "string" && s.trim()) out[loc] = s.trim();
+	}
+	return out;
+}
+
+/**
+ * Paths for the lang switcher: correct slug per locale, or that locale’s blog index if missing.
+ * Ensures the active locale resolves to `post.slug` when metadata omits it.
+ */
+export function buildBlogLocaleHrefs(
+	lang: Locale,
+	post: BlogPost,
+	slugs: Partial<Record<Locale, string>>,
+): Record<Locale, string> {
+	const result = {} as Record<Locale, string>;
+	for (const loc of LOCALES) {
+		const slug = loc === lang ? (slugs[loc] ?? post.slug) : slugs[loc];
+		result[loc] = slug ? blogPostPath(loc, slug) : blogIndexPath(loc);
+	}
+	return result;
 }
 
 export async function fetchAllSlugs(lang: Locale): Promise<string[]> {

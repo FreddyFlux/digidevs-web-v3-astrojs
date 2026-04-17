@@ -35,6 +35,16 @@ export function localePath(pathname: string, currentLocale: Locale, targetLocale
 	return `/${targetLocale}${stripped === "/" ? "" : stripped}`;
 }
 
+/** Blog index path: default locale has no prefix. */
+export function blogIndexPath(locale: Locale): string {
+	return locale === DEFAULT_LOCALE ? "/blog" : `/${locale}/blog`;
+}
+
+/** Single post URL for a locale (matches canonical patterns in blog routes). */
+export function blogPostPath(locale: Locale, slug: string): string {
+	return locale === DEFAULT_LOCALE ? `/blog/${slug}` : `/${locale}/blog/${slug}`;
+}
+
 export function getLocaleFromParams(params: Record<string, string | undefined>): Locale {
 	const lang = params.lang;
 	if (lang === "en" || lang === "hr") return lang;

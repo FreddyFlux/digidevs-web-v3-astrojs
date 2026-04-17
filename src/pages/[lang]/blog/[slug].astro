@@ -2,7 +2,13 @@
 import { Image } from "astro:assets";
 import type { Locale } from "../../../i18n/locales";
 import Layout from "../../../layouts/Layout.astro";
-import { fetchPostBySlug, fetchAllSlugs, formatCategories } from "../../../lib/blog";
+import {
+	buildBlogLocaleHrefs,
+	fetchAllSlugs,
+	fetchBlogTranslationSlugs,
+	fetchPostBySlug,
+	formatCategories,
+} from "../../../lib/blog";
 import { buildBlogBreadcrumbItems, buildBlogPostingJsonLd } from "../../../lib/seo-jsonld";
 import { useTranslations } from "../../../i18n/utils";
 
@@ -28,6 +34,9 @@ const post = await fetchPostBySlug(lang, slug);
 if (!post) {
 	return new Response(null, { status: 404, statusText: "Not Found" });
 }
+
+const translationSlugs = await fetchBlogTranslationSlugs(post.id);
+const localeHrefs = buildBlogLocaleHrefs(lang, post, translationSlugs);
 
 const t = useTranslations(lang);
 const siteBase = (import.meta.env.PUBLIC_SITE_URL ?? "https://digidevs.no").replace(/\/$/, "");
@@ -65,6 +74,7 @@ const dateLocale = dateLocales[lang];
 	ogImage={post.coverImageOgUrl}
 	ogType="article"
 	noIndex={post.noIndex ?? false}
+	localeHrefs={localeHrefs}
 >
 	<script type="application/ld+json" slot="head" set:html={JSON.stringify(jsonLd)} />
 	<article class="mx-auto max-w-3xl px-6 pb-28 pt-36 md:px-10">
