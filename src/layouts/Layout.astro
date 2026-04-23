@@ -68,6 +68,12 @@ const hreflangEn =
 const hreflangHr =
 	localeHrefs?.hr != null ? `${siteBase}${localeHrefs.hr}` : `${siteBase}/hr${pathSuffix}`;
 const hreflangXDefault = localeHrefs?.no != null ? `${siteBase}${localeHrefs.no}` : `${siteBase}${pathSuffix || "/"}`;
+
+const cookieYesWebsiteKey = import.meta.env.PUBLIC_COOKIEYES_WEBSITE_KEY?.trim() ?? "";
+const gaMeasurementId = import.meta.env.PUBLIC_GA_MEASUREMENT_ID?.trim() ?? "";
+/** GA4 is only served with CookieYes + GCM (see head script order). */
+const loadGa4WithGcm = Boolean(cookieYesWebsiteKey && gaMeasurementId);
+const loadCookieYesOnly = Boolean(cookieYesWebsiteKey && !gaMeasurementId);
 ---
 
 <!doctype html>
@@ -102,6 +108,53 @@ const hreflangXDefault = localeHrefs?.no != null ? `${siteBase}${localeHrefs.no}
 		<meta name="twitter:description" content={description} />
 		<meta name="twitter:image" content={ogImageAbsolute} />
 		<title>{title}</title>
+		{
+			loadGa4WithGcm && (
+				<>
+					<script is:inline>
+						window.dataLayer = window.dataLayer || [];
+						function gtag() {
+							dataLayer.push(arguments);
+						}
+						gtag("consent", "default", {
+							ad_storage: "denied",
+							ad_user_data: "denied",
+							ad_personalization: "denied",
+							analytics_storage: "denied",
+							functionality_storage: "denied",
+							personalization_storage: "denied",
+							security_storage: "granted",
+							wait_for_update: 2000,
+						});
+						gtag("set", "ads_data_redaction", true);
+						gtag("set", "url_passthrough", true);
+					</script>
+					<script
+						type="text/javascript"
+						id="cookieyes"
+						src={`https://cdn-cookieyes.com/client_data/${cookieYesWebsiteKey}/script.js`}
+					></script>
+					<script async src={`https://www.googletagmanager.com/gtag/js?id=${gaMeasurementId}`} />
+					<script is:inline define:vars={{ gaMeasurementId }}>
+						window.dataLayer = window.dataLayer || [];
+						function gtag() {
+							dataLayer.push(arguments);
+						}
+						gtag("js", new Date());
+						gtag("config", gaMeasurementId);
+					</script>
+				</>
+			)
+		}
+		{
+			loadCookieYesOnly && (
+				<script
+					type="text/javascript"
+					id="cookieyes"
+					src={`https://cdn-cookieyes.com/client_data/${cookieYesWebsiteKey}/script.js`}
+				></script>
+			)
+		}
 		<link rel="alternate" hreflang="nb" href={hreflangNb} />
 		<link rel="alternate" hreflang="en" href={hreflangEn} />
 		<link rel="alternate" hreflang="hr" href={hreflangHr} />
@@ -143,5 +196,18 @@ const hreflangXDefault = localeHrefs?.no != null ? `${siteBase}${localeHrefs.no}
 				});
 			});
 		</script>
+		{
+			loadGa4WithGcm && (
+				<script is:inline define:vars={{ gaMeasurementId }}>
+					document.addEventListener("astro:after-swap", () => {
+						if (typeof window.gtag === "function") {
+							window.gtag("config", gaMeasurementId, {
+								page_path: window.location.pathname + window.location.search,
+							});
+						}
+					});
+				</script>
+			)
+		}
 	</body>
 </html>
