@@ -18,6 +18,7 @@ const contactFormSuccess = t("contact.form_success");
 const contactFormError = t("contact.form_error");
 const contactFormRateLimited = t("contact.form_rate_limited");
 const contactFormSubmit = t("contact.form_submit");
+
 ---
 
 <main class="relative min-h-screen overflow-hidden pb-20 pt-24 md:pt-28">
@@ -83,6 +84,7 @@ const contactFormSubmit = t("contact.form_submit");
 					class="relative space-y-8"
 					method="post"
 					action="/api/contact"
+					data-astro-reload
 					data-contact-form
 				>
 					<div class="grid grid-cols-1 gap-8 md:grid-cols-2">

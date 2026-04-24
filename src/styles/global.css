@@ -637,10 +637,46 @@ button.cky-revisit,
     color-mix(in oklab, var(--color-primary) 35%, transparent) !important;
 }
 
+/* Revisit / “approved” widget — black strokes (CookieYes often ships light outlines on the icon) */
 button.cky-revisit svg,
 #ckyRevisitShow svg,
 [class^="cky-revisit-"] svg,
 [class*=" cky-revisit-"] svg {
   color: var(--color-on-primary);
   fill: currentColor;
+}
+
+/*
+ * Recolour SVG strokes to black (CookieYes often uses white/light on the small widget).
+ * - [stroke] catches presentation attributes; line-like elements are usually stroke-only.
+ * - If part of the mark stays light, it may be fill="white" on a path; add a fill override for those nodes if needed.
+ */
+button.cky-revisit svg [stroke]:not([stroke="none"]),
+#ckyRevisitShow svg [stroke]:not([stroke="none"]),
+[class^="cky-revisit-"] svg [stroke]:not([stroke="none"]),
+[class*=" cky-revisit-"] svg [stroke]:not([stroke="none"]),
+button.cky-revisit svg [stroke="white"],
+button.cky-revisit svg [stroke="#fff"],
+button.cky-revisit svg [stroke="#ffffff"],
+#ckyRevisitShow svg [stroke="white"],
+#ckyRevisitShow svg [stroke="#fff"],
+#ckyRevisitShow svg [stroke="#ffffff"],
+[class^="cky-revisit-"] svg [stroke="white"],
+[class^="cky-revisit-"] svg [stroke="#fff"],
+[class^="cky-revisit-"] svg [stroke="#ffffff"],
+[class*=" cky-revisit-"] svg [stroke="white"],
+[class*=" cky-revisit-"] svg [stroke="#fff"],
+[class*=" cky-revisit-"] svg [stroke="#ffffff"] {
+  stroke: #000000 !important;
+}
+
+button.cky-revisit svg line,
+button.cky-revisit svg polyline,
+#ckyRevisitShow svg line,
+#ckyRevisitShow svg polyline,
+[class^="cky-revisit-"] svg line,
+[class^="cky-revisit-"] svg polyline,
+[class*=" cky-revisit-"] svg line,
+[class*=" cky-revisit-"] svg polyline {
+  stroke: #000000 !important;
 }

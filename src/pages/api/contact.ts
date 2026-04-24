@@ -59,7 +59,55 @@ async function parseBody(request: Request): Promise<{
 	return null;
 }
 
-export const ALL: APIRoute = () => {
+function getMethodNotAllowedPageHtml(acceptLang: string | null) {
+	const prefersNorwegian =
+		acceptLang && /^(no|nb|nn)(?:$|,)/i.test(acceptLang.split(",")[0]?.trim() ?? "");
+	const title = prefersNorwegian ? "Bruk kontaktsiden" : "Use the contact page";
+	const body = prefersNorwegian
+		? "Denne adressen er bare for innsendte skjemaer. Gå tilbake til kontaktsiden for å sende en melding."
+		: "This URL only accepts form submissions. Go back to the contact page to send a message.";
+	return `<!DOCTYPE html>
+<html lang="${prefersNorwegian ? "no" : "en"}">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>${title} — digiDEVS</title>
+  <style>
+    :root { --bg: #0f1419; --fg: #e8eaed; --accent: #0d9488; --muted: #9ca3af; }
+    body { margin:0; min-height:100vh; font-family: system-ui, sans-serif; background: var(--bg); color: var(--fg);
+      display:flex; align-items:center; justify-content:center; padding: 24px; box-sizing: border-box; }
+    .card { max-width: 32rem; padding: 2rem; border: 1px solid rgba(255,255,255,.08); border-radius: 12px; background: rgba(255,255,255,.03); }
+    p { line-height: 1.6; color: var(--muted); margin: 0 0 1.5rem; }
+    h1 { font-size: 1.25rem; font-weight: 700; margin: 0 0 0.75rem; }
+    a { color: var(--accent); font-weight: 600; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    nav { display: flex; flex-wrap: wrap; gap: 1rem; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>${title}</h1>
+    <p>${body}</p>
+    <nav>
+      <a href="javascript:history.back()">${prefersNorwegian ? "Tilbake" : "Go back"}</a>
+      <a href="/contact">${prefersNorwegian ? "Kontakt (norsk)" : "Contact (Norwegian)"}</a>
+      <a href="/en/contact">English</a>
+    </nav>
+  </div>
+</body>
+</html>`;
+}
+
+/** Browsers (or bad prefetch) may GET this URL — return HTML, not raw JSON. */
+export const GET: APIRoute = ({ request }) => {
+	const accept = request.headers.get("Accept") ?? "";
+	if (accept.includes("text/html")) {
+		const acceptLang = request.headers.get("Accept-Language");
+		return new Response(getMethodNotAllowedPageHtml(acceptLang), {
+			status: 405,
+			headers: { "Content-Type": "text/html; charset=utf-8" },
+		});
+	}
 	return jsonResponse({ error: "Method Not Allowed" }, 405);
 };
 
