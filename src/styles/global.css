@@ -567,3 +567,80 @@ article.blog-listing-card:has(a:focus-visible) .blog-listing-image,
     transform: none;
   }
 }
+
+/*
+ * CookieYes — brand yellow for primary actions + revisit widget (script injects at end of body).
+ * Revisit is usually a body sibling of the banner, so use --color-primary / --color-on-primary
+ * (not a nested custom property). If a colour still won’t change, check CookieYes → Colours
+ * (dashboard inline styles) or add rules in their Custom CSS.
+ */
+#ckyBanner,
+.cky-consent-container {
+  box-shadow: inset 0 3px 0 0 var(--color-primary) !important;
+}
+
+button.cky-btn.cky-btn-accept,
+.cky-btn-accept {
+  background-color: var(--color-primary) !important;
+  color: var(--color-on-primary) !important;
+  border-color: transparent !important;
+}
+
+button.cky-btn.cky-btn-accept:hover,
+.cky-btn-accept:hover {
+  filter: brightness(1.06);
+}
+
+button.cky-btn.cky-btn-reject,
+button.cky-btn.cky-btn-preferences,
+.cky-btn-reject,
+.cky-btn-preferences {
+  background-color: transparent !important;
+  color: var(--color-primary) !important;
+  border: 1px solid
+    color-mix(in oklab, var(--color-primary) 55%, var(--color-outline)) !important;
+}
+
+button.cky-btn.cky-btn-reject:hover,
+button.cky-btn.cky-btn-preferences:hover,
+.cky-btn-reject:hover,
+.cky-btn-preferences:hover {
+  background-color: color-mix(
+    in oklab,
+    var(--color-primary) 12%,
+    transparent
+  ) !important;
+}
+
+/* Preference center — save / accept */
+#ckyPreferenceContainer button.cky-btn-accept,
+.cky-pc-container button.cky-btn-accept,
+.cky-preference-header-wrapper ~ * button.cky-btn-accept {
+  background-color: var(--color-primary) !important;
+  color: var(--color-on-primary) !important;
+  border-color: transparent !important;
+}
+
+/* “Revisit consent” floating control */
+button.cky-revisit,
+#ckyRevisitShow,
+[class^="cky-revisit-"],
+[class*=" cky-revisit-"] {
+  background-color: var(--color-primary) !important;
+  color: var(--color-on-primary) !important;
+  border-color: color-mix(
+    in oklab,
+    var(--color-on-primary) 12%,
+    transparent
+  ) !important;
+  box-shadow: 0 4px 20px
+    color-mix(in oklab, var(--color-primary) 35%, transparent) !important;
+}
+
+button.cky-revisit svg,
+#ckyRevisitShow svg,
+[class^="cky-revisit-"] svg,
+[class*=" cky-revisit-"] svg {
+  color: var(--color-on-primary);
+  fill: currentColor;
+}
