@@ -80,6 +80,7 @@ const contactFormSubmit = t("contact.form_submit");
 			<div
 				class="rounded-xl border border-outline-variant/15 bg-surface-container-low p-8 backdrop-blur-md md:p-12"
 			>
+				<!-- data-astro-reload: after POST, Astro does a full navigation so the handler runs (form uses server route + client status script). -->
 				<form
 					class="relative space-y-8"
 					method="post"

@@ -1,3 +1,8 @@
+/**
+ * Build-time: blog `getStaticPaths` / RSS and any code calling `getSanityClient()` need
+ * `SANITY_PROJECT_ID` (see `.env.example`) and outbound HTTPS to Sanity. CI without those
+ * env vars or with blocked network will fail at prerender, not from app logic bugs.
+ */
 import { createClient, type SanityClient } from "@sanity/client";
 import {
 	createImageUrlBuilder,
