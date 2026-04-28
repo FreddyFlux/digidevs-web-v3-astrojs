@@ -78,7 +78,7 @@ const homepageJsonLd = buildHomepageJsonLd(siteBase, lang, { description: t("hom
 
 						<div class="order-1 col-span-12 md:order-2 md:col-span-5 md:col-start-7">
 							<StaticGlassBox class="mb-6 px-4 py-3 sm:mb-10 sm:px-8 sm:py-5">
-								<p class="font-body text-sm font-light leading-relaxed text-[#111111] sm:text-base md:text-xl">
+								<p class="font-body text-sm font-light leading-relaxed text-navbar-glass-fg-strong sm:text-base md:text-xl">
 									{t("home.hero_body")}
 								</p>
 							</StaticGlassBox>
@@ -208,18 +208,69 @@ const homepageJsonLd = buildHomepageJsonLd(siteBase, lang, { description: t("hom
 			</div>
 		</section>
 
+		<section class="bg-background px-6 py-20 md:px-10 md:py-28 lg:px-12">
+			<div class="mx-auto grid max-w-[1920px] gap-12 md:grid-cols-12 md:items-start">
+				<div class="md:col-span-5">
+					<h2 class="font-headline text-4xl font-bold uppercase tracking-tighter md:text-5xl">
+						{t("home.seo_heading")}
+					</h2>
+					<div class="mt-2 h-1 w-20 bg-primary-container"></div>
+				</div>
+				<div class="space-y-8 md:col-span-7">
+					<p class="font-body text-lg leading-relaxed text-on-surface-variant md:text-xl">
+						{t("home.seo_intro")}
+					</p>
+					<div class="grid gap-6 md:grid-cols-3">
+						<article class="bg-surface-container p-6">
+							<h3 class="mb-3 font-headline text-xl font-bold tracking-tighter text-on-surface">
+								{t("home.seo_web_title")}
+							</h3>
+							<p class="text-bento-body text-sm leading-relaxed">{t("home.seo_web_body")}</p>
+						</article>
+						<article class="bg-surface-container-high p-6">
+							<h3 class="mb-3 font-headline text-xl font-bold tracking-tighter text-on-surface">
+								{t("home.seo_ai_title")}
+							</h3>
+							<p class="text-bento-body text-sm leading-relaxed">{t("home.seo_ai_body")}</p>
+						</article>
+						<article class="bg-surface-container-highest p-6">
+							<h3 class="mb-3 font-headline text-xl font-bold tracking-tighter text-on-surface">
+								{t("home.seo_team_title")}
+							</h3>
+							<p class="text-bento-body text-sm leading-relaxed">{t("home.seo_team_body")}</p>
+						</article>
+					</div>
+				</div>
+			</div>
+		</section>
+
 		<section class="border-border border-t bg-surface-dim px-6 py-24 md:px-10 md:py-32 lg:px-12">
 			<div class="mx-auto grid max-w-[1920px] grid-cols-12 gap-6 justify-items-center">
 				<div class="col-span-12 text-center md:col-span-4">
-					<h2 class="mb-4 font-headline text-5xl font-black tracking-tighter text-primary-container md:text-6xl">8</h2>
+					<p class="mb-4 font-headline text-5xl font-black tracking-tighter text-primary-container md:text-6xl">
+						{t("home.stats_pages_value")}
+					</p>
+					<h2 class="mb-3 font-headline text-2xl font-bold tracking-tighter text-on-surface">
+						{t("home.stats_pages_title")}
+					</h2>
 					<p class="font-headline text-xs uppercase tracking-widest text-on-surface-variant">{t("home.stats_pages")}</p>
 				</div>
 				<div class="col-span-12 text-center md:col-span-4 md:mt-24">
-					<h2 class="mb-4 font-headline text-5xl font-black tracking-tighter text-secondary md:text-6xl">100%</h2>
+					<p class="mb-4 font-headline text-5xl font-black tracking-tighter text-secondary md:text-6xl">
+						{t("home.stats_cutting_value")}
+					</p>
+					<h2 class="mb-3 font-headline text-2xl font-bold tracking-tighter text-on-surface">
+						{t("home.stats_cutting_title")}
+					</h2>
 					<p class="font-headline text-xs uppercase tracking-widest text-on-surface-variant">{t("home.stats_cutting")}</p>
 				</div>
 				<div class="col-span-12 text-center md:col-span-4 md:mt-12">
-					<h2 class="mb-4 font-headline text-5xl font-black tracking-tighter text-tertiary md:text-6xl">0%</h2>
+					<p class="mb-4 font-headline text-5xl font-black tracking-tighter text-tertiary md:text-6xl">
+						{t("home.stats_bs_value")}
+					</p>
+					<h2 class="mb-3 font-headline text-2xl font-bold tracking-tighter text-on-surface">
+						{t("home.stats_bs_title")}
+					</h2>
 					<p class="font-headline text-xs uppercase tracking-widest text-on-surface-variant">{t("home.stats_bs")}</p>
 				</div>
 			</div>
