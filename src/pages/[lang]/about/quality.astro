@@ -57,7 +57,7 @@ const aboutJsonLd = buildAboutSectionJsonLd(siteBase, lang, {
 					priority
 					decoding="sync"
 				/>
-				<div class="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-70"></div>
+				<div class="absolute inset-0 bg-linear-to-t from-background via-transparent to-transparent opacity-70"></div>
 				<div class="absolute bottom-8 left-8">
 					<p class="font-label text-xs tracking-widest text-on-surface-variant">{t("quality.hero_caption")}</p>
 				</div>
@@ -172,14 +172,14 @@ const aboutJsonLd = buildAboutSectionJsonLd(siteBase, lang, {
 		</section>
 
 		<section class="relative mt-16 flex flex-col items-center overflow-hidden rounded-2xl bg-surface-container p-12 text-center md:p-16">
-			<div class="absolute left-0 top-0 h-1 w-full bg-gradient-to-r from-transparent via-primary/30 to-transparent"></div>
+			<div class="absolute left-0 top-0 h-1 w-full bg-linear-to-r from-transparent via-primary/30 to-transparent"></div>
 			<h2 class="font-headline mb-6 text-4xl font-bold tracking-editorial text-on-surface">{t("quality.balance_title")}</h2>
 			<p class="font-body mb-12 max-w-lg text-on-surface-variant">
 				{t("quality.balance_body")}
 			</p>
 			<a
-				href={`${prefix}/contact`}
-				class="btn-primary-gradient rounded-xl px-10 py-5 font-label text-xs font-semibold uppercase tracking-[0.2em] transition-all hover:brightness-105 active:scale-[0.98]"
+				href={`${prefix}/contact#contact-form`}
+				class="btn-primary-gradient rounded-xl px-10 py-5 font-label text-xs font-semibold uppercase tracking-aside transition-all hover:brightness-105 active:scale-[0.98]"
 			>
 				{t("quality.balance_cta")}
 			</a>

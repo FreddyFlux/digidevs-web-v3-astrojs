@@ -1,6 +1,7 @@
 ---
 import { Image } from "astro:assets";
 import MarketingIcon from "../icons/MarketingIcon";
+import DigiDevsWordmark from "../brand/DigiDevsWordmark.astro";
 import type { Locale } from "../../i18n/locales";
 import { useTranslations } from "../../i18n/utils";
 import digidevsMountains from "../../assets/digidevs-mountains.png";
@@ -61,11 +62,11 @@ const contactFormSubmit = t("contact.form_submit");
 	>
 		<section class="mb-6 mt-12 md:mb-12 lg:mb-20 lg:col-span-12">
 			<h1
-				class="font-headline mb-8 text-6xl font-bold leading-[0.9] tracking-tight text-on-surface md:text-8xl lg:text-9xl"
+				class="font-headline mb-8 text-5xl font-bold leading-[0.95] tracking-editorial text-on-surface md:text-6xl lg:text-7xl"
 			>
 				{t("contact.hero_line1")}
 				<br />
-				<span class="text-primary-container">{t("contact.hero_line2")}</span>
+				<DigiDevsWordmark class="text-primary-container" />
 			</h1>
 			<div class="grid grid-cols-1 lg:grid-cols-12">
 				<p
@@ -101,11 +102,16 @@ const contactFormSubmit = t("contact.form_submit");
 			</div>
 		</section>
 
-		<div class="lg:col-span-7">
+		<section
+			id="contact-form"
+			class="scroll-mt-28 lg:col-span-7"
+			tabindex="-1"
+			aria-labelledby="contact-form-heading"
+		>
 			<div
 				class="rounded-xl border border-border bg-surface-container-low p-8 backdrop-blur-md md:p-12"
 			>
-				<h2 class="font-headline mb-8 text-3xl font-bold text-on-surface">
+				<h2 id="contact-form-heading" class="font-headline mb-8 text-3xl font-bold text-on-surface">
 					{t("contact.form_heading")}
 				</h2>
 				<!-- data-astro-reload: after POST, Astro does a full navigation so the handler runs (form uses server route + client status script). -->
@@ -209,7 +215,7 @@ const contactFormSubmit = t("contact.form_submit");
 					></p>
 				</form>
 			</div>
-		</div>
+		</section>
 
 		<aside class="flex flex-col justify-between py-4 lg:col-span-5">
 			<div class="space-y-16">
@@ -326,6 +332,61 @@ const contactFormSubmit = t("contact.form_submit");
 	}}
 >
 	const w = globalThis;
+	const CONTACT_FORM_HASH = "#contact-form";
+	const CONTACT_FORM_TRACKING_PARAMS = [
+		"_gl",
+		"_ga",
+		"_up",
+		"_gid",
+		"_gac",
+		"_gcl_aw",
+		"_gcl_dc",
+		"_gcl_au",
+	];
+
+	function cleanContactFormUrl() {
+		if (window.location.hash !== CONTACT_FORM_HASH || !window.location.search) return;
+
+		const url = new URL(window.location.href);
+		for (const param of [...url.searchParams.keys()]) {
+			if (
+				CONTACT_FORM_TRACKING_PARAMS.includes(param) ||
+				param.startsWith("_ga_") ||
+				param.startsWith("_gac_")
+			) {
+				url.searchParams.delete(param);
+			}
+		}
+
+		const query = url.searchParams.toString();
+		const cleanUrl = `${url.pathname}${query ? `?${query}` : ""}${CONTACT_FORM_HASH}`;
+		window.history.replaceState(window.history.state, "", cleanUrl);
+	}
+
+	function focusContactFormFromHash() {
+		if (window.location.hash !== CONTACT_FORM_HASH) return;
+		cleanContactFormUrl();
+		const formTarget = document.querySelector(CONTACT_FORM_HASH);
+		const firstField = document.querySelector("#contact-name");
+		requestAnimationFrame(() => {
+			if (formTarget instanceof HTMLElement) {
+				formTarget.scrollIntoView({ block: "start" });
+			}
+			if (firstField instanceof HTMLElement) {
+				firstField.focus({ preventScroll: true });
+			} else if (formTarget instanceof HTMLElement) {
+				formTarget.focus({ preventScroll: true });
+			}
+		});
+	}
+
+	focusContactFormFromHash();
+	if (!w.__digiContactFormFocusBound) {
+		w.__digiContactFormFocusBound = true;
+		window.addEventListener("hashchange", focusContactFormFromHash);
+		document.addEventListener("astro:page-load", focusContactFormFromHash);
+	}
+
 	if (!w.__digiContactFormBound) {
 		w.__digiContactFormBound = true;
 		document.addEventListener("submit", async (e) => {
