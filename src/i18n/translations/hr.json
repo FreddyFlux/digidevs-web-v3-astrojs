@@ -3,7 +3,8 @@
     "blog": "Blog",
     "about": "O nama",
     "contact": "Kontakt",
-    "home": "Početna"
+    "home": "Početna",
+    "logo_alt": "digiDEVS logotip"
   },
   "nav_about_links": {
     "about": "O nama",
@@ -26,7 +27,7 @@
     "cities": "Split - Trondheim"
   },
   "home": {
-    "meta_title": "digiDEVS — Razvoj seniorske razine, kvaliteta EU-a",
+    "meta_title": "Web razvoj, razvoj aplikacija i AI | Senior razvoj u EU",
     "meta_description": "Norveški vođen studio u Hrvatskoj. Web aplikacije, mobilne aplikacije, AI proizviti i proširenje tima bez norveških cijena glavnog grada.",
     "hero_img_alt": "Skandinavski obalni grad noću, hladno plavo svjetlo na tamnoj vodi pod zvjezdanim nebom",
     "hero_headline_1": "Razvoj seniorske razine,",
@@ -37,6 +38,7 @@
     "cta_work": "Pogledajte što smo gradili",
     "capabilities_heading": "Što gradimo",
     "bento_opera_alt": "Oslo Opera i obala noću, svjetla se reflektiraju na fjordu",
+    "bento_keyboard_alt": "Mehanička tipkovnica s toplim osvijetljenim tipkama",
     "bento_guide_label": "Vaš vodič",
     "bento_guide_title": "Norveški vođen. EU isporuka.",
     "bento_guide_body": "Nismo anonimna radionica — razumijemo vaš kontekst i isporučujemo iz Hrvatske: seniorski rad oko 40–60% ispod tipičnih norveških agencija, usklađeno s GDPR-om, isto vrijeme.",

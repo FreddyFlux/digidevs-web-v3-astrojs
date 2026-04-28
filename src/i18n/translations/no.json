@@ -3,7 +3,8 @@
     "blog": "Blogg",
     "about": "Om oss",
     "contact": "Kontakt",
-    "home": "Hjem"
+    "home": "Hjem",
+    "logo_alt": "digiDEVS-logo"
   },
   "nav_about_links": {
     "about": "Om oss",
@@ -26,7 +27,7 @@
     "cities": "Split - Trondheim"
   },
   "home": {
-    "meta_title": "digiDEVS — Seniorutvikling og EU-kvalitet",
+    "meta_title": "Webutvikling, Apputvikling og AI | Seniorutvikling i EU",
     "meta_description": "Norskledet utviklingsstudio i Kroatia for webutvikling, apputvikling, AI, skreddersydd programvare og nearshore team.",
     "hero_img_alt": "Skandinavisk kystby om natten, kaldt blått lys på mørkt vann under stjernehimmel",
     "hero_headline_1": "Seniorutvikling,",
@@ -37,6 +38,7 @@
     "cta_work": "Se hva vi har bygget",
     "capabilities_heading": "Seniorutvikling for web, apper og AI",
     "bento_opera_alt": "Operaen i Oslo og havnen om natten, lys som speiler seg i fjorden",
+    "bento_keyboard_alt": "Mekanisk tastatur med varme bakbelyste taster",
     "bento_guide_label": "Din guide",
     "bento_guide_title": "Norskledet EU-leveranse fra Kroatia",
     "bento_guide_body": "Ikke en ansiktsløs fabrikk. Du får norsk kontakt, samme tidssone og et senior utviklingsteam i Kroatia som forstår norske forventninger til presisjon, eierskap og forutsigbar kommunikasjon. Modellen passer selskaper som vil ha høy teknisk kvalitet, GDPR-bevisst utvikling og bedre kostnadskontroll enn en tradisjonell hovedstadsleverandør.",

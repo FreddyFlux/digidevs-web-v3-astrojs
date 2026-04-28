@@ -108,7 +108,7 @@ export default function GlassNavBar({
             />
             <img
               src="/digidevs-logo-dark.svg"
-              alt=""
+              alt={t("nav.logo_alt")}
               width={573}
               height={95}
               className="vt-site-logo hidden h-6 w-auto sm:h-7 md:block md:h-8"

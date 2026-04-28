@@ -3,7 +3,8 @@
     "blog": "Blog",
     "about": "About",
     "contact": "Contact",
-    "home": "Home"
+    "home": "Home",
+    "logo_alt": "digiDEVS logo"
   },
   "nav_about_links": {
     "about": "About",
@@ -26,7 +27,7 @@
     "cities": "Split - Trondheim"
   },
   "home": {
-    "meta_title": "digiDEVS — Senior-level development, EU quality",
+    "meta_title": "Web Development, App Development and AI | Senior EU Development",
     "meta_description": "Norwegian-led development studio in Croatia. Web apps, mobile apps, AI-powered products, and team augmentation without Oslo premiums.",
     "hero_img_alt": "Scandinavian coastal city at night, cold blue light on dark water under a starry sky",
     "hero_headline_1": "Senior-level development,",
@@ -37,6 +38,7 @@
     "cta_work": "See what we’ve built",
     "capabilities_heading": "What we build",
     "bento_opera_alt": "Oslo Opera House and waterfront at night, lights reflecting on the fjord",
+    "bento_keyboard_alt": "Mechanical keyboard with warm backlit keys",
     "bento_guide_label": "Your guide",
     "bento_guide_title": "Norwegian-led. EU delivery.",
     "bento_guide_body": "Not a faceless shop — we speak your context and ship from Croatia: senior work at about 40–60% below typical Norwegian agency rates, GDPR-aligned, same timezone.",
