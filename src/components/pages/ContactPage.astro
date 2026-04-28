@@ -76,10 +76,38 @@ const contactFormSubmit = t("contact.form_submit");
 			</div>
 		</section>
 
+		<section
+			class="grid gap-6 lg:col-span-12 lg:grid-cols-2"
+			aria-labelledby="contact-services-heading"
+		>
+			<div class="rounded-xl border border-border bg-surface-container-low p-8 backdrop-blur-md">
+				<h2
+					id="contact-services-heading"
+					class="font-headline mb-4 text-2xl font-bold text-on-surface md:text-3xl"
+				>
+					{t("contact.services_heading")}
+				</h2>
+				<p class="font-body leading-relaxed text-on-surface-variant">
+					{t("contact.services_body")}
+				</p>
+			</div>
+			<div class="rounded-xl border border-border bg-surface-container-low p-8 backdrop-blur-md">
+				<h2 class="font-headline mb-4 text-2xl font-bold text-on-surface md:text-3xl">
+					{t("contact.expect_heading")}
+				</h2>
+				<p class="font-body leading-relaxed text-on-surface-variant">
+					{t("contact.expect_body")}
+				</p>
+			</div>
+		</section>
+
 		<div class="lg:col-span-7">
 			<div
-				class="rounded-xl border border-outline-variant/15 bg-surface-container-low p-8 backdrop-blur-md md:p-12"
+				class="rounded-xl border border-border bg-surface-container-low p-8 backdrop-blur-md md:p-12"
 			>
+				<h2 class="font-headline mb-8 text-3xl font-bold text-on-surface">
+					{t("contact.form_heading")}
+				</h2>
 				<!-- data-astro-reload: after POST, Astro does a full navigation so the handler runs (form uses server route + client status script). -->
 				<form
 					class="relative space-y-8"
@@ -186,12 +214,12 @@ const contactFormSubmit = t("contact.form_submit");
 		<aside class="flex flex-col justify-between py-4 lg:col-span-5">
 			<div class="space-y-16">
 				<div>
-					<h4
+					<h2
 						class="font-label mb-6 flex items-center gap-2 text-xs uppercase tracking-aside text-tertiary-light"
 					>
 						<MarketingIcon name="alternate_email" size={16} className="text-sm" />
 						{t("contact.aside_email_heading")}
-					</h4>
+					</h2>
 					<a
 						class="font-headline border-b border-outline-variant/30 pb-2 text-2xl font-medium text-on-surface transition-colors hover:text-primary-container md:text-3xl"
 						href={`mailto:${t("contact.email_address")}`}
@@ -201,12 +229,12 @@ const contactFormSubmit = t("contact.form_submit");
 				</div>
 
 				<div>
-					<h4
+					<h2
 						class="font-label mb-6 flex items-center gap-2 text-xs uppercase tracking-aside text-tertiary-light"
 					>
 						<MarketingIcon name="location_on" size={16} className="text-sm" />
 						{t("contact.aside_locations_heading")}
-					</h4>
+					</h2>
 					<div class="grid grid-cols-1 gap-8 sm:grid-cols-2">
 						<div class="group">
 							<p class="font-headline text-xl text-on-surface">{t("contact.location_split")}</p>
@@ -232,12 +260,12 @@ const contactFormSubmit = t("contact.form_submit");
 				</div>
 
 				<div>
-					<h4
+					<h2
 						class="font-label mb-6 flex items-center gap-2 text-xs uppercase tracking-aside text-tertiary-light"
 					>
 						<MarketingIcon name="share" size={16} className="text-sm" />
 						{t("contact.aside_social_heading")}
-					</h4>
+					</h2>
 					<div class="flex flex-wrap gap-4">
 						<a
 							class="font-label rounded-full border border-outline-variant/10 bg-surface-container px-6 py-2 text-sm uppercase tracking-widest text-on-surface-variant transition-all hover:bg-surface-container-high hover:text-secondary"
@@ -269,11 +297,11 @@ const contactFormSubmit = t("contact.form_submit");
 
 			<div class="mt-12 opacity-40">
 				<div
-					class="aspect-video w-full overflow-hidden rounded-xl border border-outline-variant/15 bg-surface-container grayscale"
+					class="aspect-video w-full overflow-hidden rounded-xl border border-border bg-surface-container grayscale"
 				>
 					<Image
 						src={splitVidilice}
-						alt=""
+						alt={t("contact.location_image_alt")}
 						width={splitVidilice.width}
 						height={splitVidilice.height}
 						sizes="(max-width: 1024px) 100vw, min(42rem, 40vw)"

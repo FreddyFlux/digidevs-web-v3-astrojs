@@ -209,6 +209,63 @@ export function buildAboutSectionJsonLd(
 	};
 }
 
+export function buildContactPageJsonLd(
+	siteBase: string,
+	lang: Locale,
+	args: {
+		title: string;
+		description: string;
+		email: string;
+		breadcrumbItems: { name: string; url: string }[];
+	},
+) {
+	const base = siteBase.replace(/\/$/, "");
+	const pageUrl = absoluteUrl(base, lang, "/contact");
+	const inLanguage = IN_LANGUAGE[lang];
+	const org = organizationNode(base, args.description);
+	org.email = args.email;
+	org.contactPoint = [
+		{
+			"@type": "ContactPoint",
+			contactType: "sales",
+			email: args.email,
+			availableLanguage: ["Norwegian", "English", "Croatian"],
+			areaServed: ["NO", "HR", "EU"],
+		},
+	];
+	org.address = [
+		{
+			"@type": "PostalAddress",
+			addressLocality: "Split",
+			addressCountry: "HR",
+		},
+		{
+			"@type": "PostalAddress",
+			addressLocality: "Trondheim",
+			addressCountry: "NO",
+		},
+	];
+
+	return {
+		"@context": "https://schema.org",
+		"@graph": [
+			org,
+			breadcrumbList(args.breadcrumbItems),
+			{
+				"@type": "ContactPage",
+				"@id": `${pageUrl}#webpage`,
+				name: args.title,
+				description: args.description,
+				url: pageUrl,
+				inLanguage,
+				isPartOf: { "@id": websiteId(base, lang) },
+				publisher: { "@id": organizationId(base) },
+				mainEntity: { "@id": organizationId(base) },
+			},
+		],
+	};
+}
+
 export function buildBlogBreadcrumbItems(
 	siteBase: string,
 	lang: Locale,
@@ -233,6 +290,18 @@ export function buildBlogIndexBreadcrumbItems(
 	return [
 		{ name: t("nav.home"), url: absoluteUrl(base, lang, "/") },
 		{ name: t("nav.blog"), url: absoluteUrl(base, lang, "/blog") },
+	];
+}
+
+export function buildContactBreadcrumbItems(
+	siteBase: string,
+	lang: Locale,
+	t: (key: string) => string,
+): { name: string; url: string }[] {
+	const base = siteBase.replace(/\/$/, "");
+	return [
+		{ name: t("nav.home"), url: absoluteUrl(base, lang, "/") },
+		{ name: t("nav.contact"), url: absoluteUrl(base, lang, "/contact") },
 	];
 }
 

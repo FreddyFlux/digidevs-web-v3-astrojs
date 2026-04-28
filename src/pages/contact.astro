@@ -2,10 +2,19 @@
 import Layout from "../layouts/Layout.astro";
 import ContactPage from "../components/pages/ContactPage.astro";
 import { useTranslations } from "../i18n/utils";
+import { buildContactBreadcrumbItems, buildContactPageJsonLd } from "../lib/seo-jsonld";
 
 const t = useTranslations("no");
+const siteBase = (import.meta.env.PUBLIC_SITE_URL ?? "https://digidevs.no").replace(/\/$/, "");
+const contactJsonLd = buildContactPageJsonLd(siteBase, "no", {
+	title: t("contact.meta_title"),
+	description: t("contact.meta_description"),
+	email: t("contact.email_address"),
+	breadcrumbItems: buildContactBreadcrumbItems(siteBase, "no", t),
+});
 ---
 
 <Layout title={t("contact.meta_title")} description={t("contact.meta_description")} lang="no">
+	<script type="application/ld+json" slot="head" set:html={JSON.stringify(contactJsonLd)} />
 	<ContactPage lang="no" />
 </Layout>

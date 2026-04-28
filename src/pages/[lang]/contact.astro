@@ -4,6 +4,7 @@ import { DEFAULT_LOCALE, LOCALES } from "../../i18n/locales";
 import Layout from "../../layouts/Layout.astro";
 import ContactPage from "../../components/pages/ContactPage.astro";
 import { useTranslations } from "../../i18n/utils";
+import { buildContactBreadcrumbItems, buildContactPageJsonLd } from "../../lib/seo-jsonld";
 
 export function getStaticPaths() {
 	return LOCALES.filter((l) => l !== DEFAULT_LOCALE).map((lang) => ({ params: { lang } }));
@@ -12,8 +13,16 @@ export function getStaticPaths() {
 const { lang: langParam } = Astro.params;
 const lang = langParam as Locale;
 const t = useTranslations(lang);
+const siteBase = (import.meta.env.PUBLIC_SITE_URL ?? "https://digidevs.no").replace(/\/$/, "");
+const contactJsonLd = buildContactPageJsonLd(siteBase, lang, {
+	title: t("contact.meta_title"),
+	description: t("contact.meta_description"),
+	email: t("contact.email_address"),
+	breadcrumbItems: buildContactBreadcrumbItems(siteBase, lang, t),
+});
 ---
 
 <Layout title={t("contact.meta_title")} description={t("contact.meta_description")} lang={lang}>
+	<script type="application/ld+json" slot="head" set:html={JSON.stringify(contactJsonLd)} />
 	<ContactPage lang={lang} />
 </Layout>
