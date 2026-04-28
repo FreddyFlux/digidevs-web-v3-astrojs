@@ -10,6 +10,10 @@ const contactJsonLd = buildContactPageJsonLd(siteBase, "no", {
 	title: t("contact.meta_title"),
 	description: t("contact.meta_description"),
 	email: t("contact.email_address"),
+	faqItems: [
+		{ question: t("contact.services_heading"), answer: t("contact.services_body") },
+		{ question: t("contact.expect_heading"), answer: t("contact.expect_body") },
+	],
 	breadcrumbItems: buildContactBreadcrumbItems(siteBase, "no", t),
 });
 ---

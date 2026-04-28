@@ -216,14 +216,57 @@ export function buildContactPageJsonLd(
 		title: string;
 		description: string;
 		email: string;
+		faqItems: { question: string; answer: string }[];
 		breadcrumbItems: { name: string; url: string }[];
 	},
 ) {
 	const base = siteBase.replace(/\/$/, "");
 	const pageUrl = absoluteUrl(base, lang, "/contact");
 	const inLanguage = IN_LANGUAGE[lang];
+	const officeAddresses = {
+		split: {
+			"@type": "PostalAddress",
+			streetAddress: "Ul. Šime Ljubića 9",
+			postalCode: "21000",
+			addressLocality: "Split",
+			addressCountry: "HR",
+		},
+		trondheim: {
+			"@type": "PostalAddress",
+			streetAddress: "Beddingen 8",
+			postalCode: "7042",
+			addressLocality: "Trondheim",
+			addressCountry: "NO",
+		},
+	};
+	const officeNodes = [
+		{
+			"@type": "ProfessionalService",
+			"@id": `${base}/#split-office`,
+			name: "digiDEVS Split",
+			url: pageUrl,
+			email: args.email,
+			inLanguage,
+			address: officeAddresses.split,
+			areaServed: ["HR", "EU"],
+			parentOrganization: { "@id": organizationId(base) },
+		},
+		{
+			"@type": "ProfessionalService",
+			"@id": `${base}/#trondheim-office`,
+			name: "digiDEVS Trondheim",
+			url: pageUrl,
+			email: args.email,
+			inLanguage,
+			address: officeAddresses.trondheim,
+			areaServed: ["NO", "EU"],
+			parentOrganization: { "@id": organizationId(base) },
+		},
+	];
+
 	const org = organizationNode(base, args.description);
 	org.email = args.email;
+	org.location = officeNodes.map((office) => ({ "@id": office["@id"] }));
 	org.contactPoint = [
 		{
 			"@type": "ContactPoint",
@@ -233,24 +276,27 @@ export function buildContactPageJsonLd(
 			areaServed: ["NO", "HR", "EU"],
 		},
 	];
-	org.address = [
-		{
-			"@type": "PostalAddress",
-			addressLocality: "Split",
-			addressCountry: "HR",
-		},
-		{
-			"@type": "PostalAddress",
-			addressLocality: "Trondheim",
-			addressCountry: "NO",
-		},
-	];
+	org.address = [officeAddresses.split, officeAddresses.trondheim];
 
 	return {
 		"@context": "https://schema.org",
 		"@graph": [
 			org,
+			...officeNodes,
 			breadcrumbList(args.breadcrumbItems),
+			{
+				"@type": "FAQPage",
+				"@id": `${pageUrl}#faq`,
+				inLanguage,
+				mainEntity: args.faqItems.map((item) => ({
+					"@type": "Question",
+					name: item.question,
+					acceptedAnswer: {
+						"@type": "Answer",
+						text: item.answer,
+					},
+				})),
+			},
 			{
 				"@type": "ContactPage",
 				"@id": `${pageUrl}#webpage`,
