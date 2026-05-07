@@ -30,6 +30,9 @@ export type SanityOfferLineItem = {
 	description: string;
 	quantity: number;
 	unitPrice: number;
+	discountAmount?: number;
+	monthlyPrice?: number;
+	monthlyDiscountAmount?: number;
 	notes?: string;
 };
 

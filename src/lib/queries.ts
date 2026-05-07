@@ -93,10 +93,6 @@ export const OFFER_BY_SLUG_QUERY = `*[
   terms,
   currency,
   lineItems,
-  subtotal,
-  discountAmount,
-  taxAmount,
-  total,
   media,
   renderSnapshot,
   snapshotCapturedAt

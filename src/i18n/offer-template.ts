@@ -48,6 +48,7 @@ export type OfferTemplateStrings = {
 	issuedLabel: string;
 	validUntilLabel: string;
 	customerHeading: string;
+	contactLabel: string;
 	orgNumberPrefix: string;
 	summaryHeading: string;
 	scopeHeading: string;
@@ -57,12 +58,12 @@ export type OfferTemplateStrings = {
 	tableDescription: string;
 	tableQty: string;
 	tableUnit: string;
+	tableMonthly: string;
 	tableLine: string;
-	subtotal: string;
-	computedLines: string;
-	discount: string;
-	tax: string;
-	total: string;
+	discountedUnit: string;
+	discountedMonthly: string;
+	totalUpfront: string;
+	totalPerMonth: string;
 	termsDefault: string;
 	lockedSnapshot: string;
 	printView: string;
@@ -94,6 +95,7 @@ export function getOfferTemplateStrings(locale: Locale): OfferTemplateStrings {
 			issuedLabel: "Issued",
 			validUntilLabel: "Valid until",
 			customerHeading: "Customer",
+			contactLabel: "Contact",
 			orgNumberPrefix: "Reg. no.",
 			summaryHeading: "Summary",
 			scopeHeading: "Scope",
@@ -103,12 +105,12 @@ export function getOfferTemplateStrings(locale: Locale): OfferTemplateStrings {
 			tableDescription: "Item",
 			tableQty: "Qty",
 			tableUnit: "Unit",
+			tableMonthly: "Monthly",
 			tableLine: "Line",
-			subtotal: "Subtotal",
-			computedLines: "Computed lines",
-			discount: "Discount",
-			tax: "Tax",
-			total: "Total",
+			discountedUnit: "Discounted unit",
+			discountedMonthly: "Discounted monthly",
+			totalUpfront: "Total Upfront",
+			totalPerMonth: "Total per month",
 			termsDefault: "Terms & conditions",
 			lockedSnapshot: "Locked snapshot (export)",
 			printView: "Print view",
@@ -138,7 +140,8 @@ export function getOfferTemplateStrings(locale: Locale): OfferTemplateStrings {
 			issuedLabel: "Datum",
 			validUntilLabel: "Vrijedi do",
 			customerHeading: "Kupac",
-			orgNumberPrefix: "Reg. br.",
+			contactLabel: "Kontakt",
+			orgNumberPrefix: "OIB",
 			summaryHeading: "Sažetak",
 			scopeHeading: "Opseg",
 			referenceHeading: "Reference",
@@ -147,12 +150,12 @@ export function getOfferTemplateStrings(locale: Locale): OfferTemplateStrings {
 			tableDescription: "Stavka",
 			tableQty: "Kol.",
 			tableUnit: "Jed.",
+			tableMonthly: "Mjesečno",
 			tableLine: "Ukupno",
-			subtotal: "Međuzbroj",
-			computedLines: "Linije",
-			discount: "Popust",
-			tax: "Porez",
-			total: "Ukupno",
+			discountedUnit: "Jedinica s popustom",
+			discountedMonthly: "Mjesečno s popustom",
+			totalUpfront: "Ukupno unaprijed",
+			totalPerMonth: "Ukupno mjesečno",
 			termsDefault: "Uvjeti",
 			lockedSnapshot: "Zaključan izvoz (snapshot)",
 			printView: "Ispis",
@@ -181,6 +184,7 @@ export function getOfferTemplateStrings(locale: Locale): OfferTemplateStrings {
 		issuedLabel: "Utstedt",
 		validUntilLabel: "Gyldig til",
 		customerHeading: "Kunde",
+		contactLabel: "Kontakt",
 		orgNumberPrefix: "Org.nr.",
 		summaryHeading: "Sammendrag",
 		scopeHeading: "Omfang",
@@ -190,12 +194,12 @@ export function getOfferTemplateStrings(locale: Locale): OfferTemplateStrings {
 		tableDescription: "Beskrivelse",
 		tableQty: "Ant.",
 		tableUnit: "Enhet",
+		tableMonthly: "Månedlig",
 		tableLine: "Beløp",
-		subtotal: "Sum linjer",
-		computedLines: "Beregnet",
-		discount: "Rabatt",
-		tax: "Mva",
-		total: "Totalt",
+		discountedUnit: "Rabattert enhet",
+		discountedMonthly: "Rabattert månedlig",
+		totalUpfront: "Total engangssum",
+		totalPerMonth: "Total per måned",
 		termsDefault: "Vilkår",
 		lockedSnapshot: "Låst snapshot (eksport)",
 		printView: "Utskriftsvisning",

@@ -6,7 +6,11 @@ import {
 	offerUiLocale,
 } from "@/i18n/offer-template";
 import type { OfferViewModel } from "@/lib/offers";
-import { mergeOfferApiSearchParams, sumLineTotals } from "@/lib/offers";
+import {
+	mergeOfferApiSearchParams,
+	sumMonthlyLineTotals,
+	sumUpfrontLineTotals,
+} from "@/lib/offers";
 
 const localeForLang = (lang: string): string => {
 	if (lang === "en") return "en-GB";
@@ -56,7 +60,8 @@ export default function OfferTemplate({
 	showActionRow = true,
 }: OfferTemplateProps) {
 	const isPrint = variant === "print";
-	const lineSum = sumLineTotals(offer);
+	const upfrontTotal = sumUpfrontLineTotals(offer);
+	const monthlyTotal = sumMonthlyLineTotals(offer);
 	const issue = offer.issueDate ? formatDate(offer.issueDate, offer.language) : undefined;
 	const valid = offer.validUntil ? formatDate(offer.validUntil, offer.language) : undefined;
 	const accent =
@@ -101,13 +106,13 @@ export default function OfferTemplate({
 			>
 				<div className="mb-6 grid gap-6 md:grid-cols-3 md:items-start">
 					<div className="md:col-span-1">
-						<p className="digi-wordmark text-2xl font-bold tracking-tight text-on-surface">
-							<span className="digi-wordmark__digi">digi</span>
-							<span className="digi-wordmark__devs">DEVS</span>
-						</p>
-						<p className="font-label mt-2 text-xs uppercase tracking-widest text-on-surface-variant">
-							{t.docSubtitle}
-						</p>
+						<img
+							src="/favicon.svg"
+							alt="digiDEVS logo"
+							className="h-28 w-28 p-1"
+							loading="eager"
+							decoding="async"
+						/>
 					</div>
 					<address className="font-body not-italic text-sm leading-relaxed text-on-surface-variant md:col-span-1 md:text-center">
 						<p className="font-label font-semibold text-on-surface">{company.legalName}</p>
@@ -125,12 +130,24 @@ export default function OfferTemplate({
 						</p>
 					</address>
 					<div className="font-label text-sm text-on-surface-variant md:col-span-1 md:text-right">
+						<p className="digi-wordmark text-xl font-bold tracking-tight text-on-surface">
+							<span className="digi-wordmark__digi">digi</span>
+							<span className="digi-wordmark__devs">DEVS</span>
+						</p>
 						{offer.offerNumber && (
-							<p>
+							<p className="mt-1 text-xs font-medium uppercase tracking-widest text-on-surface-variant/70">
+								{t.offerNumberLabel}
+							</p>
+						)}
+						{offer.offerNumber && (
+							<p className="text-on-surface/80">
 								<span className="text-on-surface-variant/80"># </span>
 								<span className="text-on-surface">{offer.offerNumber}</span>
 							</p>
 						)}
+						<p className="mt-1 text-xs font-semibold uppercase tracking-widest text-on-surface">
+							{t.docSubtitle}
+						</p>
 						<p className="mt-1 capitalize text-primary">{offer.status}</p>
 						{offer.hasLockedSnapshot && (
 							<p className="mt-2 text-xs text-secondary">{t.lockedSnapshot}</p>
@@ -165,23 +182,25 @@ export default function OfferTemplate({
 					<p className="font-headline text-lg font-semibold text-on-surface">
 						{offer.customer.companyName}
 					</p>
-					{offer.customer.contactName && (
-						<p className="mt-2 text-on-surface-variant">{offer.customer.contactName}</p>
-					)}
-					{offer.customer.email && (
-						<p className="mt-1">
-							<a href={`mailto:${offer.customer.email}`} className="link-tertiary text-sm">
-								{offer.customer.email}
-							</a>
-						</p>
-					)}
 					{offer.customer.orgNumber && (
 						<p className="mt-2 text-on-surface-variant">
 							{t.orgNumberPrefix} {offer.customer.orgNumber}
 						</p>
 					)}
 					{offer.customer.address && (
-						<p className="mt-3 whitespace-pre-line text-on-surface-variant">{offer.customer.address}</p>
+						<p className="mt-2 whitespace-pre-line text-on-surface-variant">{offer.customer.address}</p>
+					)}
+					{offer.customer.contactName && (
+						<p className="mt-2 text-secondary">
+							{t.contactLabel}: {offer.customer.contactName}
+						</p>
+					)}
+					{offer.customer.email && (
+						<p className="mt-1">
+							<a href={`mailto:${offer.customer.email}`} className="text-sm text-secondary hover:underline">
+								{offer.customer.email}
+							</a>
+						</p>
 					)}
 				</div>
 			</section>
@@ -267,6 +286,9 @@ export default function OfferTemplate({
 									<th className="px-4 py-3 font-label text-xs font-semibold uppercase tracking-wider text-on-surface-variant">
 										{t.tableUnit}
 									</th>
+									<th className="px-4 py-3 font-label text-xs font-semibold uppercase tracking-wider text-on-surface-variant">
+										{t.tableMonthly}
+									</th>
 									<th className="px-4 py-3 text-right font-label text-xs font-semibold uppercase tracking-wider text-on-surface-variant">
 										{t.tableLine}
 									</th>
@@ -283,10 +305,45 @@ export default function OfferTemplate({
 										</td>
 										<td className="px-4 py-3 text-on-surface-variant">{row.quantity}</td>
 										<td className="px-4 py-3 text-on-surface-variant">
-											{formatMoney(row.unitPrice, offer.currency, offer.language)}
+											{row.discountAmount > 0 ? (
+												<div className="space-y-1">
+													<p className="line-through decoration-1">
+														{formatMoney(row.unitPrice, offer.currency, offer.language)}
+													</p>
+													<p className="text-on-surface">
+														{t.discountedUnit}:{" "}
+														{formatMoney(row.discountedUnitPrice, offer.currency, offer.language)}
+													</p>
+												</div>
+											) : (
+												formatMoney(row.unitPrice, offer.currency, offer.language)
+											)}
+										</td>
+										<td className="px-4 py-3 text-on-surface-variant">
+											{row.monthlyPrice > 0 ? (
+												row.monthlyDiscountAmount > 0 ? (
+													<div className="space-y-1">
+														<p className="line-through decoration-1">
+															{formatMoney(row.monthlyPrice, offer.currency, offer.language)}
+														</p>
+														<p className="text-on-surface">
+															{t.discountedMonthly}:{" "}
+															{formatMoney(
+																row.discountedMonthlyPrice,
+																offer.currency,
+																offer.language,
+															)}
+														</p>
+													</div>
+												) : (
+													formatMoney(row.monthlyPrice, offer.currency, offer.language)
+												)
+											) : (
+												"—"
+											)}
 										</td>
 										<td className="px-4 py-3 text-right font-medium text-on-surface">
-											{formatMoney(row.lineTotal, offer.currency, offer.language)}
+											{formatMoney(row.upfrontLineTotal, offer.currency, offer.language)}
 										</td>
 									</tr>
 								))}
@@ -296,33 +353,17 @@ export default function OfferTemplate({
 				)}
 
 				<div className="mt-6 ml-auto max-w-sm space-y-2 rounded-xl border border-border bg-surface-container p-4 text-sm">
-					{offer.subtotal != null && (
-						<div className="flex justify-between text-on-surface-variant">
-							<span>{t.subtotal}</span>
-							<span>{formatMoney(offer.subtotal, offer.currency, offer.language)}</span>
-						</div>
-					)}
-					{offer.subtotal == null && lineSum > 0 && (
-						<div className="flex justify-between text-on-surface-variant">
-							<span>{t.computedLines}</span>
-							<span>{formatMoney(lineSum, offer.currency, offer.language)}</span>
-						</div>
-					)}
-					{(offer.discountAmount ?? 0) > 0 && (
-						<div className="flex justify-between text-on-surface-variant">
-							<span>{t.discount}</span>
-							<span>−{formatMoney(offer.discountAmount ?? 0, offer.currency, offer.language)}</span>
-						</div>
-					)}
-					{(offer.taxAmount ?? 0) > 0 && (
-						<div className="flex justify-between text-on-surface-variant">
-							<span>{t.tax}</span>
-							<span>{formatMoney(offer.taxAmount ?? 0, offer.currency, offer.language)}</span>
-						</div>
-					)}
 					<div className="flex justify-between border-t border-border pt-2 font-headline text-base font-bold text-on-surface">
-						<span>{t.total}</span>
-						<span className="text-primary">{formatMoney(offer.total, offer.currency, offer.language)}</span>
+						<span>{t.totalUpfront}</span>
+						<span className="text-primary">
+							{formatMoney(upfrontTotal, offer.currency, offer.language)}
+						</span>
+					</div>
+					<div className="flex justify-between font-headline text-base font-bold text-on-surface">
+						<span>{t.totalPerMonth}</span>
+						<span className="text-primary">
+							{formatMoney(monthlyTotal, offer.currency, offer.language)}
+						</span>
 					</div>
 				</div>
 			</section>

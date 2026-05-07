@@ -2,5 +2,9 @@ User-agent: *
 Allow: /
 Disallow: /api/
 Disallow: /sanity/
+Disallow: /offers
+Disallow: /offer
+Disallow: /en/offers
+Disallow: /hr/offers
 
 Sitemap: https://digidevs.no/sitemap-index.xml

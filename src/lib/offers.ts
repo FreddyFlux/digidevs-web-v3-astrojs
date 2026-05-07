@@ -17,7 +17,13 @@ export type OfferLineItemView = {
 	description: string;
 	quantity: number;
 	unitPrice: number;
-	lineTotal: number;
+	discountAmount: number;
+	discountedUnitPrice: number;
+	monthlyPrice: number;
+	monthlyDiscountAmount: number;
+	discountedMonthlyPrice: number;
+	upfrontLineTotal: number;
+	monthlyLineTotal: number;
 	notes?: string;
 };
 
@@ -46,10 +52,6 @@ export type OfferViewModel = {
 	termsHtml: string;
 	currency: string;
 	lineItems: OfferLineItemView[];
-	subtotal?: number;
-	discountAmount: number;
-	taxAmount: number;
-	total: number;
 	media: { url: string; alt: string; caption?: string }[];
 	/** True when Sanity `renderSnapshot` is non-empty (PDF may prefer locked payload). */
 	hasLockedSnapshot: boolean;
@@ -73,10 +75,6 @@ export type SanityOfferDoc = {
 	terms?: SanityOfferTerms;
 	currency?: string;
 	lineItems?: SanityOfferLineItem[];
-	subtotal?: number;
-	discountAmount?: number;
-	taxAmount?: number;
-	total?: number;
 	media?: SanityOfferMediaItem[];
 	renderSnapshot?: string | null;
 	snapshotCapturedAt?: string | null;
@@ -131,12 +129,24 @@ function mapLineItems(raw: SanityOfferLineItem[] | undefined): OfferLineItemView
 	return raw.map((row) => {
 		const quantity = typeof row.quantity === "number" ? row.quantity : 1;
 		const unitPrice = typeof row.unitPrice === "number" ? row.unitPrice : 0;
+		const discountAmount = typeof row.discountAmount === "number" ? row.discountAmount : 0;
+		const discountedUnitPrice = Math.max(0, unitPrice - discountAmount);
+		const monthlyPrice = typeof row.monthlyPrice === "number" ? row.monthlyPrice : 0;
+		const monthlyDiscountAmount =
+			typeof row.monthlyDiscountAmount === "number" ? row.monthlyDiscountAmount : 0;
+		const discountedMonthlyPrice = Math.max(0, monthlyPrice - monthlyDiscountAmount);
 		return {
 			_key: row._key,
 			description: row.description ?? "",
 			quantity,
 			unitPrice,
-			lineTotal: quantity * unitPrice,
+			discountAmount,
+			discountedUnitPrice,
+			monthlyPrice,
+			monthlyDiscountAmount,
+			discountedMonthlyPrice,
+			upfrontLineTotal: quantity * discountedUnitPrice,
+			monthlyLineTotal: quantity * discountedMonthlyPrice,
 			notes: row.notes,
 		};
 	});
@@ -206,7 +216,6 @@ export function applyRenderSnapshot(
 export function sanityDocToViewModel(doc: SanityOfferDoc): OfferViewModel {
 	const customer = doc.customer ?? { companyName: "—" };
 	const lineItems = mapLineItems(doc.lineItems);
-	const computedSubtotal = lineItems.reduce((acc, r) => acc + r.lineTotal, 0);
 
 	return {
 		id: doc._id,
@@ -227,10 +236,6 @@ export function sanityDocToViewModel(doc: SanityOfferDoc): OfferViewModel {
 		termsHtml: portableToHtml(doc.terms?.body),
 		currency: (doc.currency ?? "NOK").toUpperCase(),
 		lineItems,
-		subtotal: doc.subtotal ?? (computedSubtotal > 0 ? computedSubtotal : undefined),
-		discountAmount: doc.discountAmount ?? 0,
-		taxAmount: doc.taxAmount ?? 0,
-		total: doc.total ?? 0,
 		media: mapMedia(doc.media),
 		hasLockedSnapshot: Boolean(doc.renderSnapshot?.trim()),
 	};
@@ -298,6 +303,11 @@ export async function fetchOffersList(lang: Locale): Promise<OfferListItem[]> {
 }
 
 /** Sum of line totals (before discount/tax). */
-export function sumLineTotals(offer: OfferViewModel): number {
-	return offer.lineItems.reduce((a, b) => a + b.lineTotal, 0);
+export function sumUpfrontLineTotals(offer: OfferViewModel): number {
+	return offer.lineItems.reduce((a, b) => a + b.upfrontLineTotal, 0);
+}
+
+/** Sum of recurring monthly line totals. */
+export function sumMonthlyLineTotals(offer: OfferViewModel): number {
+	return offer.lineItems.reduce((a, b) => a + b.monthlyLineTotal, 0);
 }

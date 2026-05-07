@@ -12,6 +12,12 @@ const site = process.env.PUBLIC_SITE_URL || 'https://digidevs.no';
 /** Sanity dev server (sanity.cli.ts `server.port`). Studio is served at this path on both servers. */
 const SANITY_DEV_PORT = 3333;
 const SANITY_BASE_PATH = '/sanity';
+const OFFER_ROUTE_PATTERNS = [
+  /^\/offers(?:\/|$)/,
+  /^\/offer(?:\/|$)/,
+  /^\/api\/offers(?:\/|$)/,
+  /^\/[a-z]{2}(?:-[a-z]{2})?\/offers(?:\/|$)/,
+];
 
 /**
  * Sanity dev serves the app at `/sanity/`; a bare `/sanity` can 404 or redirect with
@@ -53,7 +59,12 @@ export default defineConfig({
 
   integrations: [
     react(),
-    sitemap(),
+    sitemap({
+      filter: (page) => {
+        const pathname = new URL(page).pathname.toLowerCase();
+        return !OFFER_ROUTE_PATTERNS.some((pattern) => pattern.test(pathname));
+      },
+    }),
   ],
 
   image: {
