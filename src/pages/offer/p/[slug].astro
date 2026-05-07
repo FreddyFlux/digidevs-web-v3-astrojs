@@ -1,0 +1,88 @@
+---
+export const prerender = false;
+
+import type { Locale } from "../../../i18n/locales";
+import { getOfferTemplateStrings, offerUiLocale } from "../../../i18n/offer-template";
+import OfferDocumentLayout from "../../../layouts/OfferDocumentLayout.astro";
+import OfferTemplate from "../../../components/offers/OfferTemplate";
+import { fetchOfferShareAuth, isCustomerOfferViewable } from "../../../lib/offer-share";
+import { localeFromOfferQuery, mergeOfferApiSearchParams, resolveOfferForSlug } from "../../../lib/offers";
+import { parseOfferViewerCookie } from "../../../lib/offer-viewer-cookie";
+import { getOfferViewerSigningSecret } from "../../../lib/offer-viewer-env";
+import { verifyOfferViewerToken } from "../../../lib/offer-viewer-session";
+
+const slug = Astro.params.slug;
+if (!slug) {
+	return new Response(null, { status: 404, statusText: "Not Found" });
+}
+
+const pageLocale = localeFromOfferQuery(Astro.url.searchParams);
+const offer = await resolveOfferForSlug(slug, pageLocale);
+if (!offer) {
+	return new Response(null, { status: 404, statusText: "Not Found" });
+}
+
+const auth = await fetchOfferShareAuth(slug, pageLocale);
+if (!isCustomerOfferViewable(auth)) {
+	return new Response(null, { status: 404, statusText: "Not Found" });
+}
+
+if (!getOfferViewerSigningSecret()) {
+	return new Response("Customer offer pages are not configured (OFFER_VIEWER_SIGNING_SECRET).", {
+		status: 503,
+		headers: { "Content-Type": "text/plain; charset=utf-8" },
+	});
+}
+
+const sv = typeof auth.shareSecretVersion === "number" ? auth.shareSecretVersion : 0;
+const token = parseOfferViewerCookie(Astro.request.headers.get("cookie"));
+const authorized = verifyOfferViewerToken(token, slug, sv);
+
+const uiLang = offerUiLocale(offer.language);
+const t = getOfferTemplateStrings(uiLang);
+const lang = (offer.language === "en" || offer.language === "hr" ? offer.language : "no") satisfies Locale;
+const pageTitle = `${offer.title} — ${t.customerViewerTitle}`;
+
+const querySuffix = mergeOfferApiSearchParams("", pageLocale);
+const loginAction = `/api/offers/${encodeURIComponent(slug)}/share/login${querySuffix}`;
+const redirectAfterLogin = `/offer/p/${encodeURIComponent(slug)}${querySuffix}`;
+const showLoginError = Astro.url.searchParams.get("e") === "1";
+---
+
+{
+	authorized ? (
+		<OfferDocumentLayout title={pageTitle} lang={lang}>
+			<OfferTemplate offer={offer} variant="web" pageLocale={pageLocale} searchSuffix={querySuffix} showActionRow={false} />
+		</OfferDocumentLayout>
+	) : (
+		<OfferDocumentLayout title={pageTitle} lang={lang}>
+			<div class="mx-auto flex min-h-[70vh] max-w-md flex-col justify-center px-6 py-16">
+				<h1 class="font-label text-lg font-semibold tracking-tight text-on-surface">{t.customerViewerTitle}</h1>
+				<p class="mt-2 text-sm text-on-surface-variant">{offer.title}</p>
+				<form class="mt-8 space-y-4" method="post" action={loginAction}>
+					<input type="hidden" name="redirect" value={redirectAfterLogin} />
+					<div>
+						<label class="font-label block text-xs font-medium uppercase tracking-widest text-on-surface-variant" for="offer-viewer-password">
+							{t.customerViewerPasswordLabel}
+						</label>
+						<input
+							id="offer-viewer-password"
+							name="password"
+							type="password"
+							required
+							autocomplete="current-password"
+							class="mt-2 w-full rounded-xl border border-border bg-surface-container-low px-4 py-3 text-on-surface shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+						/>
+					</div>
+					{showLoginError && <p class="text-sm text-error">{t.customerViewerWrongPassword}</p>}
+					<button
+						type="submit"
+						class="font-label w-full rounded-xl bg-primary px-4 py-3 text-sm font-semibold text-on-primary hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+					>
+						{t.customerViewerSubmit}
+					</button>
+				</form>
+			</div>
+		</OfferDocumentLayout>
+	)
+}

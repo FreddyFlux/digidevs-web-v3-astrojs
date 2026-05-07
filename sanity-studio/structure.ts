@@ -5,7 +5,7 @@ const API_VERSION = "2025-02-19";
 
 const METADATA_TYPE = "translation.metadata";
 
-const HIDDEN_FROM_DEFAULT_LIST = new Set<string>(["post", METADATA_TYPE]);
+const HIDDEN_FROM_DEFAULT_LIST = new Set<string>(["post", "offer", METADATA_TYPE]);
 
 type MetadataRow = {
   _id: string;
@@ -200,6 +200,7 @@ export const structure: StructureResolver = (S, _context) =>
                 : groupedItems,
             );
         }),
+      S.documentTypeListItem("offer").title("Offers"),
       S.documentTypeListItem(METADATA_TYPE),
       ...S.documentTypeListItems().filter((item) => {
         const id = item.getId();

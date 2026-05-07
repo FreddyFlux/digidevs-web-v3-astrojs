@@ -1,0 +1,57 @@
+---
+export const prerender = false;
+
+import type { Locale } from "../../../../i18n/locales";
+import { DEFAULT_LOCALE, LOCALES } from "../../../../i18n/locales";
+import OfferDocumentLayout from "../../../../layouts/OfferDocumentLayout.astro";
+import OfferTemplate from "../../../../components/offers/OfferTemplate";
+import { resolveOfferForSlug } from "../../../../lib/offers";
+import { isOfferAccessAllowed } from "../../../../lib/offer-access";
+
+const LOCALES_PREFIXED = LOCALES.filter((l) => l !== DEFAULT_LOCALE);
+const { lang: langParam, slug } = Astro.params;
+if (!slug || !langParam || !LOCALES_PREFIXED.includes(langParam as Locale)) {
+	return new Response(null, { status: 404, statusText: "Not Found" });
+}
+
+const pageLocale = langParam as Locale;
+
+if (!isOfferAccessAllowed(Astro.request)) {
+	return new Response(null, { status: 404, statusText: "Not Found" });
+}
+
+const offer = await resolveOfferForSlug(slug, pageLocale);
+if (!offer) {
+	return new Response(null, { status: 404, statusText: "Not Found" });
+}
+
+const lang = (offer.language === "en" || offer.language === "hr" ? offer.language : "no") satisfies Locale;
+const pageTitle = `${offer.title} — Offer — digiDEVS`;
+const searchSuffix = Astro.url.search;
+---
+
+<OfferDocumentLayout title={pageTitle} lang={lang}>
+	<OfferTemplate offer={offer} variant="print" pageLocale={pageLocale} searchSuffix={searchSuffix} />
+</OfferDocumentLayout>
+
+<style is:global>
+	@media print {
+		body {
+			background: var(--color-background) !important;
+			print-color-adjust: exact;
+			-webkit-print-color-adjust: exact;
+		}
+
+		.offer-desc-figure {
+			break-inside: avoid;
+			page-break-inside: avoid;
+		}
+
+		.offer-desc-figure__img {
+			display: block;
+			max-width: 100%;
+			height: auto;
+			max-height: 220mm;
+		}
+	}
+</style>

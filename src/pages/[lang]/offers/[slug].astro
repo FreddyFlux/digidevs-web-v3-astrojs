@@ -1,0 +1,75 @@
+---
+export const prerender = false;
+
+import type { Locale } from "../../../i18n/locales";
+import { DEFAULT_LOCALE, LOCALES } from "../../../i18n/locales";
+import { offerPostPath } from "../../../i18n/utils";
+import { getOfferTemplateStrings, offerUiLocale } from "../../../i18n/offer-template";
+import Layout from "../../../layouts/Layout.astro";
+import OfferShareSetup, { type OfferShareSetupLabels } from "../../../components/offers/OfferShareSetup";
+import OfferTemplate from "../../../components/offers/OfferTemplate";
+import { mergeOfferApiSearchParams, resolveOfferForSlug } from "../../../lib/offers";
+import { isOfferAccessAllowed } from "../../../lib/offer-access";
+
+const LOCALES_PREFIXED = LOCALES.filter((l) => l !== DEFAULT_LOCALE);
+const { lang: langParam, slug } = Astro.params;
+if (!slug || !langParam || !LOCALES_PREFIXED.includes(langParam as Locale)) {
+	return new Response(null, { status: 404, statusText: "Not Found" });
+}
+
+const pageLocale = langParam as Locale;
+
+if (!isOfferAccessAllowed(Astro.request)) {
+	return new Response(null, { status: 404, statusText: "Not Found" });
+}
+
+const offer = await resolveOfferForSlug(slug, pageLocale);
+if (!offer) {
+	return new Response(null, { status: 404, statusText: "Not Found" });
+}
+
+const lang = (offer.language === "en" || offer.language === "hr" ? offer.language : "no") satisfies Locale;
+const pageTitle = `${offer.title} — Offer — digiDEVS`;
+const description = offer.summary ?? `${offer.title} · ${offer.customer.companyName}`;
+const searchSuffix = Astro.url.search;
+const uiLang = offerUiLocale(offer.language);
+const t = getOfferTemplateStrings(uiLang);
+const shareLabels = {
+	createCustomerPage: t.createCustomerPage,
+	customerShareModalTitle: t.customerShareModalTitle,
+	customerSharePassword: t.customerSharePassword,
+	customerSharePasswordConfirm: t.customerSharePasswordConfirm,
+	customerShareSubmit: t.customerShareSubmit,
+	customerShareBusy: t.customerShareBusy,
+	customerShareCopyLink: t.customerShareCopyLink,
+	customerShareCopied: t.customerShareCopied,
+	customerShareClose: t.customerShareClose,
+	customerShareSuccessHint: t.customerShareSuccessHint,
+	customerShareError: t.customerShareError,
+} satisfies OfferShareSetupLabels;
+const apiSuffix = mergeOfferApiSearchParams(searchSuffix, pageLocale);
+const headerActions = {
+	printHref: `${offerPostPath(pageLocale, offer.slug)}/print${searchSuffix}`,
+	printLabel: t.printView,
+	pdfHref: `/api/offers/${encodeURIComponent(offer.slug)}/pdf${apiSuffix}`,
+	pdfLabel: t.downloadPdf,
+};
+---
+
+<Layout
+	title={pageTitle}
+	description={description}
+	lang={lang}
+	noIndex={true}
+	logoOnlyHeaderHref="/"
+	logoOnlyHeaderActions={headerActions}
+>
+	<OfferShareSetup slot="offer-header-extra" client:load slug={offer.slug} pageLocale={pageLocale} labels={shareLabels} />
+	<OfferTemplate
+		offer={offer}
+		variant="web"
+		pageLocale={pageLocale}
+		searchSuffix={searchSuffix}
+		showActionRow={false}
+	/>
+</Layout>

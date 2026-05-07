@@ -29,6 +29,7 @@ export default function LangSwitcher({
 					<a
 						key={locale}
 						href={localeHrefs?.[locale] ?? localePath(pathname, lang, locale)}
+						data-astro-prefetch="false"
 						className={`font-label text-xs uppercase tracking-widest transition-colors ${
 							locale === lang
 								? "font-bold text-secondary"

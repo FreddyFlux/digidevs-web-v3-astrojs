@@ -45,6 +45,16 @@ export function blogPostPath(locale: Locale, slug: string): string {
 	return locale === DEFAULT_LOCALE ? `/blog/${slug}` : `/${locale}/blog/${slug}`;
 }
 
+/** Offers index: default locale has no prefix. */
+export function offerIndexPath(locale: Locale): string {
+	return locale === DEFAULT_LOCALE ? "/offers" : `/${locale}/offers`;
+}
+
+/** Single offer URL for a locale (matches offers routes). */
+export function offerPostPath(locale: Locale, slug: string): string {
+	return locale === DEFAULT_LOCALE ? `/offers/${slug}` : `/${locale}/offers/${slug}`;
+}
+
 export function getLocaleFromParams(params: Record<string, string | undefined>): Locale {
 	const lang = params.lang;
 	if (lang === "en" || lang === "hr") return lang;

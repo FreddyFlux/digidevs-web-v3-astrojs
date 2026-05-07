@@ -1,0 +1,26 @@
+---
+import "../styles/global.css";
+import type { Locale } from "../i18n/locales";
+import { LOCALE_HTML_LANG } from "../i18n/locales";
+
+interface Props {
+	title: string;
+	lang?: Locale;
+}
+
+const { title, lang = "no" } = Astro.props;
+const htmlLang = LOCALE_HTML_LANG[lang] ?? lang;
+---
+
+<!doctype html>
+<html class="dark" lang={htmlLang}>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="robots" content="noindex, nofollow" />
+		<title>{title}</title>
+	</head>
+	<body class="selection:bg-primary-container/90 selection:text-on-primary-container bg-background text-on-background overflow-x-hidden antialiased">
+		<slot />
+	</body>
+</html>

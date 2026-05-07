@@ -36,6 +36,24 @@ export function getSanityClient(): SanityClient {
 	return client;
 }
 
+let writeClient: SanityClient | null = null;
+
+/** For server-side patches (e.g. offer customer share). Returns null if `SANITY_API_WRITE_TOKEN` is unset. */
+export function getSanityWriteClient(): SanityClient | null {
+	const token = import.meta.env.SANITY_API_WRITE_TOKEN;
+	if (!token || typeof token !== "string" || !token.trim()) return null;
+	if (!writeClient) {
+		writeClient = createClient({
+			projectId: requireEnv("SANITY_PROJECT_ID"),
+			dataset: import.meta.env.SANITY_DATASET ?? "production",
+			apiVersion: import.meta.env.SANITY_API_VERSION ?? "2024-01-01",
+			useCdn: false,
+			token: token.trim(),
+		});
+	}
+	return writeClient;
+}
+
 export function getImageUrlBuilder(): ImageUrlBuilder {
 	if (!imageBuilder) {
 		imageBuilder = createImageUrlBuilder({

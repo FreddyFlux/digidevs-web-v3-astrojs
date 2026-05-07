@@ -19,7 +19,6 @@ const contactFormSuccess = t("contact.form_success");
 const contactFormError = t("contact.form_error");
 const contactFormRateLimited = t("contact.form_rate_limited");
 const contactFormSubmit = t("contact.form_submit");
-const contactHeroTitle = `${t("contact.hero_line1")} ${t("contact.hero_line2")}`;
 
 ---
 
@@ -63,11 +62,10 @@ const contactHeroTitle = `${t("contact.hero_line1")} ${t("contact.hero_line2")}`
 	>
 		<section class="mb-6 mt-12 md:mb-12 lg:mb-20 lg:col-span-12">
 			<h1
-				aria-label={contactHeroTitle}
 				class="font-headline mb-8 text-5xl font-bold leading-[0.95] tracking-editorial text-on-surface md:text-6xl lg:text-7xl"
 			>
-				<span class="after:block after:h-0 after:content-['']">{t("contact.hero_line1")}</span>{" "}
-				<DigiDevsWordmark class="text-primary-container" />
+				<span>{t("contact.hero_line1")}</span>{" "}
+				<DigiDevsWordmark class="block text-primary-container" />
 			</h1>
 			<div class="grid grid-cols-1 lg:grid-cols-12">
 				<p

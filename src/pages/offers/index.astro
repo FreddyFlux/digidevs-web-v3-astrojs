@@ -1,0 +1,65 @@
+---
+export const prerender = false;
+
+import Layout from "../../layouts/Layout.astro";
+import { offerPostPath } from "../../i18n/utils";
+import { fetchOffersList } from "../../lib/offers";
+import { isOfferAccessAllowed } from "../../lib/offer-access";
+
+if (!isOfferAccessAllowed(Astro.request)) {
+	return new Response(null, { status: 404, statusText: "Not Found" });
+}
+
+const offers = await fetchOffersList("no");
+const gateOn = Boolean(import.meta.env.OFFER_ACCESS_PASSWORD?.trim() || import.meta.env.OFFER_ACCESS_SECRET?.trim());
+---
+
+<Layout
+	title="Offers — digiDEVS"
+	description="Internal offer list"
+	lang="no"
+	noIndex={true}
+	logoOnlyHeaderHref="/"
+>
+	<div class="mx-auto max-w-3xl px-6 pb-24 pt-32 md:px-10">
+		<div class="mb-8 flex flex-wrap items-end justify-between gap-4">
+			<div>
+				<h1 class="font-headline mb-2 text-3xl font-bold tracking-editorial text-on-surface">Offers</h1>
+				<p class="font-body text-on-surface-variant">Sanity-backed documents. Open a slug to preview or export.</p>
+			</div>
+			{
+				gateOn && (
+					<a
+						href="/api/offers/logout"
+						class="font-label text-sm text-on-surface-variant underline decoration-2 underline-offset-4 hover:text-primary"
+					>
+						Sign out
+					</a>
+				)
+			}
+		</div>
+		<ul class="space-y-3">
+			{
+				offers.map((o) => (
+					<li>
+						<a
+							href={offerPostPath("no", o.slug)}
+							class="font-label block rounded-xl border border-border bg-surface-container-low px-4 py-3 text-on-surface transition-colors hover:bg-surface-container"
+						>
+							<span class="font-semibold">{o.title}</span>
+							{o.offerNumber && (
+								<span class="ml-2 text-sm text-on-surface-variant">({o.offerNumber})</span>
+							)}
+							{o.company && (
+								<span class="mt-1 block text-sm text-on-surface-variant">{o.company}</span>
+							)}
+						</a>
+					</li>
+				))
+			}
+		</ul>
+		{offers.length === 0 && (
+			<p class="text-sm text-on-surface-variant">No published offers in Sanity yet.</p>
+		)}
+	</div>
+</Layout>

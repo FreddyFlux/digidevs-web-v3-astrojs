@@ -68,3 +68,73 @@ export const TRANSLATION_SLUGS_BY_POST_ID_QUERY = `*[
 
 /** @deprecated use POSTS_BY_LANG_QUERY with $lang */
 export const ALL_POSTS_QUERY = POSTS_BY_LANG_QUERY;
+
+/** Single offer by slug and language (published only). Legacy docs without language match only when $lang is "no". */
+export const OFFER_BY_SLUG_QUERY = `*[
+  _type == "offer" &&
+  !(_id in path("drafts.**")) &&
+  slug.current == $slug &&
+  (language == $lang || (!defined(language) && $lang == "no"))
+][0] {
+  _id,
+  title,
+  "slug": slug.current,
+  offerNumber,
+  status,
+  language,
+  issueDate,
+  validUntil,
+  templateVersion,
+  accentVariant,
+  customer,
+  summary,
+  description,
+  sections,
+  terms,
+  currency,
+  lineItems,
+  subtotal,
+  discountAmount,
+  taxAmount,
+  total,
+  media,
+  renderSnapshot,
+  snapshotCapturedAt
+}`;
+
+/** Minimal fields for customer share gate + password updates (never merged into public view models). */
+export const OFFER_SHARE_AUTH_QUERY = `*[
+  _type == "offer" &&
+  !(_id in path("drafts.**")) &&
+  slug.current == $slug &&
+  (language == $lang || (!defined(language) && $lang == "no"))
+][0] {
+  _id,
+  shareEnabled,
+  sharePasswordHash,
+  shareSecretVersion,
+  language
+}`;
+
+/** All offer slugs for sitemap or admin (published only). */
+export const OFFER_SLUGS_QUERY = `*[
+  _type == "offer" &&
+  !(_id in path("drafts.**")) &&
+  defined(slug.current)
+].slug.current`;
+
+/** List offers for a locale (newest issue date first). Legacy docs without language appear only for $lang "no". */
+export const OFFERS_LIST_QUERY = `*[
+  _type == "offer" &&
+  !(_id in path("drafts.**")) &&
+  defined(slug.current) &&
+  (language == $lang || (!defined(language) && $lang == "no"))
+] | order(coalesce(issueDate, _createdAt) desc) {
+  _id,
+  title,
+  "slug": slug.current,
+  offerNumber,
+  status,
+  issueDate,
+  "company": customer.companyName
+}`;

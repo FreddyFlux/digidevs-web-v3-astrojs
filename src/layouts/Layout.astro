@@ -6,6 +6,7 @@ import { LOCALE_HTML_LANG } from "../i18n/locales";
 import { stripLocalePrefixFromPathname } from "../i18n/utils";
 import SiteNavbar from "../components/layout/SiteNavbar.astro";
 import SiteFooter from "../components/layout/SiteFooter.astro";
+import LangSwitcher from "../components/layout/LangSwitcher";
 
 interface Props {
 	title?: string;
@@ -19,6 +20,15 @@ interface Props {
 	ogType?: "website" | "article";
 	twitterCard?: "summary" | "summary_large_image";
 	noIndex?: boolean;
+	/** Replaces default navbar with a simple logo link. */
+	logoOnlyHeaderHref?: string;
+	/** Optional right-side actions for simple fixed header layouts (e.g. offer routes). */
+	logoOnlyHeaderActions?: {
+		printHref: string;
+		printLabel: string;
+		pdfHref: string;
+		pdfLabel: string;
+	};
 	/** Per-locale pathnames for hreflang + lang switcher (e.g. translated blog slugs). */
 	localeHrefs?: Partial<Record<Locale, string>>;
 }
@@ -33,6 +43,8 @@ const {
 	ogType = "website",
 	twitterCard = "summary_large_image",
 	noIndex = false,
+	logoOnlyHeaderHref,
+	logoOnlyHeaderActions,
 	localeHrefs,
 } = Astro.props;
 
@@ -184,7 +196,48 @@ const loadCookieYesOnly = Boolean(cookieYesWebsiteKey && !gaMeasurementId);
 		<slot name="head" />
 	</head>
 	<body class="selection:bg-primary-container/90 selection:text-on-primary-container">
-		<SiteNavbar pathname={pathname} lang={lang} localeHrefs={localeHrefs} />
+		{
+			logoOnlyHeaderHref ? (
+				<header class="fixed inset-x-0 top-0 z-50">
+					<div class="mx-auto flex w-full max-w-7xl items-start justify-between gap-3 px-6 pb-2 pt-6 md:px-10">
+						<div class="flex items-center gap-3">
+							<a
+								href={logoOnlyHeaderHref}
+								aria-label="Go to the main website"
+								class="inline-flex items-center rounded-md transition-opacity hover:opacity-85 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+							>
+								<img src="/digidevs-logo-v5.svg" alt="digiDEVS logo" class="h-8 w-auto md:h-9" />
+							</a>
+							<div class="relative z-10">
+								<LangSwitcher pathname={pathname} lang={lang} localeHrefs={localeHrefs} />
+							</div>
+						</div>
+						{
+							logoOnlyHeaderActions && (
+								<div class="flex flex-wrap items-center justify-end gap-3 pt-1">
+									<a
+										href={logoOnlyHeaderActions.printHref}
+										class="font-label text-sm font-medium text-primary underline decoration-2 underline-offset-4 hover:text-primary-container"
+									>
+										{logoOnlyHeaderActions.printLabel}
+									</a>
+									<a
+										href={logoOnlyHeaderActions.pdfHref}
+										data-astro-reload
+										class="font-label inline-flex items-center rounded-xl border border-border bg-surface-container-low px-3 py-2 text-sm font-medium text-on-surface hover:bg-surface-container"
+									>
+										{logoOnlyHeaderActions.pdfLabel}
+									</a>
+									<slot name="offer-header-extra" />
+								</div>
+							)
+						}
+					</div>
+				</header>
+			) : (
+				<SiteNavbar pathname={pathname} lang={lang} localeHrefs={localeHrefs} />
+			)
+		}
 		<slot />
 		<SiteFooter lang={lang} />
 		<script is:inline>
