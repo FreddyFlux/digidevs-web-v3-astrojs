@@ -3,7 +3,11 @@ import { hash } from "bcryptjs";
 import type { Locale } from "../../../../i18n/locales";
 import { isOfferAccessAllowed } from "../../../../lib/offer-access";
 import { localeFromOfferQuery, mergeOfferApiSearchParams } from "../../../../lib/offers";
-import { fetchOfferShareAuth, validateOfferSharePasswordPair } from "../../../../lib/offer-share";
+import {
+	fetchOfferShareAuth,
+	normalizeOfferSharePassword,
+	validateOfferSharePasswordPair,
+} from "../../../../lib/offer-share";
 import { getSanityWriteClient } from "../../../../lib/sanity";
 
 export const prerender = false;
@@ -68,7 +72,7 @@ export const POST: APIRoute = async ({ params, request }) => {
 
 	const prevVersion = typeof row.shareSecretVersion === "number" ? row.shareSecretVersion : 0;
 	const nextVersion = prevVersion + 1;
-	const sharePasswordHash = await hash(password.trim(), 12);
+	const sharePasswordHash = await hash(normalizeOfferSharePassword(password), 12);
 
 	try {
 		await write

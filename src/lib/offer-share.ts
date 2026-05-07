@@ -21,12 +21,16 @@ export async function fetchOfferShareAuth(
 const MIN_PASSWORD_LEN = 10;
 const MAX_PASSWORD_LEN = 200;
 
+export function normalizeOfferSharePassword(input: string): string {
+	return input.trim().normalize("NFC");
+}
+
 export function validateOfferSharePasswordPair(
 	password: string,
 	passwordConfirm: string,
 ): { ok: true } | { ok: false; error: string } {
-	const p = password.trim();
-	const c = passwordConfirm.trim();
+	const p = normalizeOfferSharePassword(password);
+	const c = normalizeOfferSharePassword(passwordConfirm);
 	if (p.length < MIN_PASSWORD_LEN) {
 		return { ok: false, error: `Password must be at least ${MIN_PASSWORD_LEN} characters.` };
 	}

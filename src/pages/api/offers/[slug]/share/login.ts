@@ -5,6 +5,7 @@ import { localeFromOfferQuery } from "../../../../../lib/offers";
 import {
 	fetchOfferShareAuth,
 	isCustomerOfferViewable,
+	normalizeOfferSharePassword,
 	type OfferShareAuthRow,
 } from "../../../../../lib/offer-share";
 import { clientIpFromRequest, isOfferShareLoginRateLimited } from "../../../../../lib/offer-share-rate-limit";
@@ -26,7 +27,8 @@ async function authorizeLogin(
 		return { ok: false, status: 404 };
 	}
 	const hash = auth.sharePasswordHash!.trim();
-	const match = await compare(password, hash);
+	// Match setup behavior (trim + NFC normalization) before hashing.
+	const match = await compare(normalizeOfferSharePassword(password), hash);
 	if (!match) {
 		return { ok: false, status: 401 };
 	}
