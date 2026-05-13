@@ -1,7 +1,7 @@
 import { defineMiddleware } from "astro:middleware";
 import { getOfferGateSecret } from "./lib/offer-gate-env";
 import { hasOfferGateSessionCookie, isOfferGateKeyBypass } from "./lib/offer-gate-helpers";
-import { isOfferPath } from "./lib/is-offer-path";
+import { isOfferPath, requiresInternalOfferGate } from "./lib/is-offer-path";
 
 const OFFER_X_ROBOTS = "noindex, nofollow, noarchive, nosnippet, noimageindex";
 
@@ -21,9 +21,7 @@ function withOfferCrawlerHeaders(response: Response): Response {
  */
 export const onRequest = defineMiddleware(async (context, next) => {
 	const path = context.url.pathname;
-	const isOfferArea = isOfferPath(path);
-
-	if (!isOfferArea) {
+	if (!isOfferPath(path)) {
 		return next();
 	}
 
@@ -32,9 +30,9 @@ export const onRequest = defineMiddleware(async (context, next) => {
 	}
 	const req = context.request;
 
-	if (path === "/offers/login") return withOfferCrawlerHeaders(await next());
-	if (path === "/api/offers/login") return withOfferCrawlerHeaders(await next());
-	if (path === "/api/offers/logout") return withOfferCrawlerHeaders(await next());
+	if (!requiresInternalOfferGate(path)) {
+		return withOfferCrawlerHeaders(await next());
+	}
 
 	if (isOfferGateKeyBypass(req) || hasOfferGateSessionCookie(req)) {
 		return withOfferCrawlerHeaders(await next());
