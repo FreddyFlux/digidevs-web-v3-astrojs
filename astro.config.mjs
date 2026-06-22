@@ -6,6 +6,7 @@ import vercel from '@astrojs/vercel';
 import react from '@astrojs/react';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
+import { embedSanityStudio } from './src/integrations/embedSanityStudio.mjs';
 
 const site = process.env.PUBLIC_SITE_URL || 'https://digidevs.no';
 
@@ -39,6 +40,7 @@ export default defineConfig({
   /** @astrojs/sitemap emits sitemap-index.xml (not sitemap.xml) when split; many tools expect /sitemap.xml */
   redirects: {
     '/sitemap.xml': '/sitemap-index.xml',
+    '/sanity': '/sanity/',
   },
 
   prefetch: {
@@ -59,6 +61,7 @@ export default defineConfig({
 
   integrations: [
     react(),
+    embedSanityStudio(),
     sitemap({
       filter: (page) => {
         const pathname = new URL(page).pathname.toLowerCase();
