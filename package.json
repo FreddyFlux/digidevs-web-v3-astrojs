@@ -17,6 +17,7 @@
     "studio:build": "node ./scripts/sync-sanity-studio.mjs",
     "studio:sync": "node ./scripts/sync-sanity-studio.mjs"
   },
+  "postinstall": "pnpm -C ./sanity-studio install --frozen-lockfile",
   "dependencies": {
     "@astrojs/react": "^5.0.3",
     "@astrojs/rss": "^4.0.18",
