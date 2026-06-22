@@ -45,7 +45,9 @@ async function ensureStudioDeps() {
 	try {
 		await access(path.join(studioDir, "node_modules", "sanity", "package.json"));
 	} catch {
-		await run("pnpm", ["install", "--frozen-lockfile"], studioDir);
+		throw new Error(
+			"sanity-studio dependencies are missing. Root postinstall should run `pnpm -C ./sanity-studio install` (check Vercel install logs).",
+		);
 	}
 }
 

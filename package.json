@@ -8,7 +8,7 @@
   "scripts": {
     "dev": "astro dev",
     "dev:with-studio": "concurrently -n astro,studio -c cyan,magenta \"pnpm run dev\" \"pnpm run studio\"",
-    "build": "node ./scripts/sync-sanity-studio.mjs && astro build",
+    "build": "pnpm -C ./sanity-studio install --frozen-lockfile && node ./scripts/sync-sanity-studio.mjs && astro build",
     "verify:enhancements": "node ./scripts/verify-enhancements.mjs",
     "preview": "astro preview",
     "astro": "astro",
