@@ -41,6 +41,15 @@ export default defineConfig({
   redirects: {
     '/sitemap.xml': '/sitemap-index.xml',
     '/sanity': '/sanity/',
+    /**
+     * Self-hosted Studio quirk: `sanity build` prefixes the JS entry with the `/sanity` basePath,
+     * but emits the `<link rel="icon|manifest">` tags in index.html as root-relative `/static/...`.
+     * Those 404 under `/sanity`; redirect them to the real assets to silence console errors.
+     */
+    '/static/manifest.webmanifest': '/sanity/static/manifest.webmanifest',
+    '/static/favicon.ico': '/sanity/static/favicon.ico',
+    '/static/favicon.svg': '/sanity/static/favicon.svg',
+    '/static/apple-touch-icon.png': '/sanity/static/apple-touch-icon.png',
   },
 
   prefetch: {
