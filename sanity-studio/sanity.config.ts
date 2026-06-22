@@ -15,14 +15,20 @@ if (!projectId) {
 // Studio URL path is only set in sanity.cli.ts (`project.basePath`). Do not set `basePath` here — it
 // stacks with the CLI path and becomes /sanity/sanity.
 
+const includeVision = process.env.SANITY_STUDIO_VISION === "true";
+
 export default defineConfig({
 	name: "digidevs",
 	title: "digiDEVS",
 	projectId,
 	dataset,
+	// Fewer live `/data/listen/…` subscriptions — helps on networks that reset HTTP/2 (ERR_HTTP2_PING_FAILED).
+	releases: { enabled: false },
+	scheduledDrafts: { enabled: false },
+	announcements: { enabled: false },
 	plugins: [
 		structureTool({ structure }),
-		visionTool(),
+		...(includeVision ? [visionTool()] : []),
 		documentInternationalization({
 			supportedLanguages: [
 				{ id: "no", title: "Norsk" },

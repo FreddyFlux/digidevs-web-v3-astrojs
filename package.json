@@ -8,14 +8,14 @@
   "scripts": {
     "dev": "astro dev",
     "dev:with-studio": "concurrently -n astro,studio -c cyan,magenta \"pnpm run dev\" \"pnpm run studio\"",
-    "build": "astro build",
+    "build": "node ./scripts/sync-sanity-studio.mjs && astro build",
     "verify:enhancements": "node ./scripts/verify-enhancements.mjs",
     "preview": "astro preview",
     "astro": "astro",
     "seed:sanity": "node --env-file=.env ./scripts/seed-sanity-blog.mjs",
     "studio": "pnpm -C ./sanity-studio run dev",
-    "studio:build": "pnpm -C ./sanity-studio run build",
-    "studio:deploy": "pnpm -C ./sanity-studio run deploy"
+    "studio:build": "node ./scripts/sync-sanity-studio.mjs",
+    "studio:sync": "node ./scripts/sync-sanity-studio.mjs"
   },
   "dependencies": {
     "@astrojs/react": "^5.0.3",
@@ -51,5 +51,6 @@
   "devDependencies": {
     "concurrently": "^9.2.1",
     "dotenv": "^17.4.2"
-  }
+  },
+  "packageManager": "pnpm@11.5.0+sha512.dbfcc4f81cf48597afd4bc391ffdf12c11f1a9fb83a395bfa6b0a2d9cc2fd8ffebafdb1ccbd529632153f793904c2615b7f09fe1a345473fd1c35845172a8eb1"
 }

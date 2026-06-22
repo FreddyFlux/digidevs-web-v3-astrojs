@@ -4,8 +4,8 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "sanity dev",
-    "start": "sanity dev",
+    "dev": "SANITY_STUDIO_VISION=true sanity dev",
+    "start": "SANITY_STUDIO_VISION=true sanity dev",
     "build": "sanity build",
     "deploy": "sanity deploy"
   },

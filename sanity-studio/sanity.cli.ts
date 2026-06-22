@@ -17,4 +17,6 @@ export default defineCliConfig({
 	server: {
 		port: 3333,
 	},
+	// Studio is self-hosted at https://digidevs.no/sanity (see astro-project `pnpm studio:sync`).
+	// `sanity deploy` to *.sanity.studio is optional and not used in this project.
 });
