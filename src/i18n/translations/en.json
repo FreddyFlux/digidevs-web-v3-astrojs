@@ -27,7 +27,7 @@
     "cities": "Split - Trondheim"
   },
   "home": {
-    "meta_title": "Web Development, App Development and AI | Senior EU Development",
+    "meta_title": "Web, App Development and AI | Senior EU Engineering",
     "meta_description": "Norwegian-led development studio in Croatia. Web apps, mobile apps, AI-powered products, and team augmentation without Oslo premiums.",
     "hero_img_alt": "Scandinavian coastal city at night, cold blue light on dark water under a starry sky",
     "hero_headline_1": "Senior-level development,",
@@ -68,7 +68,7 @@
     "stats_bs": "No hidden process, no locked codebase, and no consulting fog"
   },
   "blog": {
-    "meta_title": "Blog — digiDEVS",
+    "meta_title": "Blog | digiDEVS — Web Development, AI and Delivery Notes",
     "meta_description": "digiDEVS blog: insights on web development, AI, architecture, and delivery from our Norwegian-led team in Croatia. Notes for product leaders and engineers.",
     "journal_label": "Journal & Archives",
     "heading_line1": "Insights &",
@@ -91,7 +91,7 @@
     "title_suffix": " — digiDEVS"
   },
   "contact": {
-    "meta_title": "Contact digiDEVS | Web Development, Apps and AI",
+    "meta_title": "Contact digiDEVS | Web, Apps, AI and Nearshore Dev",
     "meta_description": "Contact digiDEVS for web development, app development, AI-powered products, and nearshore development teams led from Norway and Croatia.",
     "hero_line1": "Contact",
     "hero_line2": "digiDEVS",
@@ -131,7 +131,7 @@
     "social_instagram": "Instagram"
   },
   "about": {
-    "meta_title": "About — digiDEVS",
+    "meta_title": "About digiDEVS | Norwegian-Led EU Development Studio",
     "meta_description": "About digiDEVS: Norwegian-led studio with senior engineers in Croatia. EU-grade delivery for web, apps, and AI — clear leadership without capital-city pricing.",
     "label": "About",
     "intro": "We combine Norwegian technical leadership with a senior engineering team in Croatia — so you get clarity, velocity, and EU-grade delivery without the capital-city price tag.",
@@ -144,7 +144,7 @@
     "explore": "Explore →"
   },
   "competence": {
-    "meta_title": "Competence — digiDEVS",
+    "meta_title": "Competence | digiDEVS — Web, Apps, AI and Modern Stack",
     "meta_description": "What we build and how: AI integration, senior talent, Norwegian-led management, and a modern stack.",
     "badge": "Technical Excellence",
     "heading": "Competence",
@@ -179,7 +179,7 @@
     "cta_button": "Get in Touch"
   },
   "quality": {
-    "meta_title": "Quality — digiDEVS",
+    "meta_title": "Quality | digiDEVS — Norwegian Precision and EU Standards",
     "meta_description": "Quality at digiDEVS: Norwegian precision, EU standards, GDPR-aware development, and senior craftsmanship — boutique engineering without the Oslo markup.",
     "label": "Boutique Engineering",
     "heading": "Quality",

@@ -68,7 +68,7 @@
     "stats_bs": "Ingen skjulte prosesser, ingen låst kodebase og ingen konsulenttåke"
   },
   "blog": {
-    "meta_title": "Blogg — digiDEVS",
+    "meta_title": "Blogg | digiDEVS — Innsikt om webutvikling, AI og leveranse",
     "meta_description": "Blogg fra digiDEVS: innsikt om webutvikling, AI, arkitektur og leveranse fra et norskledet team i Kroatia. Praktiske notater for produktledere og utviklere.",
     "journal_label": "Journal og arkiv",
     "heading_line1": "Innsikt og",
@@ -91,7 +91,7 @@
     "title_suffix": " — digiDEVS"
   },
   "contact": {
-    "meta_title": "Kontakt digiDEVS | Webutvikling, apper og AI",
+    "meta_title": "Kontakt digiDEVS | Webutvikling, apper, AI og nearshore",
     "meta_description": "Kontakt digiDEVS for webutvikling, apputvikling, AI-produkter og nearshore utviklingsteam ledet fra Norge og Kroatia.",
     "hero_line1": "Kontakt",
     "hero_line2": "digiDEVS",
@@ -131,7 +131,7 @@
     "social_instagram": "Instagram"
   },
   "about": {
-    "meta_title": "Om oss — digiDEVS",
+    "meta_title": "Om oss | digiDEVS — Norskledet nearshore-utvikling i EU",
     "meta_description": "Les om digiDEVS: norskledet studio med senior utviklere i Kroatia. EU-standard, tydelig ledelse og leveranse av web, apper og AI — uten hovedstadspremie.",
     "label": "Om oss",
     "intro": "Vi kombinerer norsk teknisk ledelse med et seniorutviklerteam i Kroatia — slik at du får klarhet, fart og EU-leveranse uten hovedstadspremie.",
@@ -144,7 +144,7 @@
     "explore": "Utforsk →"
   },
   "competence": {
-    "meta_title": "Kompetanse — digiDEVS",
+    "meta_title": "Kompetanse | digiDEVS — Web, apper, AI og moderne stack",
     "meta_description": "Hva vi bygger og hvordan: AI-integrasjon, senior kompetanse, norskledet ledelse og moderne stack.",
     "badge": "Teknisk dyktighet",
     "heading": "Kompetanse",
@@ -179,7 +179,7 @@
     "cta_button": "Ta kontakt"
   },
   "quality": {
-    "meta_title": "Kvalitet — digiDEVS",
+    "meta_title": "Kvalitet | digiDEVS — Norsk presisjon og EU-standarder",
     "meta_description": "Kvalitet hos digiDEVS: norsk presisjon, EU-forventninger, GDPR-bevisst utvikling og seniors håndverk — boutique-håndverk uten Oslo-tillegg, tydelig ledelse.",
     "label": "Boutique-ingeniørkunst",
     "heading": "Kvalitet",
