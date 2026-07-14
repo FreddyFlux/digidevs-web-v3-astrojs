@@ -69,7 +69,7 @@
   },
   "blog": {
     "meta_title": "Blog — digiDEVS",
-    "meta_description": "Insights and engineering notes from the digiDEVS team — architecture, AI, delivery, and quality.",
+    "meta_description": "digiDEVS blog: insights on web development, AI, architecture, and delivery from our Norwegian-led team in Croatia. Notes for product leaders and engineers.",
     "journal_label": "Journal & Archives",
     "heading_line1": "Insights &",
     "heading_line2": "Engineering",
@@ -132,7 +132,7 @@
   },
   "about": {
     "meta_title": "About — digiDEVS",
-    "meta_description": "Who we are: Norwegian-led precision, EU delivery standards, and a distributed team across Oslo and Croatia.",
+    "meta_description": "About digiDEVS: Norwegian-led studio with senior engineers in Croatia. EU-grade delivery for web, apps, and AI — clear leadership without capital-city pricing.",
     "label": "About",
     "intro": "We combine Norwegian technical leadership with a senior engineering team in Croatia — so you get clarity, velocity, and EU-grade delivery without the capital-city price tag.",
     "card1_kicker": "What we build",
@@ -180,7 +180,7 @@
   },
   "quality": {
     "meta_title": "Quality — digiDEVS",
-    "meta_description": "Norwegian precision, EU standards, GDPR-aware delivery, and boutique craftsmanship — without the Oslo markup.",
+    "meta_description": "Quality at digiDEVS: Norwegian precision, EU standards, GDPR-aware development, and senior craftsmanship — boutique engineering without the Oslo markup.",
     "label": "Boutique Engineering",
     "heading": "Quality",
     "intro": "We operate at the intersection of Northern precision and Mediterranean artistry, delivering digital products that exceed European standards without the prohibitive capital city premiums.",

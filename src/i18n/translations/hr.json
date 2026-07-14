@@ -69,7 +69,7 @@
   },
   "blog": {
     "meta_title": "Blog — digiDEVS",
-    "meta_description": "Uvidi i tehničke bilješke tima digiDEVS — arhitektura, AI, isporuka i kvaliteta.",
+    "meta_description": "Blog digiDEVS: uvidi o web razvoju, AI-u, arhitekturi i isporuci od norveški vođenog tima u Hrvatskoj. Praktične bilješke za product leadere i developere.",
     "journal_label": "Dnevnik i arhiv",
     "heading_line1": "Uvidi i",
     "heading_line2": "inženjerstvo",
@@ -132,7 +132,7 @@
   },
   "about": {
     "meta_title": "O nama — digiDEVS",
-    "meta_description": "Tko smo: norveška preciznost, EU standardi i distribuirani tim između Osloga i Hrvatske.",
+    "meta_description": "Saznajte o digiDEVS: norveški vođeni studio sa seniorskim timom u Hrvatskoj. EU isporuka weba, aplikacija i AI-a — jasno vodstvo bez cijena glavnog grada.",
     "label": "O nama",
     "intro": "Kombiniramo norveško tehničko vodstvo sa seniorskim timom u Hrvatskoj — jasnoća, brzina i EU isporuka bez cijene glavnog grada.",
     "card1_kicker": "Što gradimo",
@@ -180,7 +180,7 @@
   },
   "quality": {
     "meta_title": "Kvaliteta — digiDEVS",
-    "meta_description": "Norveška preciznost, EU standardi, GDPR isporuka i boutique izrada — bez osloške marže.",
+    "meta_description": "Kvaliteta digiDEVS: norveška preciznost, EU standardi, GDPR razvoj i seniorski rad — boutique inženjerstvo bez osloške marže i s jasnom komunikacijom.",
     "label": "Boutique inženjerstvo",
     "heading": "Kvaliteta",
     "intro": "Djelujemo na presjeku sjeverne preciznosti i mediteranskog obrta — digitalni proizvodi koji premašuju europske standarde bez cijene glavnog grada.",
