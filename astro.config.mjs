@@ -6,7 +6,6 @@ import vercel from '@astrojs/vercel';
 import react from '@astrojs/react';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
-import { FontaineTransform } from 'fontaine';
 import { embedSanityStudio } from './src/integrations/embedSanityStudio.mjs';
 
 const site = process.env.PUBLIC_SITE_URL || 'https://digidevs.no';
@@ -98,16 +97,6 @@ export default defineConfig({
   vite: {
     plugins: [
       tailwindcss(),
-      /**
-       * Generates metric-adjusted fallback @font-face rules (size-adjust / ascent-override
-       * etc.) for the Fontsource families so the swap from fallback → web font causes no
-       * layout shift. The generated families are named "<Family> override" and are wired
-       * into the --font-* stacks in src/styles/global.css.
-       */
-      FontaineTransform.vite({
-        fallbacks: ['ui-sans-serif', 'system-ui', 'Arial', 'sans-serif'],
-        resolvePath: (id) => new URL(`..${id}`, import.meta.url),
-      }),
     ],
     server: {
       proxy: {
