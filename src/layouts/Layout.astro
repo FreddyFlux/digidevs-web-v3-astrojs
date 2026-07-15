@@ -146,6 +146,7 @@ const loadCookieYesOnly = Boolean(cookieYesWebsiteKey && !gaMeasurementId && !di
 					<script
 						type="text/javascript"
 						id="cookieyes"
+							defer
 						src={`https://cdn-cookieyes.com/client_data/${cookieYesWebsiteKey}/script.js`}
 					></script>
 					<script async src={`https://www.googletagmanager.com/gtag/js?id=${gaMeasurementId}`} />
@@ -165,6 +166,7 @@ const loadCookieYesOnly = Boolean(cookieYesWebsiteKey && !gaMeasurementId && !di
 				<script
 					type="text/javascript"
 					id="cookieyes"
+						defer
 					src={`https://cdn-cookieyes.com/client_data/${cookieYesWebsiteKey}/script.js`}
 				></script>
 			)

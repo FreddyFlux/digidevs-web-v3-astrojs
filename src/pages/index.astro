@@ -119,8 +119,8 @@ const homepageJsonLd = buildHomepageJsonLd(siteBase, "no", { description: t("hom
 						<Image
 							src={bentoOpera}
 							alt={t("home.bento_opera_alt")}
-							width={bentoOpera.width}
-							height={bentoOpera.height}
+							widths={[420, 640, 828, 1200]}
+							sizes="(min-width: 768px) 66vw, 100vw"
 							class="absolute inset-0 h-full w-full object-cover opacity-55 transition-transform duration-700 group-hover:scale-105"
 							loading="lazy"
 							decoding="async"
