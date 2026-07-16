@@ -46,7 +46,7 @@ const localeHrefs = buildBlogLocaleHrefs(lang, post, translationSlugs);
 
 const t = useTranslations(lang);
 const siteBase = (import.meta.env.PUBLIC_SITE_URL ?? "https://digidevs.no").replace(/\/$/, "");
-const pageTitle = post.seoTitle ? `${post.seoTitle} — digiDEVS` : `${post.title} — digiDEVS`;
+const pageTitle = post.seoTitle ?? `${post.title} — digiDEVS`;
 const pageDesc = post.seoDescription ?? post.description;
 const canonical = post.canonicalUrl ?? `${siteBase}/${lang}/blog/${post.slug}`;
 
