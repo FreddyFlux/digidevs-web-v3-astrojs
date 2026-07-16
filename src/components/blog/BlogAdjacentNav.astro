@@ -1,0 +1,58 @@
+---
+import type { Locale } from "../../i18n/locales";
+import MarketingIcon from "../icons/MarketingIcon";
+import type { AdjacentPosts } from "../../lib/blog";
+import { blogPostPath } from "../../i18n/utils";
+import { useTranslations } from "../../i18n/utils";
+
+interface Props {
+	lang: Locale;
+	adjacent: AdjacentPosts;
+}
+
+const { lang, adjacent } = Astro.props;
+const t = useTranslations(lang);
+const { previous, next } = adjacent;
+---
+
+<nav
+	class="mx-auto mt-20 max-w-3xl border-t border-outline/20 px-6 pt-12 md:px-10"
+	aria-label={t("blog_post.adjacent_nav_aria")}
+>
+	<div class="grid grid-cols-1 gap-10 sm:grid-cols-2 sm:gap-12">
+		<a
+			href={blogPostPath(lang, previous.slug)}
+			class="group flex flex-col gap-3 text-left transition-colors"
+			rel="prev"
+		>
+			<span class="font-label inline-flex items-center gap-2 text-[11px] uppercase tracking-widest text-on-surface-variant">
+				<MarketingIcon
+					name="west"
+					className="transition-transform group-hover:-translate-x-1"
+					size={16}
+				/>
+				{t("blog_post.previous")}
+			</span>
+			<span class="font-headline text-xl font-bold tracking-editorial text-on-surface transition-colors group-hover:text-primary">
+				{previous.title}
+			</span>
+		</a>
+		<a
+			href={blogPostPath(lang, next.slug)}
+			class="group flex flex-col gap-3 text-left sm:items-end sm:text-right"
+			rel="next"
+		>
+			<span class="font-label inline-flex items-center gap-2 text-[11px] uppercase tracking-widest text-on-surface-variant sm:flex-row-reverse">
+				<MarketingIcon
+					name="east"
+					className="transition-transform group-hover:translate-x-1"
+					size={16}
+				/>
+				{t("blog_post.next")}
+			</span>
+			<span class="font-headline text-xl font-bold tracking-editorial text-on-surface transition-colors group-hover:text-primary">
+				{next.title}
+			</span>
+		</a>
+	</div>
+</nav>

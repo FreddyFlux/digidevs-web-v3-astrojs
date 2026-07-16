@@ -253,6 +253,27 @@ export function getGridPosts(posts: BlogPost[], featured: BlogPost | undefined):
 		.sort((a, b) => (a.date < b.date ? 1 : -1));
 }
 
+export type AdjacentPosts = {
+	previous: BlogPost;
+	next: BlogPost;
+};
+
+/**
+ * Previous/next neighbors in newest-first order for the same language set.
+ * Loops at both ends. Returns null when there are fewer than 2 posts or the slug is missing.
+ */
+export function getAdjacentPosts(posts: BlogPost[], slug: string): AdjacentPosts | null {
+	if (posts.length < 2) return null;
+	const ordered = [...posts].sort((a, b) => (a.date < b.date ? 1 : -1));
+	const index = ordered.findIndex((p) => p.slug === slug);
+	if (index < 0) return null;
+	const n = ordered.length;
+	return {
+		previous: ordered[(index - 1 + n) % n]!,
+		next: ordered[(index + 1) % n]!,
+	};
+}
+
 export function getPostBySlug(posts: BlogPost[], slug: string): BlogPost | undefined {
 	return posts.find((p) => p.slug === slug);
 }

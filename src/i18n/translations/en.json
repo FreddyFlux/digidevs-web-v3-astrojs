@@ -88,7 +88,10 @@
     "filter_aria": "Filter posts by category"
   },
   "blog_post": {
-    "title_suffix": " — digiDEVS"
+    "title_suffix": " — digiDEVS",
+    "previous": "Previous",
+    "next": "Next",
+    "adjacent_nav_aria": "Previous and next posts"
   },
   "contact": {
     "meta_title": "Contact digiDEVS | Web, Apps, AI and Nearshore Dev",
@@ -177,7 +180,11 @@
     "step3_title": "Continuous Evolution",
     "step3_body": "We maintain a dedicated R&D wing that tests emerging AI frameworks and infrastructure patterns, ensuring the competence we offer is always on the bleeding edge.",
     "cta_heading": "Discuss your technical horizon.",
-    "cta_button": "Get in Touch"
+    "cta_button": "Get in Touch",
+    "case_label": "Case study",
+    "case_title": "MP-14 booking platform",
+    "case_body": "How we replaced spreadsheet workflows with a multilingual Next.js booking system — payments, athlete registration, and GDPR consent automation.",
+    "case_link": "Read the case study"
   },
   "quality": {
     "meta_title": "Quality | digiDEVS — Norwegian Precision and EU Standards",

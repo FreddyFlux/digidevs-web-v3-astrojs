@@ -2,12 +2,15 @@
 import { Image } from "astro:assets";
 import type { Locale } from "../../../i18n/locales";
 import Layout from "../../../layouts/Layout.astro";
+import BlogAdjacentNav from "../../../components/blog/BlogAdjacentNav.astro";
 import {
 	buildBlogLocaleHrefs,
+	fetchAllPosts,
 	fetchAllSlugs,
 	fetchBlogTranslationSlugs,
 	fetchPostBySlug,
 	formatCategories,
+	getAdjacentPosts,
 } from "../../../lib/blog";
 import { buildBlogBreadcrumbItems, buildBlogPostingJsonLd } from "../../../lib/seo-jsonld";
 import { useTranslations } from "../../../i18n/utils";
@@ -34,6 +37,9 @@ const post = await fetchPostBySlug(lang, slug);
 if (!post) {
 	return new Response(null, { status: 404, statusText: "Not Found" });
 }
+
+const allPosts = await fetchAllPosts(lang);
+const adjacent = getAdjacentPosts(allPosts, slug);
 
 const translationSlugs = await fetchBlogTranslationSlugs(post.id);
 const localeHrefs = buildBlogLocaleHrefs(lang, post, translationSlugs);
@@ -77,7 +83,7 @@ const dateLocale = dateLocales[lang];
 	localeHrefs={localeHrefs}
 >
 	<script type="application/ld+json" slot="head" set:html={JSON.stringify(jsonLd)} />
-	<article class="mx-auto max-w-3xl px-6 pb-28 pt-36 md:px-10">
+	<article class="mx-auto max-w-3xl px-6 pb-12 pt-36 md:px-10">
 		<header class="mb-12">
 			<p class="font-label mb-4 text-xs uppercase tracking-widest text-primary">
 				{formatCategories(post.categories)} • {post.readTime}
@@ -118,4 +124,6 @@ const dateLocale = dateLocales[lang];
 			set:html={post.bodyHtml}
 		/>
 	</article>
+	{adjacent && <BlogAdjacentNav lang={lang} adjacent={adjacent} />}
+	<div class="pb-28"></div>
 </Layout>

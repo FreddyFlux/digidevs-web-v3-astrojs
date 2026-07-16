@@ -1,5 +1,6 @@
 import type { LucideProps } from "lucide-react";
 import {
+	ArrowLeft,
 	ArrowRight,
 	AtSign,
 	BadgeCheck,
@@ -24,7 +25,9 @@ const icons = {
 	security: Shield,
 	neurology: BrainCircuit,
 	person: User,
+	west: ArrowLeft,
 	east: ArrowRight,
+	arrow_back: ArrowLeft,
 	arrow_forward: ArrowRight,
 	architecture: Building2,
 	verified_user: BadgeCheck,

@@ -88,7 +88,10 @@
     "filter_aria": "Filtrer innlegg etter kategori"
   },
   "blog_post": {
-    "title_suffix": " — digiDEVS"
+    "title_suffix": " — digiDEVS",
+    "previous": "Forrige",
+    "next": "Neste",
+    "adjacent_nav_aria": "Forrige og neste innlegg"
   },
   "contact": {
     "meta_title": "Kontakt digiDEVS | Webutvikling, apper, AI og nearshore",
@@ -177,7 +180,11 @@
     "step3_title": "Kontinuerlig utvikling",
     "step3_body": "Vi har et dedikert FoU-spor som tester nye AI-rammeverk og infrastruktur — slik at kompetansen vi leverer alltid er på forkant.",
     "cta_heading": "La oss snakke om ditt tekniske perspektiv.",
-    "cta_button": "Ta kontakt"
+    "cta_button": "Ta kontakt",
+    "case_label": "Case",
+    "case_title": "MP-14 bookingplattform",
+    "case_body": "Slik erstattet vi regneark med et flerspråklig Next.js-bookingsystem — betalinger, påmelding og GDPR-samtykke.",
+    "case_link": "Les case-studien"
   },
   "quality": {
     "meta_title": "Kvalitet | digiDEVS — Norsk presisjon og EU-standarder",

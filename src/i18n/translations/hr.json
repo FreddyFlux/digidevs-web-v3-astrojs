@@ -88,7 +88,10 @@
     "filter_aria": "Filtriraj postove po kategoriji"
   },
   "blog_post": {
-    "title_suffix": " — digiDEVS"
+    "title_suffix": " — digiDEVS",
+    "previous": "Prethodni",
+    "next": "Sljedeći",
+    "adjacent_nav_aria": "Prethodni i sljedeći postovi"
   },
   "contact": {
     "meta_title": "Kontaktirajte digiDEVS | Web razvoj, aplikacije i AI",
@@ -177,7 +180,11 @@
     "step3_title": "Kontinuirana evolucija",
     "step3_body": "Imamo R&D krilo koje testira nove AI okvire i infrastrukturu — kompetencija uvijek na oštrici.",
     "cta_heading": "Razgovarajmo o vašem tehničkom horizontu.",
-    "cta_button": "Javite nam se"
+    "cta_button": "Javite nam se",
+    "case_label": "Case study",
+    "case_title": "MP-14 booking platforma",
+    "case_body": "Kako smo zamijenili Excel tijekove višejezičnim Next.js booking sustavom — plaćanja, registracija sportaša i GDPR privola.",
+    "case_link": "Pročitajte case study"
   },
   "quality": {
     "meta_title": "Kvaliteta | digiDEVS — Norveška preciznost i EU standard",
