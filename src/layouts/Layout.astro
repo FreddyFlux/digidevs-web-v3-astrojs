@@ -159,7 +159,6 @@ const loadCookieYesOnly = Boolean(cookieYesWebsiteKey && !gaMeasurementId && !di
 							defer
 						src={`https://cdn-cookieyes.com/client_data/${cookieYesWebsiteKey}/script.js`}
 					></script>
-					<script async src={`https://www.googletagmanager.com/gtag/js?id=${gaMeasurementId}`} />
 					<script is:inline define:vars={{ gaMeasurementId }}>
 						window.dataLayer = window.dataLayer || [];
 						function gtag() {
@@ -167,6 +166,20 @@ const loadCookieYesOnly = Boolean(cookieYesWebsiteKey && !gaMeasurementId && !di
 						}
 						gtag("js", new Date());
 						gtag("config", gaMeasurementId);
+						/* gtag.js loads after `load`, not async in head: on slow connections it
+						   competes with the LCP image for bandwidth. Commands queued in dataLayer
+						   above (and by the after-swap hook) are processed once it arrives. */
+						function loadGtag() {
+							var s = document.createElement("script");
+							s.async = true;
+							s.src = "https://www.googletagmanager.com/gtag/js?id=" + gaMeasurementId;
+							document.head.appendChild(s);
+						}
+						if (document.readyState === "complete") {
+							loadGtag();
+						} else {
+							window.addEventListener("load", loadGtag, { once: true });
+						}
 					</script>
 				</>
 			)
@@ -267,11 +280,15 @@ const loadCookieYesOnly = Boolean(cookieYesWebsiteKey && !gaMeasurementId && !di
 			loadGa4WithGcm && (
 				<script is:inline define:vars={{ gaMeasurementId }}>
 					document.addEventListener("astro:after-swap", () => {
-						if (typeof window.gtag === "function") {
-							window.gtag("config", gaMeasurementId, {
-								page_path: window.location.pathname + window.location.search,
-							});
+						/* Queue via dataLayer instead of calling window.gtag: gtag.js loads
+						   after `load`, so a fast swap before then must not drop the pageview. */
+						window.dataLayer = window.dataLayer || [];
+						function gtag() {
+							dataLayer.push(arguments);
 						}
+						gtag("config", gaMeasurementId, {
+							page_path: window.location.pathname + window.location.search,
+						});
 					});
 				</script>
 			)
