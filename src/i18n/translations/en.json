@@ -145,7 +145,7 @@
   },
   "competence": {
     "meta_title": "Competence | digiDEVS — Web, Apps, AI and Modern Stack",
-    "meta_description": "What we build and how: AI integration, senior talent, Norwegian-led management, and a modern stack.",
+    "meta_description": "Competence at digiDEVS: AI integration, senior engineers, Norwegian-led management, and a modern stack — web, apps, and scalable systems without Oslo premiums.",
     "badge": "Technical Excellence",
     "heading": "Competence",
     "intro": "Our DNA is built on Norwegian-led precision and global engineering talent. We don't just write code; we architect resilient digital ecosystems.",
@@ -163,6 +163,7 @@
     "legacy_label": "Legacy of Quality",
     "legacy_title": "Norwegian-Led Management",
     "legacy_body": "We bring the clinical precision of Scandinavian project management to every engagement. Transparency, punctuality, and uncompromising quality are the baselines of our operations.",
+    "legacy_img_alt": "Drawn illustration of Norwegian fjords and valleys",
     "stack_title": "Modern Stack Mastery",
     "stack_body": "We build with technologies designed for the future: Rust, TypeScript, and distributed systems architecture.",
     "stack_toggle": "Full capability list ↓",

@@ -145,7 +145,7 @@
   },
   "competence": {
     "meta_title": "Kompetencija | digiDEVS — Web, aplikacije, AI i stack",
-    "meta_description": "Što gradimo i kako: AI integracija, senior talent, norveško vodstvo i moderan stack.",
+    "meta_description": "Kompetencija digiDEVS: AI integracija, senior developeri, norveško vodstvo i moderan stack — web, aplikacije i skalabilni sustavi bez cijena glavnog grada.",
     "badge": "Tehnička izvrsnost",
     "heading": "Kompetencija",
     "intro": "Naš DNA je norveška preciznost i globalni inženjerski talent. Ne samo pišemo kod — arhitekturiramo otporna digitalna ekosustava.",
@@ -163,6 +163,7 @@
     "legacy_label": "Nasljede kvalitete",
     "legacy_title": "Norveški vođeno vodstvo",
     "legacy_body": "Donosimo kliničku preciznost skandinavskog upravljanja projektima u svaki angažman. Transparentnost, točnost i nepopustljiva kvaliteta su osnova.",
+    "legacy_img_alt": "Crtana ilustracija norveških fjordova i dolina",
     "stack_title": "Modern Stack",
     "stack_body": "Gradimo s tehnologijama za budućnost: Rust, TypeScript i distribuirana arhitektura.",
     "stack_toggle": "Puni popis stacka ↓",

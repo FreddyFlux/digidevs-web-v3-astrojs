@@ -145,7 +145,7 @@
   },
   "competence": {
     "meta_title": "Kompetanse | digiDEVS — Web, apper, AI og moderne stack",
-    "meta_description": "Hva vi bygger og hvordan: AI-integrasjon, senior kompetanse, norskledet ledelse og moderne stack.",
+    "meta_description": "Kompetanse hos digiDEVS: AI-integrasjon, seniorutviklere, norskledet ledelse og moderne stack for web, apper og skalerbare systemer uten Oslo-tillegg.",
     "badge": "Teknisk dyktighet",
     "heading": "Kompetanse",
     "intro": "Vår DNA bygger på norsk presisjon og global ingeniørkompetanse. Vi skriver ikke bare kode — vi designer robuste digitale økosystemer.",
@@ -163,6 +163,7 @@
     "legacy_label": "Kvalitetsarven",
     "legacy_title": "Norskledet ledelse",
     "legacy_body": "Vi tar den kliniske presisjonen fra skandinavisk prosjektledelse med i hvert oppdrag. Åpenhet, punktlighet og kompromissløs kvalitet er utgangspunktet.",
+    "legacy_img_alt": "Tegnet illustrasjon av norske fjorder og daler",
     "stack_title": "Moderne stack",
     "stack_body": "Vi bygger med teknologi som tåler fremtiden: Rust, TypeScript og distribuerte systemer.",
     "stack_toggle": "Full liste over stack ↓",
